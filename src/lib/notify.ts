@@ -1,0 +1,227 @@
+/**
+ * SMS (Twilio) + Email (Resend) notifications.
+ *
+ * Both helpers are best-effort: they never throw — the caller's main flow
+ * (booking creation, stage update, etc.) must keep working even if
+ * notifications fail or aren't configured.
+ *
+ * Required env vars (set in Vercel → Settings → Environment Variables):
+ *   TWILIO_ACCOUNT_SID
+ *   TWILIO_AUTH_TOKEN
+ *   TWILIO_FROM_NUMBER       — Twilio number that sends SMS, e.g. "+15125550100"
+ *   ADMIN_NOTIFY_PHONE       — Admin's phone, e.g. "+15125559999"
+ *   RESEND_API_KEY
+ *   NOTIFY_FROM_EMAIL        — verified sender, e.g. "alerts@austinautodetail.com"
+ *
+ * If env vars are missing, the helpers log "[notify] skipped" and return.
+ */
+
+import { supabaseAdmin } from './supabaseAdmin';
+
+const TWILIO_BASE = 'https://api.twilio.com/2010-04-01/Accounts';
+const RESEND_API = 'https://api.resend.com/emails';
+
+interface SmsResult {
+  ok: boolean;
+  skipped?: boolean;
+  reason?: string;
+}
+
+interface EmailResult {
+  ok: boolean;
+  skipped?: boolean;
+  reason?: string;
+}
+
+/**
+ * Light phone-number normalization. Twilio requires E.164 (e.g., +15125551234).
+ * If the input has no leading +, assume US/Canada (+1).
+ */
+export function normalizePhone(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const digits = raw.replace(/[^\d+]/g, '');
+  if (!digits) return null;
+  if (digits.startsWith('+')) return digits;
+  // 10 digits → US: prepend +1
+  if (digits.length === 10) return `+1${digits}`;
+  // 11 digits starting with 1 → US: prepend +
+  if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`;
+  // Otherwise pass through with + (best-effort).
+  return `+${digits}`;
+}
+
+export async function sendSms(toRaw: string, body: string): Promise<SmsResult> {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_FROM_NUMBER;
+
+  if (!sid || !token || !from) {
+    console.log('[notify] sms skipped: missing TWILIO_* env vars');
+    return { ok: false, skipped: true, reason: 'not_configured' };
+  }
+
+  const to = normalizePhone(toRaw);
+  if (!to) {
+    return { ok: false, skipped: true, reason: 'invalid_phone' };
+  }
+
+  try {
+    const res = await fetch(`${TWILIO_BASE}/${sid}/Messages.json`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64'),
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({ To: to, From: from, Body: body }),
+    });
+
+    if (!res.ok) {
+      const text = (await res.text()).slice(0, 300);
+      console.error('[notify] sms failed', res.status, text);
+      return { ok: false, reason: `twilio_${res.status}` };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error('[notify] sms exception', err);
+    return { ok: false, reason: 'exception' };
+  }
+}
+
+export async function sendEmail(opts: {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+}): Promise<EmailResult> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.NOTIFY_FROM_EMAIL;
+
+  if (!apiKey || !from) {
+    console.log('[notify] email skipped: missing RESEND_API_KEY / NOTIFY_FROM_EMAIL');
+    return { ok: false, skipped: true, reason: 'not_configured' };
+  }
+  if (!opts.to) {
+    return { ok: false, skipped: true, reason: 'no_recipient' };
+  }
+
+  try {
+    const res = await fetch(RESEND_API, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+        text: opts.text,
+      }),
+    });
+    if (!res.ok) {
+      const text = (await res.text()).slice(0, 300);
+      console.error('[notify] email failed', res.status, text);
+      return { ok: false, reason: `resend_${res.status}` };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error('[notify] email exception', err);
+    return { ok: false, reason: 'exception' };
+  }
+}
+
+/**
+ * Notify the admin when a new booking comes in.
+ *
+ * Sends SMS to the phone configured via ADMIN_NOTIFY_PHONE (or, if unset,
+ * the admin user's profile.phone).
+ */
+export async function notifyAdminNewBooking(opts: {
+  bookingId: string;
+  customerName: string | null;
+  customerPhone: string | null;
+  service: string;
+  scheduledAt: string;
+  address: string;
+}): Promise<void> {
+  let to = process.env.ADMIN_NOTIFY_PHONE || null;
+  if (!to) {
+    const { data: admin } = await supabaseAdmin
+      .from('profiles')
+      .select('phone')
+      .eq('is_admin', true)
+      .not('phone', 'is', null)
+      .limit(1)
+      .maybeSingle();
+    to = admin?.phone ?? null;
+  }
+  if (!to) {
+    console.log('[notify] admin sms skipped: no admin phone configured');
+    return;
+  }
+
+  const when = new Date(opts.scheduledAt).toLocaleString('en-US', {
+    timeZone: 'America/Chicago',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
+  const body =
+    `🚗 NEW BOOKING — Austin Auto Detail\n` +
+    `${opts.customerName || 'Customer'}: ${opts.service}\n` +
+    `${when}\n` +
+    `${opts.address}\n` +
+    (opts.customerPhone ? `📞 ${opts.customerPhone}\n` : '') +
+    `\nApprove: https://austinautodetail.vercel.app/admin`;
+
+  await sendSms(to, body);
+}
+
+/**
+ * Notify the customer when their car is ready (booking_stage='done').
+ * Sends both SMS (primary) and email (backup), in parallel. Best-effort.
+ */
+export async function notifyCustomerCarReady(opts: {
+  customerName: string | null;
+  customerPhone: string | null;
+  customerEmail: string | null;
+  service: string;
+  bookingId: string;
+}): Promise<void> {
+  const name = opts.customerName?.split(' ')[0] || 'there';
+
+  const smsBody =
+    `Hey ${name}! 🚗✨ Your ${opts.service} is complete. ` +
+    `Thanks for choosing Austin Auto Detail — see you next time!`;
+
+  const emailHtml = `
+    <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
+      <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+      </div>
+      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Your car is ready! 🚗✨</h1>
+      <p style="color: #c8c8c8; line-height: 1.6;">Hey ${name},</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> is complete. Thanks for choosing Austin Auto Detail — we'd love to see you again.</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">— Austin Auto Detail</p>
+    </div>
+  `;
+
+  const promises: Promise<unknown>[] = [];
+  if (opts.customerPhone) promises.push(sendSms(opts.customerPhone, smsBody));
+  if (opts.customerEmail) {
+    promises.push(
+      sendEmail({
+        to: opts.customerEmail,
+        subject: 'Your car is ready! 🚗',
+        html: emailHtml,
+        text: smsBody,
+      })
+    );
+  }
+  await Promise.allSettled(promises);
+}

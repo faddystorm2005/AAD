@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #f8f8f8;
+  --accent: #d62030;
+  --surface: rgba(255, 255, 255, 0.05);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-oswald);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #000000;
+    --foreground: #f8f8f8;
+  }
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+/* Branded focus ring — replaces the browser default. Only shown on
+   keyboard focus thanks to :focus-visible. */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Smooth scrollbar in webkit browsers — small but premium-feeling touch. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+/* Selection color matches the brand. */
+::selection {
+  background: rgba(214, 32, 48, 0.4);
+  color: #fff;
+}
+
+/* ---------- Motion library ---------- */
+/* Default easings: 'cubic-bezier(0.22, 1, 0.36, 1)' — confident, premium glide. */
+
+@keyframes aad-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes aad-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes aad-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes aad-pan {
+  from { transform: scale(1.04) translate3d(0, 0, 0); }
+  to   { transform: scale(1.12) translate3d(-2%, -1.5%, 0); }
+}
+@keyframes aad-pulse-soft {
+  0%, 100% { opacity: 0.65; }
+  50%      { opacity: 1; }
+}
+@keyframes aad-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-up {
+  animation: aad-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-in {
+  animation: aad-fade-in 0.45s ease-out both;
+}
+.animate-scale-in {
+  animation: aad-scale-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-banner-pan {
+  animation: aad-pan 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.animate-pulse-soft {
+  animation: aad-pulse-soft 2.4s ease-in-out infinite;
+}
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: aad-shimmer 1.8s linear infinite;
+}
+
+/* Hover lift used on bookings + vehicle cards. */
+.lift-hover {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 220ms ease,
+              box-shadow 220ms ease;
+}
+.lift-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(214, 32, 48, 0.45);
+  box-shadow: 0 10px 30px -12px rgba(214, 32, 48, 0.35);
+}
+
+/* Tap feedback used on CTA buttons. */
+.press {
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 220ms ease,
+              background-color 180ms ease;
+}
+.press:hover { transform: translateY(-1px); }
+.press:active { transform: translateY(0) scale(0.97); }
+
+/* Form input polish — smooth focus transitions across every <input>,
+   <textarea>, and <select>. Doesn't override Tailwind borders/colors. */
+input,
+textarea,
+select {
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 3px rgba(214, 32, 48, 0.18);
+}
+
+/* Button polish — applies a uniform cursor + disabled state. Doesn't
+   change Tailwind padding/colors so existing buttons stay the same. */
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Respect users who prefer reduced motion — disable all decorative animations. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-scale-in,
+  .animate-banner-pan,
+  .animate-pulse-soft,
+  .animate-shimmer,
+  .lift-hover,
+  .press {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
