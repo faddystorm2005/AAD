@@ -13,6 +13,34 @@ export default function Home() {
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
       <AuthRedirector />
 
+      {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur">
+        <nav
+          className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-3"
+          aria-label="Primary"
+        >
+          <Link
+            href="/"
+            className="text-sm font-bold uppercase tracking-[0.18em] text-white"
+            aria-label="Austin Auto Detail home"
+          >
+            Austin Auto Detail
+          </Link>
+          <div className="hidden items-center gap-6 text-sm text-gray-300 sm:flex">
+            <a href="#services" className="hover:text-white">Mobile Detailing Services</a>
+            <a href="#how-it-works" className="hover:text-white">How It Works</a>
+            <a href="#faq" className="hover:text-white">FAQ</a>
+            <a href="#contact" className="hover:text-white">Contact</a>
+          </div>
+          <Link
+            href="/auth"
+            className="btn-primary press shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2 sm:text-sm"
+          >
+            Book Now
+          </Link>
+        </nav>
+      </header>
+
       {/* Ambient red glow at top + bottom */}
       <div
         aria-hidden
@@ -32,12 +60,12 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <section className="relative">
+      <section className="relative" id="top">
         <div className="relative h-[60vh] min-h-[480px] w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={DASHBOARD_BANNER.src}
-            alt={DASHBOARD_BANNER.alt}
+            alt="Mobile detailing in Austin — professional auto detailing at your location"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
@@ -57,7 +85,7 @@ export default function Home() {
               className="animate-fade-up mt-5 max-w-xl text-base text-gray-300 sm:text-lg"
               style={{ animationDelay: '160ms' }}
             >
-              Experience premium auto detailing with on-site mobile detailing in Austin. We come to you for Austin car cleaning, interior and exterior detailing, paint protection, and ceramic coatings. Schedule your appointment today.
+              Quality mobile detailing services brought to you wherever you are in Austin. Interior + exterior detailing, ceramic coatings, paint correction, and Austin car cleaning at your driveway, office, or garage. Book your appointment in 60 seconds.
             </p>
             <div
               className="animate-fade-up mt-8 flex flex-wrap gap-3"
@@ -69,25 +97,33 @@ export default function Home() {
               >
                 Book Mobile Detailing →
               </Link>
-              <Link
-                href="/auth"
+              <a
+                href="#services"
                 className="press inline-block rounded-lg border border-white/30 bg-black/30 px-6 py-3 text-sm font-medium text-white backdrop-blur hover:bg-black/50"
               >
-                Sign In
-              </Link>
+                Explore Services
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
+      <section id="services" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Services
+            Our Mobile Detailing Services
           </h2>
           <p className="mt-3 text-gray-400">
-            Every package is tailored to your vehicle. We come to you — no driving across town, no waiting rooms.
+            Every package is tailored to your vehicle. We come to you for{' '}
+            <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
+              Austin car cleaning
+            </Link>
+            ,{' '}
+            <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
+              auto detailing services
+            </Link>
+            , and ceramic coatings — no driving across town, no waiting rooms.
           </p>
         </div>
 
@@ -101,9 +137,40 @@ export default function Home() {
               <div className="text-3xl">{s.icon}</div>
               <h3 className="mt-4 text-lg font-bold text-white">{s.title}</h3>
               <p className="mt-2 text-sm text-gray-400">{s.description}</p>
+              <Link
+                href="/auth"
+                className="mt-4 inline-flex text-xs font-semibold uppercase tracking-wider text-red-400 hover:text-red-300"
+              >
+                Book this service →
+              </Link>
             </div>
           ))}
         </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
+        <div className="reveal-on-scroll">
+          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            How It Works
+          </h2>
+          <p className="mt-3 text-gray-400">
+            Booking mobile detailing in Austin takes about a minute. Here&apos;s the flow:
+          </p>
+        </div>
+        <ol className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {STEPS.map((step, i) => (
+            <li
+              key={step.title}
+              className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <div className="text-2xl font-bold text-red-500">{String(i + 1).padStart(2, '0')}</div>
+              <h3 className="mt-2 text-base font-semibold text-white">{step.title}</h3>
+              <p className="mt-2 text-sm text-gray-400">{step.description}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* Why us */}
@@ -113,7 +180,6 @@ export default function Home() {
             Why Austin Auto Detail
           </h2>
         </div>
-
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {REASONS.map((r, i) => (
             <div
@@ -129,15 +195,48 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ — adds keyword-rich content + answers common pre-booking questions */}
+      <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
+        <div className="reveal-on-scroll">
+          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Frequently Asked Questions
+          </h2>
+        </div>
+        <dl className="mt-10 space-y-4">
+          {FAQS.map((q, i) => (
+            <details
+              key={q.question}
+              className="glass-card reveal-on-scroll animate-fade-up group rounded-2xl p-5"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-base font-semibold text-white">
+                <span>{q.question}</span>
+                <span className="text-red-400 transition-transform group-open:rotate-45">+</span>
+              </summary>
+              <dd className="mt-3 text-sm text-gray-400">{q.answer}</dd>
+            </details>
+          ))}
+        </dl>
+        <p className="mt-8 text-center text-sm text-gray-400">
+          Still have questions?{' '}
+          <a href="#contact" className="text-red-400 underline-offset-4 hover:underline">
+            Contact Austin Auto Detail
+          </a>{' '}
+          or{' '}
+          <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
+            book mobile detailing in Austin
+          </Link>{' '}
+          to get started.
+        </p>
+      </section>
+
       {/* Final CTA */}
-      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-20">
-        <div
-          className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 reveal-on-scroll"
-        >
+      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16">
+        <div className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 reveal-on-scroll">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={BOOK_CTA_IMAGE.src}
-            alt={BOOK_CTA_IMAGE.alt}
+            alt="Book mobile detailing in Austin — professional on-site car cleaning"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
@@ -150,28 +249,81 @@ export default function Home() {
                 Mobile Detailing in Austin
               </h3>
               <p className="mt-2 max-w-xl text-sm text-gray-300">
-                Quality, convenient on-site detailing brought to you. Pick a slot that works, we&apos;ll show up with everything we need. Pay a $30 deposit on approval — the rest on-site. Book now for mobile detailing in Austin.
+                Quality, convenient on-site detailing brought to you. Book now for mobile detailing in Austin — pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit on approval; the rest on-site.
               </p>
             </div>
             <Link
               href="/auth"
               className="btn-primary press inline-block shrink-0 rounded-lg px-6 py-3 text-sm font-semibold"
             >
-              Get Started →
+              Book Now →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 px-6 py-8">
-        <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-3 text-xs text-gray-500 sm:flex-row">
-          <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
-          <p>
-            <Link href="/auth" className="hover:text-gray-300">Sign in</Link>
-            <span className="px-2">·</span>
-            <Link href="/auth" className="hover:text-gray-300">Book a detail</Link>
+      {/* Contact */}
+      <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 scroll-mt-20">
+        <div className="reveal-on-scroll">
+          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Contact Austin Auto Detail
+          </h2>
+          <p className="mt-3 text-gray-400">
+            Mobile detailing services across Austin and surrounding areas. The fastest way to reach us is to{' '}
+            <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
+              book mobile detailing in Austin
+            </Link>{' '}
+            online — we&apos;ll confirm within 24 hours.
           </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/10 px-6 py-10">
+        <div className="mx-auto grid w-full max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">
+              Austin Auto Detail
+            </p>
+            <p className="mt-3 text-xs text-gray-400">
+              Mobile detailing in Austin. Quality over quantity. We come to you for interior + exterior detailing, ceramic coatings, paint correction, and more.
+            </p>
+          </div>
+          <nav aria-label="Services">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Services
+            </p>
+            <ul className="mt-3 space-y-2 text-sm text-gray-300">
+              <li><a href="#services" className="hover:text-white">Mobile Detailing</a></li>
+              <li><a href="#services" className="hover:text-white">Ceramic Coating</a></li>
+              <li><a href="#services" className="hover:text-white">Paint Correction</a></li>
+              <li><a href="#services" className="hover:text-white">Austin Car Cleaning</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Site">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Site
+            </p>
+            <ul className="mt-3 space-y-2 text-sm text-gray-300">
+              <li><a href="#top" className="hover:text-white">Home</a></li>
+              <li><a href="#how-it-works" className="hover:text-white">How It Works</a></li>
+              <li><a href="#faq" className="hover:text-white">FAQ</a></li>
+              <li><a href="#contact" className="hover:text-white">Contact</a></li>
+            </ul>
+          </nav>
+          <nav aria-label="Account">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Get Started
+            </p>
+            <ul className="mt-3 space-y-2 text-sm text-gray-300">
+              <li><Link href="/auth" className="hover:text-white">Book Mobile Detailing</Link></li>
+              <li><Link href="/auth" className="hover:text-white">Sign In</Link></li>
+              <li><Link href="/auth" className="hover:text-white">Create Account</Link></li>
+            </ul>
+          </nav>
+        </div>
+        <div className="mx-auto mt-8 flex w-full max-w-5xl items-center justify-between border-t border-white/10 pt-6 text-xs text-gray-500">
+          <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
         </div>
       </footer>
     </main>
@@ -211,6 +363,21 @@ const SERVICES = [
   },
 ];
 
+const STEPS = [
+  {
+    title: 'Pick a slot',
+    description: '9 AM, 1 PM, or 5 PM, any day. Real-time availability — no calls, no back-and-forth.',
+  },
+  {
+    title: 'We confirm',
+    description: 'Austin Auto Detail reviews your booking within 24 hours. No charge until we approve.',
+  },
+  {
+    title: 'We come to you',
+    description: 'On the day of service, our team arrives at your address with everything we need. You don’t move a thing.',
+  },
+];
+
 const REASONS = [
   {
     headline: 'Mobile',
@@ -226,5 +393,32 @@ const REASONS = [
     headline: '10 yrs',
     title: 'Ceramic coatings that last',
     description: 'Premium products and patient prep. Our ceramic coatings hold up for years — not months.',
+  },
+];
+
+const FAQS = [
+  {
+    question: 'Where do you offer mobile detailing in Austin?',
+    answer: 'We service Austin and surrounding areas. As long as you have space for the vehicle and we can access water/power if your service requires it, we can come to you — driveway, office parking lot, or garage.',
+  },
+  {
+    question: 'How long does a typical detail take?',
+    answer: 'Most interior + exterior details take 2–3 hours. Paint correction adds 1–2 hours. Ceramic coatings are a full-day job — that’s why we only book one ceramic coating per day at the 9 AM slot.',
+  },
+  {
+    question: 'Do I need to be home during the service?',
+    answer: 'Not necessarily. As long as we have access to the vehicle and the agreed location, you can be at work or running errands. We’ll send updates as we progress.',
+  },
+  {
+    question: 'How does payment work?',
+    answer: 'After we approve your booking, you pay a $30 deposit online to lock in your slot. The remaining balance is due on-site after the service is complete.',
+  },
+  {
+    question: 'What’s included in Austin car cleaning?',
+    answer: 'Our base detail covers a full exterior wash, hand-dry, vacuum, interior wipe-down, window cleaning, and tire dressing. Add-ons cover wax, paint correction, ceramic coating, engine bay cleaning, leather conditioning, stain removal, and windshield treatment.',
+  },
+  {
+    question: 'Can I cancel or reschedule?',
+    answer: 'Reach out as soon as you can. We try to be flexible — life happens. The deposit is refundable up to 24 hours before your appointment.',
   },
 ];
