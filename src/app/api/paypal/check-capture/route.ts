@@ -117,11 +117,55 @@ export async function GET(req: NextRequest) {
   }
 
   const order = (await orderRes.json()) as any;
-  const orderStatus: string | undefined = order?.status;
+  let orderStatus: string | undefined = order?.status;
+  let captures: any[] = order?.purchase_units?.[0]?.payments?.captures ?? [];
 
-  // For intent=CAPTURE orders, COMPLETED means money has moved.
-  // Some flows show APPROVED before captures appear — also check captures array.
-  const captures: any[] = order?.purchase_units?.[0]?.payments?.captures ?? [];
+  // PayPal v2 Orders flow: after the buyer approves, the order sits at
+  // status=APPROVED until the merchant explicitly captures it. This is
+  // required even when the order was created with intent=CAPTURE
+  // (server-side flow doesn't auto-capture like Smart Buttons does).
+  if (orderStatus === 'APPROVED') {
+    const captureRes = await fetch(
+      `${paypalApiBase()}/v2/checkout/orders/${orderId}/capture`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          // Idempotency: if the customer hits the page twice quickly we
+          // don't want to double-capture. PayPal de-dupes on this header.
+          'PayPal-Request-Id': `capture-${bookingId}`,
+        },
+        body: '{}',
+      }
+    );
+    if (captureRes.ok) {
+      const captured = (await captureRes.json()) as any;
+      orderStatus = captured?.status;
+      captures = captured?.purchase_units?.[0]?.payments?.captures ?? captures;
+    } else {
+      const text = await captureRes.text().catch(() => '');
+      console.error('[paypal check-capture] capture call failed', captureRes.status, text.slice(0, 300));
+      // 422 with ORDER_ALREADY_CAPTURED is fine — re-fetch to see captures.
+      if (captureRes.status === 422) {
+        const refetch = await fetch(
+          `${paypalApiBase()}/v2/checkout/orders/${orderId}`,
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        if (refetch.ok) {
+          const refreshed = (await refetch.json()) as any;
+          orderStatus = refreshed?.status;
+          captures = refreshed?.purchase_units?.[0]?.payments?.captures ?? captures;
+        }
+      } else {
+        return NextResponse.json(
+          { ok: false, status: 'capture_failed', code: captureRes.status },
+          { status: 200 }
+        );
+      }
+    }
+  }
+
   const hasCompletedCapture = captures.some(
     (c) => (c?.status || '').toUpperCase() === 'COMPLETED'
   );
