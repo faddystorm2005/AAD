@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { createPaymentLink } from '@/lib/squarePayment';
+import { createPaymentLink as createSquarePaymentLink } from '@/lib/squarePayment';
+import { createPaymentLink as createPayPalPaymentLink } from '@/lib/paypalPayment';
 import { pushBookingToGoogle } from '@/lib/googleCalendar';
 
 export const runtime = 'nodejs';
@@ -67,9 +68,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Kill-switch: PAYMENT_PROCESSOR env var picks the processor at request
+  // time. Defaults to "square" so existing flow keeps working until the
+  // env var is explicitly flipped to "paypal".
+  const processor = (process.env.PAYMENT_PROCESSOR || 'square').toLowerCase();
+  const createLink =
+    processor === 'paypal' ? createPayPalPaymentLink : createSquarePaymentLink;
+
   let paymentUrl: string;
   try {
-    const result = await createPaymentLink(
+    const result = await createLink(
       Math.round(Number(booking.deposit_amount) * 100),
       `AAD Detailing Deposit - ${booking.service}`,
       booking.id,
@@ -78,7 +86,11 @@ export async function POST(req: NextRequest) {
     paymentUrl = result.url;
   } catch (err: any) {
     return NextResponse.json(
-      { error: err?.message || 'Failed to create Square payment link' },
+      {
+        error:
+          err?.message ||
+          `Failed to create ${processor === 'paypal' ? 'PayPal' : 'Square'} payment link`,
+      },
       { status: 500 }
     );
   }
