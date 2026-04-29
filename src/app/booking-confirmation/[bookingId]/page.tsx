@@ -147,10 +147,14 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   }, [bookingId]);
 
   // Polling fallback — when the booking is in 'approved' status (waiting on
-  // deposit), every 5s we hit /api/paypal/check-capture which queries PayPal
-  // directly to see if the order was captured. If yes, it flips the booking
-  // to confirmed in our DB. Then we re-fetch the booking to update the UI.
+  // deposit), we hit /api/paypal/check-capture which queries PayPal directly
+  // and captures the order if the buyer has approved. If captured, it flips
+  // the booking to confirmed in our DB. Then we re-fetch to update the UI.
   // This works even if PayPal webhooks aren't being delivered.
+  //
+  // We fire ONE immediate tick on mount (so customers returning from PayPal
+  // see "Confirmed" within ~2s instead of waiting for the first interval),
+  // then poll every 3s as a safety net.
   useEffect(() => {
     if (!booking || booking.status !== 'approved') return;
     let cancelled = false;
@@ -170,7 +174,9 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
         setBooking(result.booking as ConfirmationBooking);
       }
     };
-    const interval = setInterval(tick, 5000);
+    // Fire immediately on mount (catches the post-PayPal redirect fast).
+    tick();
+    const interval = setInterval(tick, 3000);
     return () => {
       cancelled = true;
       clearInterval(interval);
@@ -250,9 +256,10 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
               >
                 Pay ${Number(booking.deposit_amount).toFixed(2)} deposit →
               </a>
-              <p className="text-xs text-blue-300">
-                Opens secure checkout in a new tab. This page checks for payment every 5 seconds.
-              </p>
+              <div className="flex items-center gap-2 text-xs text-blue-300">
+                <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-blue-400" />
+                <span>Checking for payment every 3 seconds…</span>
+              </div>
               <button
                 type="button"
                 onClick={handleManualRefresh}
