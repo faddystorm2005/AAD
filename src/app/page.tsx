@@ -10,7 +10,7 @@ import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
  */
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main role="main" className="relative min-h-screen overflow-hidden bg-black text-white">
       <AuthRedirector />
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
