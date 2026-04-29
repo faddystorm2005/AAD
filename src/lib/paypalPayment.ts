@@ -116,9 +116,22 @@ export async function createPaymentLink(
       prefer: 'return=representation',
     });
   } catch (err: any) {
-    throw new Error(
-      `PayPal createOrder failed: ${err?.message ?? 'unknown error'}`
-    );
+    // PayPal SDK errors put the real detail on .result, .body, or .response —
+    // not always .message. Surface everything we can find for debugging.
+    const detail =
+      err?.message ||
+      (err?.result && JSON.stringify(err.result)) ||
+      (err?.body && (typeof err.body === 'string' ? err.body : JSON.stringify(err.body))) ||
+      err?.response?.body ||
+      'unknown error (check Vercel logs)';
+    const status = err?.statusCode ? ` [HTTP ${err.statusCode}]` : '';
+    console.error('[paypal] createOrder failed', {
+      status: err?.statusCode,
+      message: err?.message,
+      result: err?.result,
+      body: err?.body,
+    });
+    throw new Error(`PayPal createOrder failed${status}: ${detail}`);
   }
 
   const order = response.result;
