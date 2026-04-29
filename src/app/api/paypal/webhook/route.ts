@@ -134,6 +134,22 @@ function extractBookingId(event: any): string | null {
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
 
+  // Log every incoming POST so we can confirm webhook delivery even when
+  // signature verification fails. Helps diagnose env-var / config issues.
+  let parsedEventType = '(unparseable)';
+  try {
+    parsedEventType = JSON.parse(rawBody)?.event_type ?? '(no event_type)';
+  } catch {
+    /* ignore parse failures */
+  }
+  console.log('[paypal webhook] POST received', {
+    event_type: parsedEventType,
+    transmission_id: req.headers.get('paypal-transmission-id'),
+    body_length: rawBody.length,
+    has_webhook_id_env: Boolean(process.env.PAYPAL_WEBHOOK_ID),
+    webhook_id_prefix: process.env.PAYPAL_WEBHOOK_ID?.slice(0, 6),
+  });
+
   if (!process.env.PAYPAL_WEBHOOK_ID) {
     console.error('[paypal webhook] missing PAYPAL_WEBHOOK_ID env var');
     return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 });
