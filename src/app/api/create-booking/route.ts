@@ -83,7 +83,12 @@ export async function POST(req: NextRequest) {
         .select('slot_time, is_ceramic, status')
         .eq('slot_date', body.slotDate)
         .not('slot_time', 'is', null)
-        .neq('status', 'declined'),
+        // Match /api/availability's filter: completed bookings free the slot,
+        // declined bookings never held it. Without these matching, the form
+        // shows a slot as open but submit fails with "slot just filled up".
+        .neq('status', 'declined')
+        .neq('status', 'completed')
+        .is('completed_at', null),
       supabaseAdmin
         .from('daily_capacity')
         .select('is_help_available')
