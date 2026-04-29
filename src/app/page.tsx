@@ -60,7 +60,7 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <section className="relative" id="top">
+      <section className="relative" id="main-content" tabIndex={-1}>
         <div className="relative h-[60vh] min-h-[480px] w-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -305,7 +305,7 @@ export default function Home() {
               Site
             </p>
             <ul className="mt-3 space-y-2 text-sm text-gray-300">
-              <li><a href="#top" className="hover:text-white">Home</a></li>
+              <li><a href="#main-content" className="hover:text-white">Home</a></li>
               <li><a href="#how-it-works" className="hover:text-white">How It Works</a></li>
               <li><a href="#faq" className="hover:text-white">FAQ</a></li>
               <li><a href="#contact" className="hover:text-white">Contact</a></li>

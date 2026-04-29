@@ -93,6 +93,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${oswald.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-black text-white">
+        {/* Skip-to-content link — visible only when focused via keyboard.
+            Lets screen-reader / keyboard users bypass the sticky header nav
+            and jump straight to page content. WCAG 2.4.1 (Bypass Blocks). */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-red-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+        >
+          Skip to main content
+        </a>
         <AuthProvider>
           <VehicleProvider>
             {children}
