@@ -100,6 +100,15 @@ async function verifyWebhook(req: NextRequest, rawBody: string): Promise<boolean
     return false;
   }
   const json = (await res.json()) as { verification_status?: string };
+  // Log the full verification result so we can see exactly what PayPal said.
+  console.log('[paypal webhook] verify result', {
+    verification_status: json.verification_status,
+    webhook_id_used_full: webhookId,
+    webhook_id_length: webhookId.length,
+    paypal_cert_url: req.headers.get('paypal-cert-url'),
+    paypal_auth_algo: req.headers.get('paypal-auth-algo'),
+    transmission_id: req.headers.get('paypal-transmission-id'),
+  });
   return json.verification_status === 'SUCCESS';
 }
 
