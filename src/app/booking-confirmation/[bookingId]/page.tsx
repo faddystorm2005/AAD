@@ -147,14 +147,23 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   }, [bookingId]);
 
   // Polling fallback — when the booking is in 'approved' status (waiting on
-  // deposit), poll every 5s for status changes. This is the safety net for
-  // when Supabase Realtime isn't enabled on the bookings table OR when
-  // Square's webhook doesn't reach our server. Stops as soon as status
-  // moves out of 'approved'.
+  // deposit), every 5s we hit /api/paypal/check-capture which queries PayPal
+  // directly to see if the order was captured. If yes, it flips the booking
+  // to confirmed in our DB. Then we re-fetch the booking to update the UI.
+  // This works even if PayPal webhooks aren't being delivered.
   useEffect(() => {
     if (!booking || booking.status !== 'approved') return;
     let cancelled = false;
     const tick = async () => {
+      // Ask PayPal directly via our server. Best-effort — failures are silent.
+      try {
+        await fetch(`/api/paypal/check-capture?bookingId=${bookingId}`);
+      } catch {
+        /* ignore */
+      }
+      if (cancelled) return;
+      // Re-load the booking from our DB so the UI reflects whatever
+      // check-capture wrote (or didn't write).
       const result = await getBooking(bookingId);
       if (cancelled) return;
       if (result.success && result.booking) {
@@ -169,6 +178,13 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   }, [booking, bookingId]);
 
   const handleManualRefresh = async () => {
+    // Customer clicked "I paid — check now". First ask PayPal directly,
+    // then refresh from DB.
+    try {
+      await fetch(`/api/paypal/check-capture?bookingId=${bookingId}`);
+    } catch {
+      /* ignore */
+    }
     const result = await getBooking(bookingId);
     if (result.success && result.booking) {
       setBooking(result.booking as ConfirmationBooking);
