@@ -149,6 +149,145 @@ h6 {
 .press:hover { transform: translateY(-1px); }
 .press:active { transform: translateY(0) scale(0.97); }
 
+/* ──────────── Premium polish layer ──────────── */
+
+/* Frosted-glass card — subtle blur + gradient border + inner glow.
+   Looks great on dark themes and lifts cards off the page on mobile. */
+.glass-card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%),
+    rgba(15, 15, 18, 0.65);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 40px -16px rgba(0, 0, 0, 0.8);
+  transition: border-color 240ms ease, box-shadow 240ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.glass-card:hover {
+  border-color: rgba(214, 32, 48, 0.35);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 18px 50px -14px rgba(214, 32, 48, 0.18),
+    0 12px 40px -16px rgba(0, 0, 0, 0.8);
+}
+
+/* Gradient red CTA — replaces flat bg-red-600 where you want extra punch.
+   Has a faint gloss at the top and a glow on hover. */
+.btn-primary {
+  background: linear-gradient(180deg, #e83444 0%, #d62030 50%, #b81a28 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.18) inset,
+    0 6px 20px -8px rgba(214, 32, 48, 0.6);
+  transition: filter 180ms ease, box-shadow 240ms ease, transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
+    0 10px 28px -6px rgba(214, 32, 48, 0.7);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  filter: brightness(0.95);
+}
+
+/* Animated red accent line that grows under section headings on first reveal.
+   Use as: <h2 className="h-accent">Section Title</h2> */
+.h-accent {
+  position: relative;
+  padding-bottom: 10px;
+}
+.h-accent::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), rgba(214, 32, 48, 0.0));
+  border-radius: 2px;
+  animation: aad-accent-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+@keyframes aad-accent-grow {
+  to { width: 56px; }
+}
+
+/* Booking-confirmed checkmark draw-in. Use on an SVG path with stroke-dasharray
+   set to the path length. */
+@keyframes aad-check-draw {
+  to { stroke-dashoffset: 0; }
+}
+.animate-check-draw {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: aad-check-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards;
+}
+
+/* Soft pulsing glow ring — for highlighting selected slots, success states,
+   etc. Pure CSS, GPU-only. */
+@keyframes aad-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(214, 32, 48, 0.45),
+      0 0 0 0 rgba(214, 32, 48, 0.0);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(214, 32, 48, 0.18),
+      0 0 24px 4px rgba(214, 32, 48, 0.35);
+  }
+}
+.animate-glow-pulse {
+  animation: aad-glow-pulse 2.4s ease-in-out infinite;
+}
+
+/* Gradient hero text — pairs with Oswald headings for a premium feel.
+   Goes from off-white at the top to a faint red wash at the bottom. */
+.text-gradient-hero {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 60%, #ff6b78 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll-reveal: sections fade up as they scroll into view.
+   Modern browsers use animation-timeline (no JS). The CSS gracefully
+   degrades — older browsers just see the content normally. */
+@supports (animation-timeline: view()) {
+  .reveal-on-scroll {
+    animation: aad-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}
+
+/* Skeleton shimmer — replaces the basic animate-pulse with a more refined
+   left-to-right sheen. Use on a placeholder background. */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  animation: aad-shimmer 1.6s linear infinite;
+  background-size: 200% 100%;
+}
+
 /* Form input polish — smooth focus transitions across every <input>,
    <textarea>, and <select>. Doesn't override Tailwind borders/colors. */
 input,
@@ -179,10 +318,20 @@ button:disabled {
   .animate-banner-pan,
   .animate-pulse-soft,
   .animate-shimmer,
+  .animate-check-draw,
+  .animate-glow-pulse,
+  .reveal-on-scroll,
+  .shimmer::after,
   .lift-hover,
-  .press {
+  .press,
+  .glass-card,
+  .btn-primary {
     animation: none !important;
     transition: none !important;
     transform: none !important;
+  }
+  .h-accent::after {
+    animation: none !important;
+    width: 56px !important;
   }
 }

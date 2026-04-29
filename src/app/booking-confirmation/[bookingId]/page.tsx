@@ -236,7 +236,29 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   return (
     <main className="min-h-screen bg-black px-6 py-16 text-white">
       <div className="mx-auto flex w-full max-w-md flex-col gap-8">
-        <div className={`rounded-3xl border ${tone.border} ${tone.bg} p-8 text-center`}>
+        <div className={`glass-card animate-scale-in rounded-3xl border ${tone.border} ${tone.bg} p-8 text-center`}>
+          {status === 'confirmed' && (
+            <div className="mb-4 flex justify-center">
+              <svg
+                width="56"
+                height="56"
+                viewBox="0 0 56 56"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <circle cx="28" cy="28" r="26" stroke="rgba(34,197,94,0.4)" strokeWidth="2" />
+                <path
+                  d="M16 28.5 L25 37 L41 20"
+                  stroke="#4ade80"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="animate-check-draw"
+                />
+              </svg>
+            </div>
+          )}
           <h1 className={`mb-2 text-2xl font-bold ${tone.title}`}>{header.title}</h1>
           <p className={`text-sm ${tone.sub}`}>{header.subtitle}</p>
 
@@ -277,7 +299,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           )}
         </div>
 
-        <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-8">
+        <div className="glass-card space-y-4 rounded-3xl p-8">
           <div>
             <p className="text-sm text-gray-400">Booking ID</p>
             <p className="font-mono text-lg text-white">{booking.id}</p>
@@ -340,7 +362,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
 
         <Link
           href="/dashboard"
-          className="block rounded-lg bg-red-600 px-6 py-3 text-center font-medium text-white hover:bg-red-700"
+          className="btn-primary press block rounded-lg px-6 py-3 text-center font-medium"
         >
           Back to Dashboard
         </Link>

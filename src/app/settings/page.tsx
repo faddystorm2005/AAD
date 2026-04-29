@@ -168,13 +168,13 @@ export default function SettingsPage() {
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-10">
 
         {/* Profile */}
-        <section className="animate-fade-up space-y-4">
+        <section className="reveal-on-scroll animate-fade-up space-y-4">
           <div>
-            <h2 className="text-lg font-bold">Profile</h2>
+            <h2 className="h-accent text-lg font-bold">Profile</h2>
             <p className="text-sm text-gray-400">Your contact details. We use these to reach you about bookings.</p>
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-gray-900/50 p-5">
+          <div className="glass-card rounded-xl p-5">
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -241,16 +241,16 @@ export default function SettingsPage() {
         </section>
 
         {/* Vehicles */}
-        <section className="animate-fade-up space-y-4" style={{ animationDelay: '80ms' }}>
+        <section className="reveal-on-scroll animate-fade-up space-y-4" style={{ animationDelay: '80ms' }}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold">My Vehicles</h2>
+              <h2 className="h-accent text-lg font-bold">My Vehicles</h2>
               <p className="text-sm text-gray-400">Add or remove the cars we should know about.</p>
             </div>
             <button
               type="button"
               onClick={() => setShowAddVehicle(true)}
-              className="press rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700"
+              className="btn-primary press rounded-lg px-3 py-1.5 text-sm font-medium"
             >
               + Add
             </button>
@@ -259,9 +259,9 @@ export default function SettingsPage() {
         </section>
 
         {/* Booking history */}
-        <section className="animate-fade-up space-y-4" style={{ animationDelay: '160ms' }}>
+        <section className="reveal-on-scroll animate-fade-up space-y-4" style={{ animationDelay: '160ms' }}>
           <div>
-            <h2 className="text-lg font-bold">Booking history</h2>
+            <h2 className="h-accent text-lg font-bold">Booking history</h2>
             <p className="text-sm text-gray-400">Completed and declined bookings.</p>
           </div>
 
@@ -309,11 +309,11 @@ export default function SettingsPage() {
         </section>
 
         {/* Account actions */}
-        <section className="animate-fade-up space-y-4" style={{ animationDelay: '240ms' }}>
+        <section className="reveal-on-scroll animate-fade-up space-y-4" style={{ animationDelay: '240ms' }}>
           <div>
-            <h2 className="text-lg font-bold">Account</h2>
+            <h2 className="h-accent text-lg font-bold">Account</h2>
           </div>
-          <div className="rounded-xl border border-white/10 bg-gray-900/50 p-5">
+          <div className="glass-card rounded-xl p-5">
             <button
               type="button"
               onClick={handleSignOut}
