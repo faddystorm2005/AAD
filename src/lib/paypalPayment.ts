@@ -5,11 +5,26 @@
  *
  * Uses the new @paypal/paypal-server-sdk (NOT the deprecated
  * checkout-server-sdk). Flow:
- *   1. Create an Order with intent=CAPTURE
+ *   1. Create an Order with intent=CAPTURE        ← THIS FILE
  *   2. PayPal returns the order with a HATEOAS `approve` link
- *   3. Customer clicks that link → completes payment on PayPal
- *   4. PayPal redirects back to returnUrl + sends a PAYMENT.CAPTURE.COMPLETED
- *      webhook to /api/paypal/webhook
+ *   3. Customer clicks that link → approves on PayPal → status=APPROVED
+ *   4. PayPal redirects back to returnUrl
+ *   5. Customer-facing /booking-confirmation page polls
+ *      /api/paypal/check-capture every 5s
+ *   6. check-capture sees APPROVED → calls POST /v2/checkout/orders/{id}/capture
+ *      → status=COMPLETED → flips deposit_paid + status to confirmed
+ *
+ * !!! GOTCHA — DO NOT REMOVE THIS COMMENT !!!
+ * intent=CAPTURE does NOT auto-capture for server-side flows. The PayPal
+ * v2 Orders API leaves the order at status=APPROVED after buyer approval
+ * and requires the merchant to explicitly POST to /capture. This is
+ * different from the JavaScript Smart Buttons flow which does auto-capture.
+ * The capture call lives in src/app/api/paypal/check-capture/route.ts.
+ *
+ * Webhooks (/api/paypal/webhook) are wired up as a backup but the polling
+ * is the source of truth — sandbox webhook delivery has been unreliable
+ * and the simulator can't validate against sandbox webhook IDs (cert/env
+ * mismatch by PayPal's design).
  */
 
 import {
