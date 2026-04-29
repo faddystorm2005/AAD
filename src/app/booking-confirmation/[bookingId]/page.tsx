@@ -235,7 +235,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
                 Pay ${Number(booking.deposit_amount).toFixed(2)} deposit →
               </a>
               <p className="text-xs text-blue-300">
-                Opens Square in a new tab. This page checks for payment every 5 seconds.
+                Opens secure checkout in a new tab. This page checks for payment every 5 seconds.
               </p>
               <button
                 type="button"
