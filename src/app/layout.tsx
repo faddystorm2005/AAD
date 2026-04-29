@@ -18,10 +18,28 @@ const oswald = Oswald({
   display: "swap",
 });
 
+const SITE_URL = "https://austin-autodetail.com";
+const SOCIAL_TITLE = "Mobile Detailing Austin — Austin Auto Detail Services";
+const SOCIAL_DESCRIPTION =
+  "Expert mobile detailing services in Austin for a spotless car every time. Book online — we come to you.";
+
 export const metadata: Metadata = {
-  title: "Austin Auto Detail",
-  description: "Quality Over Quantity mobile detailing booking for Austin Auto Detail.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SOCIAL_TITLE,
+    template: "%s · Austin Auto Detail",
+  },
+  description: SOCIAL_DESCRIPTION,
   applicationName: "AAD",
+  keywords: [
+    "mobile detailing Austin",
+    "Austin auto detail",
+    "car detailing Austin TX",
+    "ceramic coating Austin",
+    "paint correction Austin",
+    "mobile car wash Austin",
+  ],
+  authors: [{ name: "Austin Auto Detail" }],
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -29,6 +47,30 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Austin Auto Detail",
+    title: SOCIAL_TITLE,
+    description: SOCIAL_DESCRIPTION,
+    url: SITE_URL,
+    locale: "en_US",
+    // Next.js auto-includes any /opengraph-image route here.
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SOCIAL_TITLE,
+    description: SOCIAL_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
