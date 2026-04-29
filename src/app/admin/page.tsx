@@ -299,7 +299,7 @@ export default function AdminPage() {
           list.map((b) => (b.id === bookingId ? { ...b, payment_url: paymentUrl } : b))
         );
       }
-      setActionSuccess('Booking approved — Square deposit link sent.');
+      setActionSuccess('Booking approved — deposit link sent to customer.');
     } catch (err: any) {
       setBookings(prev);
       setActionError(err.message || 'Approve failed');
