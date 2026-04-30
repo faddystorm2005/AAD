@@ -153,6 +153,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const handleVehicleChange = (vehicleId: string) => {
     const vehicle = vehicles.find((v) => v.id === vehicleId);
     if (vehicle) {
+      // Clear any "please select a vehicle" error since the user just did.
+      // Same pattern below for date/time/address — user fixing the issue
+      // should make the error message disappear.
+      setError('');
       setFormData((prev) => ({
         ...prev,
         vehicleId,
@@ -171,6 +175,9 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    // Any input change clears the validation error so messages don't linger
+    // after the user has fixed the issue (date, address, etc.).
+    if (error) setError('');
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -421,9 +428,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   name="slotDate"
                   min={todayAustinDateString()}
                   value={formData.slotDate}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, slotDate: e.target.value, slotTime: '' }))
-                  }
+                  onChange={(e) => {
+                    if (error) setError('');
+                    setFormData((prev) => ({ ...prev, slotDate: e.target.value, slotTime: '' }));
+                  }}
                   disabled={isProcessing}
                   className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none disabled:opacity-50"
                 />
@@ -460,9 +468,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                             key={time}
                             type="button"
                             disabled={!usable || isProcessing}
-                            onClick={() =>
-                              setFormData((prev) => ({ ...prev, slotTime: time }))
-                            }
+                            onClick={() => {
+                              if (error) setError('');
+                              setFormData((prev) => ({ ...prev, slotTime: time }));
+                            }}
                             className={`rounded-lg border px-3 py-3 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
                               isSelected
                                 ? 'border-red-500 bg-red-600 text-white'
