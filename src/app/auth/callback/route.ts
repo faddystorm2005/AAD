@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -7,25 +8,17 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /auth/callback?code=...&next=/dashboard
  *
- * Handles the redirect Supabase sends after a user clicks the email
- * confirmation link. Exchanges the one-time `code` for a session and
- * forwards them to /dashboard (or wherever `next` says).
+ * Handles the redirect Supabase sends after a user clicks the magic link or
+ * completes Google OAuth. Exchanges the one-time `code` for a session and
+ * forwards them to /dashboard.
  *
- * Without this route the email link 404s and the user sees a white
- * "can't load this page" - that's the bug we're fixing.
+ * First-time users (zero vehicles on record) get bounced to
+ * /dashboard?firstTime=1 so the dashboard auto-opens the AddVehicleForm.
  *
  * Implementation note: we use the regular supabase-js client to call
  * exchangeCodeForSession. The session cookie itself is then set by the
  * auth state listener on the client side once they land on /dashboard
- * (the AuthProvider's onAuthStateChange picks it up). This works because
- * exchangeCodeForSession returns a session that the client can then
- * persist to localStorage on next page load.
- *
- * For email-link flows that include the session in the URL fragment
- * (Supabase's older "implicit" flow), the @supabase/supabase-js client
- * picks them up automatically via detectSessionInUrl - those don't even
- * route through here. This handler is the safety net for the PKCE-style
- * `?code=` confirmation links.
+ * (the AuthProvider's onAuthStateChange picks it up).
  */
 export async function GET(req: NextRequest) {
   const url = req.nextUrl;
@@ -44,10 +37,9 @@ export async function GET(req: NextRequest) {
   }
 
   if (!code) {
-    // No code AND no error means the link was malformed or already used.
     return NextResponse.redirect(
       `${origin}/auth?error=${encodeURIComponent(
-        'Confirmation link is missing or already used. Try signing in.'
+        'Sign-in link is missing or already used. Try again.'
       )}`
     );
   }
@@ -61,7 +53,7 @@ export async function GET(req: NextRequest) {
   }
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
     return NextResponse.redirect(
@@ -69,7 +61,26 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Send them in. The client-side AuthProvider will pick up the new
-  // session via onAuthStateChange when /dashboard mounts.
-  return NextResponse.redirect(`${origin}${next.startsWith('/') ? next : '/dashboard'}`);
+  // Detect first-time users by counting their vehicles. Service-role client
+  // bypasses RLS since the session cookie isn't set on the server yet.
+  // If the count fails for any reason, fall back to the normal /dashboard
+  // path - we'd rather not block the redirect on a non-critical check.
+  const userId = data.session?.user?.id;
+  let destination = next.startsWith('/') ? next : '/dashboard';
+
+  if (userId && destination === '/dashboard') {
+    try {
+      const { count } = await supabaseAdmin
+        .from('vehicles')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId);
+      if ((count ?? 0) === 0) {
+        destination = '/dashboard?firstTime=1';
+      }
+    } catch {
+      // Ignore - fall through to /dashboard.
+    }
+  }
+
+  return NextResponse.redirect(`${origin}${destination}`);
 }

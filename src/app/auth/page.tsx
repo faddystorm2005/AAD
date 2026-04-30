@@ -1,16 +1,14 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import GalleryStrip from '@/components/GalleryStrip';
 import { HERO_IMAGE } from '@/lib/siteImages';
+import { supabase } from '@/lib/supabaseClient';
 
 /**
  * Next.js 16 requires any component reading useSearchParams to be wrapped
- * in a <Suspense> boundary so the prerender doesn't bail. The default
- * export is just a thin shell that provides that boundary; the actual
- * UI lives in <AuthInner />.
+ * in a <Suspense> boundary so the prerender doesn't bail.
  */
 export default function Auth() {
   return (
@@ -31,14 +29,12 @@ function AuthFallback() {
 }
 
 function AuthInner() {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
+  const [loadingMagic, setLoadingMagic] = useState(false);
   const [error, setError] = useState('');
+  const [magicSent, setMagicSent] = useState(false);
 
-  const { signIn, signUp } = useAuth();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   // Surface ?error=... messages forwarded from /auth/callback (e.g., when
@@ -48,29 +44,46 @@ function AuthInner() {
     if (incoming) setError(incoming);
   }, [searchParams]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleGoogle = async () => {
+    setLoadingGoogle(true);
     setError('');
-
     try {
-      const { error } = isLogin
-        ? await signIn(email, password)
-        : await signUp(email, password);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) setError(error.message);
+    } catch {
+      setError('An unexpected error occurred');
+    } finally {
+      setLoadingGoogle(false);
+    }
+  };
 
+  const handleMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setLoadingMagic(true);
+    setError('');
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
       if (error) {
         setError(error.message);
       } else {
-        if (!isLogin) {
-          setError('Check your email for the confirmation link!');
-        } else {
-          router.push('/dashboard');
-        }
+        setMagicSent(true);
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
-      setLoading(false);
+      setLoadingMagic(false);
     }
   };
 
@@ -95,81 +108,95 @@ function AuthInner() {
       </div>
 
       <div className="mx-auto flex w-full max-w-md flex-col gap-8 px-6 py-12">
-        <div className="text-center sr-only">
-          <h1 className="text-3xl font-bold uppercase tracking-[0.18em] text-white">
-            Austin Auto Detail
-          </h1>
-          <p className="mt-2 text-sm uppercase tracking-[0.35em] text-red-500">
-            Quality Over Quantity
-          </p>
-        </div>
-
         <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-xl">
-          <div className="mb-6 flex rounded-full bg-zinc-800 p-1">
-            <button
-              onClick={() => setIsLogin(true)}
-              className={`flex-1 rounded-full py-2 text-sm font-medium transition-colors ${
-                isLogin ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => setIsLogin(false)}
-              className={`flex-1 rounded-full py-2 text-sm font-medium transition-colors ${
-                !isLogin ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Sign Up
-            </button>
+          <div className="mb-6 text-center">
+            <h2 className="text-xl font-semibold text-white">
+              Sign in to Austin Auto Detail
+            </h2>
+            <p className="mt-2 text-sm text-gray-400">
+              No password needed. Pick whichever is easier.
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-                placeholder="your@email.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
-                placeholder="••••••••"
-              />
-            </div>
-
-            {error && (
-              <div className="rounded-lg bg-red-900/50 border border-red-700 p-3 text-sm text-red-200">
-                {error}
+          {magicSent ? (
+            <div className="space-y-4 text-center">
+              <div className="rounded-lg border border-green-700 bg-green-900/40 p-4 text-sm text-green-200">
+                <p className="font-semibold">Check your email</p>
+                <p className="mt-1">
+                  We sent a sign-in link to <strong>{email}</strong>. Click it
+                  to come back here.
+                </p>
               </div>
-            )}
+              <button
+                onClick={() => {
+                  setMagicSent(false);
+                  setEmail('');
+                  setError('');
+                }}
+                className="text-sm text-gray-400 underline hover:text-white"
+              >
+                Use a different email
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={handleGoogle}
+                disabled={loadingGoogle || loadingMagic}
+                className="press flex w-full items-center justify-center gap-3 rounded-lg border border-white/20 bg-white px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <GoogleIcon />
+                {loadingGoogle ? 'Redirecting...' : 'Continue with Google'}
+              </button>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Sign Up'}
-            </button>
-          </form>
+              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-widest text-gray-500">
+                <div className="h-px flex-1 bg-white/10" />
+                or
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+
+              <form onSubmit={handleMagicLink} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-300"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loadingGoogle || loadingMagic || !email.trim()}
+                  className="btn-primary press w-full rounded-lg px-4 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {loadingMagic ? 'Sending link...' : 'Continue with Email'}
+                </button>
+              </form>
+
+              <p className="mt-4 text-center text-xs text-gray-500">
+                We&apos;ll email you a one-tap sign-in link. First time? An
+                account is created automatically.
+              </p>
+            </>
+          )}
+
+          {error && (
+            <div className="mt-4 rounded-lg border border-red-700 bg-red-900/50 p-3 text-sm text-red-200">
+              {error}
+            </div>
+          )}
         </div>
       </div>
 
@@ -177,5 +204,28 @@ function AuthInner() {
         <GalleryStrip />
       </div>
     </main>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.32 0 2.5.45 3.44 1.34l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"
+      />
+    </svg>
   );
 }

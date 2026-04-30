@@ -31,6 +31,22 @@ export default function Dashboard() {
     })();
   }, [user]);
 
+  // First-time users land here from /auth/callback with ?firstTime=1.
+  // Auto-open the Add Vehicle modal so they can finish onboarding without
+  // having to find the button. We read window.location.search directly
+  // instead of useSearchParams to avoid pulling another <Suspense> wrapper
+  // into this page (Next.js 16 prerender requirement).
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('firstTime') === '1') {
+      setShowAddVehicle(true);
+      // Clean the URL so a refresh doesn't re-trigger the modal.
+      const cleaned = window.location.pathname;
+      window.history.replaceState({}, '', cleaned);
+    }
+  }, []);
+
   const handleSignOut = async () => {
     await signOut();
     router.push('/auth');
