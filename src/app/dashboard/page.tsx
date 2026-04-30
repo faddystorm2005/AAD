@@ -157,7 +157,7 @@ export default function Dashboard() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black" />
         {/* Cursor-following red glow, same as homepage hero - premium feel. */}
         <HeroSpotlight />
-        <div className="relative mx-auto flex h-full w-full max-w-5xl items-end justify-between px-6 pb-6">
+        <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end gap-3 px-6 pb-6 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
           <div className="animate-fade-up">
             <p className="text-sm font-semibold uppercase tracking-[0.4em] text-red-400">
               {greeting}
