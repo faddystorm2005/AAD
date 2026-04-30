@@ -29,6 +29,7 @@ export default function Dashboard() {
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [fullName, setFullName] = useState('');
   const [justSignedIn, setJustSignedIn] = useState(false);
 
   useEffect(() => {
@@ -36,10 +37,11 @@ export default function Dashboard() {
     (async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('is_admin')
+        .select('is_admin, full_name')
         .eq('id', user.id)
         .maybeSingle();
       setIsAdmin(Boolean(data?.is_admin));
+      setFullName(data?.full_name?.trim() ?? '');
     })();
   }, [user]);
 
@@ -78,8 +80,6 @@ export default function Dashboard() {
   // Greeting depends only on the local hour - memo so a re-render doesn't
   // re-call new Date() (it'd be cheap but pointless churn).
   const greeting = useMemo(() => getGreeting(), []);
-  // Pull the part before the @ as a friendly first-name fallback.
-  const friendlyName = user?.email?.split('@')[0] ?? '';
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
@@ -163,7 +163,7 @@ export default function Dashboard() {
               {greeting}
             </p>
             <h1 className="text-gradient-hero mt-2 text-3xl font-bold capitalize tracking-[0.04em] sm:text-4xl">
-              {friendlyName || 'Welcome back'}
+              {fullName || 'Welcome back'}
             </h1>
             <p className="mt-2 text-sm text-gray-200">{user?.email}</p>
           </div>
