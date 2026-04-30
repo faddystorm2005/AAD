@@ -26,8 +26,55 @@ const SOCIAL_TITLE = "Mobile Detailing Austin - Austin Auto Detail Services";
 const SOCIAL_DESCRIPTION =
   "Austin's premier mobile auto detailing service. Full interior + exterior detailing, ceramic coatings, paint correction, wax, and more - we bring the studio to your driveway. Quality over quantity. Book online in minutes.";
 
+// JSON-LD structured data for local SEO. Google uses this to surface AAD
+// in local pack and rich results. Only includes claims that are actually
+// true: no fake hours (he's by appointment), no fake reviews, no specific
+// street address (mobile business, service area is the city of Austin).
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@type": "AutomotiveBusiness",
+  "@id": `${SITE_URL}/#business`,
+  name: "Austin Auto Detail",
+  description: SOCIAL_DESCRIPTION,
+  url: SITE_URL,
+  telephone: "+1-480-793-3782",
+  email: "info@austin-autodetail.com",
+  image: `${SITE_URL}/images/aad/hero-s-class.jpg`,
+  priceRange: "$$",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Austin",
+    addressRegion: "TX",
+    addressCountry: "US",
+  },
+  areaServed: {
+    "@type": "City",
+    name: "Austin",
+  },
+  currenciesAccepted: "USD",
+  paymentAccepted: "Cash, Credit Card, PayPal",
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Detailing Services",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full Detail (Interior + Exterior)" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Ceramic Coating" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Paint Correction" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Headlight Restoration" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Engine Bay Cleaning" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Six Month Wax" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Stain Removal" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Leather Conditioning" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Windshield Coating" } },
+    ],
+  },
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: SITE_URL,
+  },
   title: {
     default: SOCIAL_TITLE,
     template: "%s · Austin Auto Detail",
@@ -93,6 +140,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${oswald.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-black text-white">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }}
+        />
         {/* Skip-to-content link - visible only when focused via keyboard.
             Lets screen-reader / keyboard users bypass the sticky header nav
             and jump straight to page content. WCAG 2.4.1 (Bypass Blocks). */}
