@@ -73,6 +73,8 @@ export default function Dashboard() {
   }, [justSignedIn]);
 
   const handleSignOut = async () => {
+    const ok = window.confirm('Sign out of your account?');
+    if (!ok) return;
     await signOut();
     router.push('/auth');
   };
