@@ -545,6 +545,12 @@ const SERVICES = [
     priceLabel: 'Add-on, from $30',
   },
   {
+    icon: '💡',
+    title: 'Headlight Restoration',
+    description: 'Cloudy, yellowed headlights brought back to clear like-new condition. Improves nighttime visibility and curb appeal.',
+    priceLabel: 'Standalone or add-on, $80',
+  },
+  {
     icon: '📍',
     title: 'Mobile - We Come To You',
     description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
