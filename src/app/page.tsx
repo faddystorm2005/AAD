@@ -473,6 +473,7 @@ export default function Home() {
             </p>
             <ul className="mt-3 space-y-2 text-base text-gray-200">
               <li><a href="#main-content" className="hover:text-white">Home</a></li>
+              <li><a href="#recent-work" className="hover:text-white">Recent Work</a></li>
               <li><a href="#how-it-works" className="hover:text-white">How It Works</a></li>
               <li><a href="#faq" className="hover:text-white">FAQ</a></li>
               <li><a href="#contact" className="hover:text-white">Contact</a></li>
