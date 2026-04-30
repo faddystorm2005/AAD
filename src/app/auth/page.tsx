@@ -106,14 +106,16 @@ function AuthInner() {
   };
 
   // Cross-device sign-in: user opens email on their phone and types the
-  // 6-digit code into this device. Supabase's verifyOtp exchanges the code
+  // numeric code into this device. Supabase's verifyOtp exchanges the code
   // for a session attached to THIS browser, so they end up signed in on
-  // the computer (not on the phone).
+  // the computer (not on the phone). The code length depends on the
+  // Supabase project's "Email OTP length" setting (6-10 digits) - we
+  // accept any length in that range.
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleaned = code.replace(/\D/g, '').slice(0, 6);
-    if (cleaned.length !== 6) {
-      setError('Enter the 6-digit code from your email.');
+    const cleaned = code.replace(/\D/g, '').slice(0, 10);
+    if (cleaned.length < 6) {
+      setError('Enter the full numeric code from your email.');
       return;
     }
     setLoadingCode(true);
@@ -125,7 +127,10 @@ function AuthInner() {
         type: 'email',
       });
       if (error || !data?.session) {
-        setError(error?.message || 'That code didn\'t work. Try again or request a new one.');
+        setError(
+          error?.message ||
+            "That code didn't work. If you already clicked the link in the email, the code is used up - request a new one below."
+        );
         return;
       }
 
@@ -207,7 +212,7 @@ function AuthInner() {
                     💻 On a different device?
                   </p>
                   <p className="mt-1 text-sm text-gray-200">
-                    The email also has a 6-digit code. Type it here to sign in on this device.
+                    The email also has a numeric code. Type it here to sign in on this device. <strong>Don&apos;t click the link first</strong> &mdash; that uses up the code.
                   </p>
                   <form onSubmit={handleVerifyCode} className="mt-3 space-y-3">
                     <input
@@ -215,18 +220,18 @@ function AuthInner() {
                       inputMode="numeric"
                       autoComplete="one-time-code"
                       pattern="[0-9]*"
-                      maxLength={6}
-                      placeholder="123456"
+                      maxLength={10}
+                      placeholder="Code from email"
                       value={code}
                       onChange={(e) => {
-                        setCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                        setCode(e.target.value.replace(/\D/g, '').slice(0, 10));
                         if (error) setError('');
                       }}
-                      className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-center text-2xl font-mono font-bold tracking-[0.4em] text-white placeholder-gray-600 focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-center text-2xl font-mono font-bold tracking-[0.3em] text-white placeholder-gray-600 focus:border-red-500 focus:outline-none"
                     />
                     <button
                       type="submit"
-                      disabled={loadingCode || code.length !== 6}
+                      disabled={loadingCode || code.length < 6}
                       className="btn-primary press w-full rounded-xl px-4 py-3 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {loadingCode ? 'Signing in…' : 'Sign in with code'}
