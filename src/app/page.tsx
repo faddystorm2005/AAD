@@ -36,14 +36,16 @@ export default function Home() {
             <a href="#how-it-works" className="hover:text-red-300">How It Works</a>
             <a href="#faq" className="hover:text-red-300">FAQ</a>
             <a href="#contact" className="hover:text-red-300">Contact</a>
-            <HomeNavAccountLink />
           </div>
-          <Link
-            href="/auth"
-            className="btn-primary press shrink-0 rounded-lg px-4 py-2.5 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-base"
-          >
-            Book Now
-          </Link>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <HomeNavAccountLink />
+            <Link
+              href="/auth"
+              className="btn-primary press shrink-0 rounded-lg px-4 py-2.5 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-base"
+            >
+              Book Now
+            </Link>
+          </div>
         </nav>
       </header>
 

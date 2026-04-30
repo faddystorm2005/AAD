@@ -4,22 +4,29 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
- * Small client component for the public homepage nav. If the visitor is
- * already signed in, it renders a "Dashboard" link straight to /dashboard
- * so they can get back to their account without going through /auth again.
- * Otherwise it renders nothing - the nav already has a "Book Now" CTA
- * which handles new visitors.
+ * Auth-aware nav button rendered in the homepage header. Always visible.
+ *   Signed in:  "Dashboard" button to /dashboard
+ *   Signed out: "Sign In"  button to /auth
+ *   Loading:    nothing rendered (avoids label flicker on first paint)
  */
 export default function HomeNavAccountLink() {
   const { user, loading } = useAuth();
-  if (loading || !user) return null;
+  if (loading) return null;
+
+  const baseClasses =
+    'press shrink-0 rounded-lg border border-white/30 bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/10 sm:px-4 sm:py-2.5 sm:text-base';
+
+  if (user) {
+    return (
+      <Link href="/dashboard" className={baseClasses} title="Back to your account">
+        Dashboard
+      </Link>
+    );
+  }
+
   return (
-    <Link
-      href="/dashboard"
-      className="hover:text-white"
-      title="Back to your account"
-    >
-      My Dashboard
+    <Link href="/auth" className={baseClasses} title="Sign in to your account">
+      Sign In
     </Link>
   );
 }
