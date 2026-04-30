@@ -1,10 +1,11 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import GalleryStrip from '@/components/GalleryStrip';
 import { HERO_IMAGE } from '@/lib/siteImages';
 import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Next.js 16 requires any component reading useSearchParams to be wrapped
@@ -36,6 +37,18 @@ function AuthInner() {
   const [magicSent, setMagicSent] = useState(false);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  // If they're already signed in, bounce them to the dashboard. This catches
+  // every "Book Now" / "Sign In" link in the site - no need to make every
+  // link auth-aware. Wait for authLoading to finish so we don't flash the
+  // form before AuthProvider has hydrated the session from localStorage.
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, authLoading, router]);
 
   // Surface ?error=... messages forwarded from /auth/callback (e.g., when
   // a confirmation link has expired or already been used).
@@ -43,6 +56,9 @@ function AuthInner() {
     const incoming = searchParams.get('error');
     if (incoming) setError(incoming);
   }, [searchParams]);
+
+  // Don't render the form for signed-in users mid-redirect - just the loader.
+  if (authLoading || user) return <AuthFallback />;
 
   const handleGoogle = async () => {
     setLoadingGoogle(true);
