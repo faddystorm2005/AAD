@@ -69,6 +69,7 @@ interface AdminBooking {
   city: string;
   state: string;
   zip: string;
+  notes: string | null;
   deposit_amount: number;
   deposit_paid: boolean;
   subtotal: number;
@@ -728,6 +729,16 @@ export default function AdminPage() {
                   {isExpanded && (
                     <div className="border-t border-gray-700 px-5 py-5">
                       <div className="grid gap-5 md:grid-cols-2">
+                        {b.notes && b.notes.trim() && (
+                          <div className="md:col-span-2 rounded-lg border border-blue-500/50 bg-blue-900/30 p-4">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-blue-200">
+                              Special instructions from customer
+                            </h3>
+                            <p className="mt-2 text-sm text-blue-100 whitespace-pre-wrap">
+                              {b.notes.trim()}
+                            </p>
+                          </div>
+                        )}
                         <div>
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                             Customer
