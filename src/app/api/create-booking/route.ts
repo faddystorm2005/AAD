@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
         // shows a slot as open but submit fails with "slot just filled up".
         .neq('status', 'declined')
         .neq('status', 'completed')
+        .neq('status', 'cancelled')
         .is('completed_at', null),
       supabaseAdmin
         .from('daily_capacity')

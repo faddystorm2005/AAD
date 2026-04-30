@@ -17,6 +17,7 @@ type Status =
   | 'pending'
   | 'approved'
   | 'declined'
+  | 'cancelled'
   | 'confirmed'
   | 'in_progress'
   | 'completed';
@@ -46,10 +47,13 @@ const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending approval', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
   approved: { label: 'Approved · pay deposit', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
+  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-400 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
   in_progress: { label: 'In progress', className: 'bg-green-900/40 text-green-300 border-green-800' },
   completed: { label: 'Completed', className: 'bg-gray-800 text-gray-300 border-gray-700' },
 };
+
+const CUSTOMER_CANCELLABLE: Status[] = ['pending', 'approved', 'confirmed'];
 
 function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | null }) {
   const order = getStagesForBooking(addons);
@@ -70,7 +74,7 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
   );
 }
 
-const CUSTOMER_DELETABLE: Status[] = ['pending', 'declined', 'completed'];
+const CUSTOMER_DELETABLE: Status[] = ['pending', 'declined', 'cancelled', 'completed'];
 
 export default function BookingsList() {
   const { user, session, loading: authLoading } = useAuth();
@@ -78,6 +82,45 @@ export default function BookingsList() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const handleCancel = async (bookingId: string) => {
+    if (!session?.access_token) return;
+    if (
+      !window.confirm(
+        "Cancel this booking? The slot will free up. If you've already paid the deposit, contact Austin Auto Detail about a refund."
+      )
+    ) {
+      return;
+    }
+    setCancellingId(bookingId);
+    setDeleteError(null);
+    // Optimistic — flip status to cancelled locally so the UI reacts
+    // immediately. Roll back on failure.
+    const prev = bookings;
+    setBookings((list) =>
+      list.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
+    );
+    try {
+      const res = await fetch('/api/bookings/cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ bookingId }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error || 'Cancel failed');
+      }
+    } catch (err: any) {
+      setBookings(prev);
+      setDeleteError(err.message || 'Cancel failed');
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   const handleDelete = async (bookingId: string) => {
     if (!session?.access_token) return;
@@ -237,18 +280,28 @@ export default function BookingsList() {
             )}
 
             <div className="mt-3 flex items-center justify-between gap-3">
-              {canDelete ? (
-                <button
-                  type="button"
-                  onClick={() => handleDelete(b.id)}
-                  disabled={isDeleting}
-                  className="text-xs text-gray-500 hover:text-red-400 disabled:opacity-50"
-                >
-                  {isDeleting ? 'Removing…' : 'Remove'}
-                </button>
-              ) : (
-                <span />
-              )}
+              <div className="flex items-center gap-3">
+                {CUSTOMER_CANCELLABLE.includes(status) && (
+                  <button
+                    type="button"
+                    onClick={() => handleCancel(b.id)}
+                    disabled={cancellingId === b.id}
+                    className="text-xs text-gray-400 hover:text-red-400 disabled:opacity-50"
+                  >
+                    {cancellingId === b.id ? 'Cancelling…' : 'Cancel booking'}
+                  </button>
+                )}
+                {canDelete && (
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(b.id)}
+                    disabled={isDeleting}
+                    className="text-xs text-gray-500 hover:text-red-400 disabled:opacity-50"
+                  >
+                    {isDeleting ? 'Removing…' : 'Remove'}
+                  </button>
+                )}
+              </div>
               <Link
                 href={`/booking-confirmation/${b.id}`}
                 className="text-xs text-gray-400 underline-offset-2 hover:text-white hover:underline"

@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
     .not('slot_time', 'is', null)
     .neq('status', 'declined')
     .neq('status', 'completed')
+    .neq('status', 'cancelled')
     .is('completed_at', null);
 
   if (bookingsErr) {
