@@ -24,13 +24,22 @@ function getGreeting(): string {
 }
 
 export default function Dashboard() {
-  const { user, signOut } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const router = useRouter();
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [fullName, setFullName] = useState('');
   const [justSignedIn, setJustSignedIn] = useState(false);
+
+  // Auth guard. If the user lands here logged out (stale bookmark, email
+  // link clicked after sign-out, etc.) bounce them to /auth so they don't
+  // see a half-rendered dashboard with empty queries.
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth');
+    }
+  }, [authLoading, user, router]);
 
   useEffect(() => {
     if (!user) return;
@@ -82,6 +91,10 @@ export default function Dashboard() {
   // Greeting depends only on the local hour - memo so a re-render doesn't
   // re-call new Date() (it'd be cheap but pointless churn).
   const greeting = useMemo(() => getGreeting(), []);
+
+  if (authLoading || !user) {
+    return null;
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
