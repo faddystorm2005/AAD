@@ -46,6 +46,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
   const [discountDraft, setDiscountDraft] = useState<Record<string, string>>({});
   const [singleUseDraft, setSingleUseDraft] = useState<Record<string, boolean>>({});
   const [savingDiscount, setSavingDiscount] = useState<string | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const [flash, setFlash] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const adminCount = useMemo(() => users.filter((u) => u.is_admin).length, [users]);
@@ -192,6 +193,53 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
       setFlash({ type: 'error', text: err?.message || 'Save failed' });
     } finally {
       setSavingDiscount(null);
+    }
+  };
+
+  const deleteUser = async (user: UserRow, force = false) => {
+    if (!accessToken) return;
+    if (user.id === currentAdminId) {
+      window.alert("You can't delete your own account from here.");
+      return;
+    }
+    const confirmText = force
+      ? `FORCE DELETE ${user.full_name || user.email}? They have active bookings that will be orphaned. This is permanent.`
+      : `Permanently delete ${user.full_name || user.email}? This removes their account, vehicles, and booking history. Cannot be undone.`;
+    if (!window.confirm(confirmText)) return;
+
+    setDeletingUserId(user.id);
+    try {
+      const res = await fetch('/api/admin/users/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ userId: user.id, force }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        // The API returns requiresForce=true when there are active bookings.
+        if (data?.requiresForce && !force) {
+          if (
+            window.confirm(
+              `${data.error}\n\nForce delete anyway? Their active bookings will be orphaned.`
+            )
+          ) {
+            // Recurse with force=true.
+            await deleteUser(user, true);
+          }
+          return;
+        }
+        throw new Error(data?.error || 'Delete failed');
+      }
+      setUsers((list) => list.filter((u) => u.id !== user.id));
+      setExpandedId(null);
+      setFlash({
+        type: 'success',
+        text: `${user.full_name || user.email} deleted.`,
+      });
+    } catch (err: any) {
+      setFlash({ type: 'error', text: err?.message || 'Delete failed' });
+    } finally {
+      setDeletingUserId(null);
     }
   };
 
@@ -434,6 +482,28 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                             {isUpdating ? '…' : u.is_admin ? 'Remove admin' : 'Make admin'}
                           </button>
                         </div>
+
+                        {/* Danger zone — delete user permanently */}
+                        {!isSelf && (
+                          <div className="border-t border-red-900/40 pt-3">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-red-500">
+                              Danger Zone
+                            </p>
+                            <p className="mt-1 text-xs text-gray-400">
+                              Permanently deletes this user&apos;s account and access. Booking
+                              history is orphaned. Use only for spam, duplicates, or true
+                              account-removal requests.
+                            </p>
+                            <button
+                              type="button"
+                              disabled={deletingUserId === u.id}
+                              onClick={() => deleteUser(u)}
+                              className="mt-2 rounded-lg border border-red-600 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-900/20 disabled:opacity-50"
+                            >
+                              {deletingUserId === u.id ? 'Deleting…' : 'Delete user permanently'}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </li>
