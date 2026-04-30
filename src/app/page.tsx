@@ -20,12 +20,12 @@ export default function Home() {
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
         <nav
-          className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-4"
+          className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 px-4 py-4 sm:gap-4 sm:px-6"
           aria-label="Primary"
         >
           <Link
             href="/"
-            className="text-base font-bold uppercase tracking-[0.18em] text-white"
+            className="text-sm font-bold uppercase tracking-wider text-white sm:text-base sm:tracking-[0.18em]"
             aria-label="Austin Auto Detail home"
           >
             Austin Auto Detail
