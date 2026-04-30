@@ -40,7 +40,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [availability, setAvailability] = useState<DayAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const lastSubmissionRef = useRef<number>(0);
-  const [formData, setFormData] = useState<SlotFormData>({
+  const [formData, setFormData] = useState<SlotFormData & { unit: string }>({
     vehicleId: '',
     serviceSize: 'small',
     selectedAddOns: [],
@@ -48,6 +48,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     slotDate: todayAustinDateString(),
     slotTime: '',
     address: '',
+    unit: '',
     city: '',
     state: 'TX',
     zip: '',
@@ -244,7 +245,9 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           selectedAddOns: formData.selectedAddOns,
           slotDate: formData.slotDate,
           slotTime: formData.slotTime,
-          address: formData.address,
+          address: formData.unit.trim()
+            ? `${formData.address.trim()} ${formData.unit.trim()}`
+            : formData.address,
           city: formData.city,
           state: formData.state,
           zip: formData.zip,
@@ -585,6 +588,23 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 />
               </div>
 
+              <div>
+                <label htmlFor="booking-unit" className="block text-base font-semibold text-white mb-2">
+                  Apt / Suite / Unit <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                </label>
+                <input
+                  id="booking-unit"
+                  type="text"
+                  name="unit"
+                  autoComplete="address-line2"
+                  value={formData.unit}
+                  onChange={handleChange}
+                  disabled={isProcessing}
+                  placeholder="Apt 3B, Suite 200, etc."
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
+                />
+              </div>
+
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div>
                   <label htmlFor="booking-city" className="block text-base font-semibold text-white mb-2">
@@ -665,7 +685,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
                 <ReviewLine
                   label="We'll come to"
-                  value={`${formData.address}, ${formData.city}, ${formData.state} ${formData.zip}`}
+                  value={`${formData.address}${formData.unit.trim() ? ' ' + formData.unit.trim() : ''}, ${formData.city}, ${formData.state} ${formData.zip}`}
                 />
                 <ReviewLine
                   label="Day & time"
