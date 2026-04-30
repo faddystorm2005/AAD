@@ -28,6 +28,14 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* iOS safe areas — padding so content doesn't slip under the notch /
+     dynamic island / status bar / home indicator. Pairs with
+     viewport-fit=cover in viewport meta. Left/right are 0 on most
+     phones in portrait but get applied in landscape on notched devices. */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 h1,
