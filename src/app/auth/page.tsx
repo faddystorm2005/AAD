@@ -35,6 +35,8 @@ function AuthInner() {
   const [loadingMagic, setLoadingMagic] = useState(false);
   const [error, setError] = useState('');
   const [magicSent, setMagicSent] = useState(false);
+  const [code, setCode] = useState('');
+  const [loadingCode, setLoadingCode] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -103,6 +105,53 @@ function AuthInner() {
     }
   };
 
+  // Cross-device sign-in: user opens email on their phone and types the
+  // 6-digit code into this device. Supabase's verifyOtp exchanges the code
+  // for a session attached to THIS browser, so they end up signed in on
+  // the computer (not on the phone).
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleaned = code.replace(/\D/g, '').slice(0, 6);
+    if (cleaned.length !== 6) {
+      setError('Enter the 6-digit code from your email.');
+      return;
+    }
+    setLoadingCode(true);
+    setError('');
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token: cleaned,
+        type: 'email',
+      });
+      if (error || !data?.session) {
+        setError(error?.message || 'That code didn\'t work. Try again or request a new one.');
+        return;
+      }
+
+      // Mirror the callback's first-time check: count this user's vehicles
+      // and route accordingly. Reads are safe via RLS (user reads their own).
+      const userId = data.session.user.id;
+      let firstTime = false;
+      try {
+        const { count } = await supabase
+          .from('vehicles')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userId);
+        firstTime = (count ?? 0) === 0;
+      } catch {
+        // Ignore - default to non-first-time so we still send them in.
+      }
+      router.replace(
+        firstTime ? '/dashboard?signedIn=1&firstTime=1' : '/dashboard?signedIn=1'
+      );
+    } catch {
+      setError('An unexpected error occurred');
+    } finally {
+      setLoadingCode(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Hero */}
@@ -135,21 +184,65 @@ function AuthInner() {
           </div>
 
           {magicSent ? (
-            <div className="space-y-4 text-center">
-              <div className="rounded-lg border border-green-700 bg-green-900/40 p-4 text-sm text-green-200">
-                <p className="font-semibold">Check your email</p>
-                <p className="mt-1">
-                  We sent a sign-in link to <strong>{email}</strong>. Click it
-                  to come back here.
+            <div className="space-y-5">
+              <div className="rounded-xl border-2 border-green-700 bg-green-900/40 p-4 text-base text-green-100">
+                <p className="font-bold text-lg">Check your email</p>
+                <p className="mt-2">
+                  We sent a sign-in email to <strong>{email}</strong>.
                 </p>
               </div>
+
+              <div className="space-y-3">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-base font-semibold text-white">
+                    📱 On the same device as the email?
+                  </p>
+                  <p className="mt-1 text-sm text-gray-200">
+                    Just tap the link in the email. You&apos;ll come right back here, signed in.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-base font-semibold text-white">
+                    💻 On a different device?
+                  </p>
+                  <p className="mt-1 text-sm text-gray-200">
+                    The email also has a 6-digit code. Type it here to sign in on this device.
+                  </p>
+                  <form onSubmit={handleVerifyCode} className="mt-3 space-y-3">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern="[0-9]*"
+                      maxLength={6}
+                      placeholder="123456"
+                      value={code}
+                      onChange={(e) => {
+                        setCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                        if (error) setError('');
+                      }}
+                      className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-center text-2xl font-mono font-bold tracking-[0.4em] text-white placeholder-gray-600 focus:border-red-500 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={loadingCode || code.length !== 6}
+                      className="btn-primary press w-full rounded-xl px-4 py-3 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {loadingCode ? 'Signing in…' : 'Sign in with code'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+
               <button
                 onClick={() => {
                   setMagicSent(false);
                   setEmail('');
+                  setCode('');
                   setError('');
                 }}
-                className="text-sm text-gray-400 underline hover:text-white"
+                className="press w-full rounded-lg border border-white/20 bg-black/30 px-4 py-2.5 text-sm font-medium text-gray-200 hover:bg-black/50"
               >
                 Use a different email
               </button>
