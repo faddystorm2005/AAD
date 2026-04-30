@@ -2,15 +2,25 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import AddVehicleForm from '@/components/AddVehicleForm';
 import VehicleList from '@/components/VehicleList';
 import BookingForm from '@/components/BookingForm';
 import BookingsList from '@/components/BookingsList';
 import GalleryStrip from '@/components/GalleryStrip';
+import HeroSpotlight from '@/components/home/HeroSpotlight';
+import DashboardStats from '@/components/dashboard/DashboardStats';
+import QuickActions from '@/components/dashboard/QuickActions';
 import { supabase } from '@/lib/supabaseClient';
 import { BOOK_CTA_IMAGE, DASHBOARD_BANNER } from '@/lib/siteImages';
+
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
+}
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
@@ -63,6 +73,12 @@ export default function Dashboard() {
     await signOut();
     router.push('/auth');
   };
+
+  // Greeting depends only on the local hour - memo so a re-render doesn't
+  // re-call new Date() (it'd be cheap but pointless churn).
+  const greeting = useMemo(() => getGreeting(), []);
+  // Pull the part before the @ as a friendly first-name fallback.
+  const friendlyName = user?.email?.split('@')[0] ?? '';
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
@@ -131,19 +147,24 @@ export default function Dashboard() {
       />
 
       {/* Header banner */}
-      <div className="relative h-48 w-full overflow-hidden sm:h-56">
+      <div className="relative h-56 w-full overflow-hidden sm:h-64">
         <img
           src={DASHBOARD_BANNER.src}
           alt={DASHBOARD_BANNER.alt}
           className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black" />
+        {/* Cursor-following red glow, same as homepage hero - premium feel. */}
+        <HeroSpotlight />
         <div className="relative mx-auto flex h-full w-full max-w-5xl items-end justify-between px-6 pb-6">
           <div className="animate-fade-up">
-            <h1 className="text-gradient-hero text-2xl font-bold uppercase tracking-[0.18em]">
-              Welcome back
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+              {greeting}
+            </p>
+            <h1 className="text-gradient-hero mt-2 text-3xl font-bold capitalize tracking-[0.04em] sm:text-4xl">
+              {friendlyName || 'Welcome back'}
             </h1>
-            <p className="text-sm text-gray-300">{user?.email}</p>
+            <p className="mt-1 text-xs text-gray-400">{user?.email}</p>
           </div>
           <div className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: '80ms' }}>
             <Link
@@ -177,10 +198,56 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-10">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-10">
 
-        {/* Vehicles Section */}
-        <div className="reveal-on-scroll space-y-4 animate-fade-up" style={{ animationDelay: '120ms' }}>
+        {/* Personal stats strip - animated counters with the user's own data. */}
+        <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '60ms' }}>
+          <DashboardStats />
+        </div>
+
+        {/* Quick actions - four hover-lift tiles for the most common moves. */}
+        <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '120ms' }}>
+          <h2 className="h-accent mb-4 text-xl font-bold text-white">Quick Actions</h2>
+          <QuickActions
+            onBook={() => setShowBooking(true)}
+            onAddVehicle={() => setShowAddVehicle(true)}
+          />
+        </div>
+
+        {/* Big book CTA card - full-bleed image with hover lift. */}
+        <div
+          className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 animate-fade-up"
+          style={{ animationDelay: '180ms' }}
+        >
+          <img
+            src={BOOK_CTA_IMAGE.src}
+            alt={BOOK_CTA_IMAGE.alt}
+            className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
+          <div className="relative flex flex-col items-start gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-red-500">
+                Quality Over Quantity
+              </p>
+              <h3 className="mt-2 text-2xl font-bold text-white">
+                Ready for your next detail?
+              </h3>
+              <p className="mt-1 max-w-md text-sm text-gray-300">
+                Pick a slot, we&apos;ll come to you. $30 deposit holds it.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowBooking(true)}
+              className="btn-primary press shrink-0 rounded-lg px-5 py-3 text-sm font-semibold"
+            >
+              Book a Detail →
+            </button>
+          </div>
+        </div>
+
+        {/* Vehicles */}
+        <div className="reveal-on-scroll space-y-4 animate-fade-up" style={{ animationDelay: '240ms' }}>
           <div className="flex items-center justify-between">
             <h2 className="h-accent text-xl font-bold text-white">My Vehicles</h2>
             <button
@@ -193,41 +260,14 @@ export default function Dashboard() {
           <VehicleList />
         </div>
 
-        {/* Book CTA */}
-        <div
-          className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 animate-fade-up"
-          style={{ animationDelay: '220ms' }}
-        >
-          <img
-            src={BOOK_CTA_IMAGE.src}
-            alt={BOOK_CTA_IMAGE.alt}
-            className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
-          <div className="relative flex items-center justify-between gap-4 p-8">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-red-500">
-                Quality Over Quantity
-              </p>
-              <h3 className="mt-2 text-2xl font-bold text-white">Ready to book?</h3>
-            </div>
-            <button
-              onClick={() => setShowBooking(true)}
-              className="btn-primary press rounded-lg px-5 py-2.5 text-sm font-medium"
-            >
-              Book a Detail
-            </button>
-          </div>
-        </div>
-
         {/* Bookings */}
-        <div className="reveal-on-scroll space-y-4 animate-fade-up" style={{ animationDelay: '320ms' }}>
+        <div className="reveal-on-scroll space-y-4 animate-fade-up" style={{ animationDelay: '300ms' }}>
           <h2 className="h-accent text-xl font-bold text-white">Your Bookings</h2>
           <BookingsList />
         </div>
 
-        {/* Gallery - fills the empty space below bookings with car photos. */}
-        <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '420ms' }}>
+        {/* Gallery */}
+        <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '380ms' }}>
           <GalleryStrip />
         </div>
       </div>
