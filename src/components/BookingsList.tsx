@@ -12,6 +12,7 @@ import {
   getStagesForBooking,
   normalizeStage,
 } from '@/lib/bookingStages';
+import RescheduleModal from '@/components/RescheduleModal';
 
 type Status =
   | 'pending'
@@ -41,6 +42,9 @@ export interface BookingRow {
   completed_at: string | null;
   created_at: string;
   addons: string[] | null;
+  is_ceramic?: boolean;
+  slot_date?: string | null;
+  slot_time?: string | null;
 }
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
@@ -83,6 +87,7 @@ export default function BookingsList() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [reschedulingBooking, setReschedulingBooking] = useState<BookingRow | null>(null);
 
   const handleCancel = async (bookingId: string) => {
     if (!session?.access_token) return;
@@ -166,7 +171,7 @@ export default function BookingsList() {
       const { data } = await supabase
         .from('bookings')
         .select(
-          'id, service, scheduled_at, address, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons'
+          'id, service, scheduled_at, address, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time'
         )
         .eq('user_id', user.id)
         .order('scheduled_at', { ascending: true });
@@ -280,16 +285,25 @@ export default function BookingsList() {
             )}
 
             <div className="mt-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 {CUSTOMER_CANCELLABLE.includes(status) && (
-                  <button
-                    type="button"
-                    onClick={() => handleCancel(b.id)}
-                    disabled={cancellingId === b.id}
-                    className="text-xs text-gray-400 hover:text-red-400 disabled:opacity-50"
-                  >
-                    {cancellingId === b.id ? 'Cancelling…' : 'Cancel booking'}
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setReschedulingBooking(b)}
+                      className="text-xs text-blue-400 hover:text-blue-300"
+                    >
+                      Reschedule
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(b.id)}
+                      disabled={cancellingId === b.id}
+                      className="text-xs text-gray-400 hover:text-red-400 disabled:opacity-50"
+                    >
+                      {cancellingId === b.id ? 'Cancelling…' : 'Cancel booking'}
+                    </button>
+                  </>
                 )}
                 {canDelete && (
                   <button
@@ -312,6 +326,21 @@ export default function BookingsList() {
           </div>
         );
       })}
+
+      {reschedulingBooking && (
+        <RescheduleModal
+          bookingId={reschedulingBooking.id}
+          isCeramic={Boolean(reschedulingBooking.is_ceramic)}
+          currentSlotDate={reschedulingBooking.slot_date ?? ''}
+          currentSlotTime={reschedulingBooking.slot_time ?? ''}
+          onClose={() => setReschedulingBooking(null)}
+          onRescheduled={() => {
+            // Realtime subscription will refresh the list, but trigger a
+            // local clear of the modal so the user sees instant feedback.
+            setReschedulingBooking(null);
+          }}
+        />
+      )}
     </div>
   );
 }
