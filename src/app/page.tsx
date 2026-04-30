@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import AuthRedirector from '@/components/AuthRedirector';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 
 /**
@@ -11,7 +10,6 @@ import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 export default function Home() {
   return (
     <main role="main" className="relative min-h-screen overflow-hidden bg-black text-white">
-      <AuthRedirector />
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur">

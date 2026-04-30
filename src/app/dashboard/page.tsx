@@ -73,6 +73,13 @@ export default function Dashboard() {
             <p className="text-sm text-gray-300">{user?.email}</p>
           </div>
           <div className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: '80ms' }}>
+            <Link
+              href="/"
+              className="press rounded-lg border border-white/30 bg-black/30 px-3 py-2 text-sm text-white backdrop-blur hover:bg-black/50"
+              title="View public homepage with services and FAQ"
+            >
+              ← Home
+            </Link>
             {isAdmin && (
               <Link
                 href="/admin"

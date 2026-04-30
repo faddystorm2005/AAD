@@ -156,12 +156,21 @@ export default function SettingsPage() {
             <h1 className="text-xl font-bold uppercase tracking-[0.18em]">Settings</h1>
             <p className="text-xs text-gray-400">{user.email}</p>
           </div>
-          <Link
-            href="/dashboard"
-            className="press rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 text-sm text-white hover:bg-black/60"
-          >
-            ← Dashboard
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="press rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 text-sm text-white hover:bg-black/60"
+              title="View public homepage"
+            >
+              ← Home
+            </Link>
+            <Link
+              href="/dashboard"
+              className="press rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 text-sm text-white hover:bg-black/60"
+            >
+              Dashboard
+            </Link>
+          </div>
         </div>
       </div>
 
