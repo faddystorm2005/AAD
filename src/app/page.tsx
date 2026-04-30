@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
+import HeroSpotlight from '@/components/home/HeroSpotlight';
+import StatsStrip from '@/components/home/StatsStrip';
+import StickyBookCta from '@/components/home/StickyBookCta';
+import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -70,6 +74,8 @@ export default function Home() {
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
+          {/* Soft red glow that follows the cursor for premium polish. */}
+          <HeroSpotlight />
           <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end px-6 pb-12">
             <p className="animate-fade-up text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
               Quality Over Quantity
@@ -106,6 +112,16 @@ export default function Home() {
               </a>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Stats strip - animated counters that build trust at first glance. */}
+      <section
+        aria-label="Stats"
+        className="relative z-10 border-y border-white/5 bg-gradient-to-b from-black via-zinc-950 to-black py-10"
+      >
+        <div className="mx-auto w-full max-w-5xl px-6">
+          <StatsStrip />
         </div>
       </section>
 
@@ -231,6 +247,19 @@ export default function Home() {
         </p>
       </section>
 
+      {/* Testimonials marquee - auto-scrolling social proof, pauses on hover. */}
+      <section
+        aria-label="What customers say"
+        className="relative z-10 border-y border-white/5 py-12"
+      >
+        <div className="mx-auto mb-6 w-full max-w-5xl px-6">
+          <h2 className="h-accent text-xl font-bold uppercase tracking-wider sm:text-2xl">
+            What Austin drivers say
+          </h2>
+        </div>
+        <MarqueeTestimonials />
+      </section>
+
       {/* Final CTA */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16">
         <div className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 reveal-on-scroll">
@@ -327,6 +356,9 @@ export default function Home() {
           <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
         </div>
       </footer>
+
+      {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
+      <StickyBookCta />
     </main>
   );
 }
