@@ -131,16 +131,16 @@ export default function Home() {
           <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Our Mobile Detailing Services
           </h2>
-          <p className="mt-3 text-gray-400">
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
             Every package is tailored to your vehicle. We come to you for{' '}
-            <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
+            <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
               Austin car cleaning
             </Link>
             ,{' '}
-            <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
+            <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
               auto detailing services
             </Link>
-            , and ceramic coatings - no driving across town, no waiting rooms.
+            , and ceramic coatings. No driving across town, no waiting rooms.
           </p>
         </div>
 
@@ -153,10 +153,10 @@ export default function Home() {
             >
               <div className="text-3xl">{s.icon}</div>
               <h3 className="mt-4 text-lg font-bold text-white">{s.title}</h3>
-              <p className="mt-2 text-sm text-gray-400">{s.description}</p>
+              <p className="mt-2 text-base text-gray-200">{s.description}</p>
               <Link
                 href="/auth"
-                className="mt-4 inline-flex text-xs font-semibold uppercase tracking-wider text-red-400 hover:text-red-300"
+                className="mt-4 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200"
               >
                 Book this service →
               </Link>
@@ -171,8 +171,8 @@ export default function Home() {
           <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             How It Works
           </h2>
-          <p className="mt-3 text-gray-400">
-            Booking mobile detailing in Austin takes about a minute. Here&apos;s the flow:
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Booking mobile detailing in Austin takes about a minute. Here&apos;s how it goes:
           </p>
         </div>
         <ol className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -182,9 +182,9 @@ export default function Home() {
               className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 80}ms` }}
             >
-              <div className="text-2xl font-bold text-red-500">{String(i + 1).padStart(2, '0')}</div>
-              <h3 className="mt-2 text-base font-semibold text-white">{step.title}</h3>
-              <p className="mt-2 text-sm text-gray-400">{step.description}</p>
+              <div className="text-3xl font-bold text-red-500">{String(i + 1).padStart(2, '0')}</div>
+              <h3 className="mt-2 text-lg font-bold text-white">{step.title}</h3>
+              <p className="mt-2 text-base text-gray-200">{step.description}</p>
             </li>
           ))}
         </ol>
@@ -204,9 +204,9 @@ export default function Home() {
               className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 80}ms` }}
             >
-              <p className="text-3xl font-bold text-red-500">{r.headline}</p>
-              <h3 className="mt-3 text-base font-semibold text-white">{r.title}</h3>
-              <p className="mt-2 text-sm text-gray-400">{r.description}</p>
+              <p className="text-2xl font-bold text-red-400 sm:text-3xl">{r.headline}</p>
+              <h3 className="mt-3 text-lg font-bold text-white">{r.title}</h3>
+              <p className="mt-2 text-base text-gray-200">{r.description}</p>
             </div>
           ))}
         </div>
@@ -254,10 +254,10 @@ export default function Home() {
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-2xl">
                 {p.icon}
               </div>
-              <h3 className="mt-4 text-base font-semibold text-white">
+              <h3 className="mt-4 text-lg font-bold text-white">
                 {p.title}
               </h3>
-              <p className="mt-2 text-sm text-gray-400">{p.description}</p>
+              <p className="mt-2 text-base text-gray-200">{p.description}</p>
             </div>
           ))}
         </div>
@@ -308,11 +308,11 @@ export default function Home() {
               className="glass-card reveal-on-scroll animate-fade-up group rounded-2xl p-5"
               style={{ animationDelay: `${i * 50}ms` }}
             >
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-base font-semibold text-white">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-lg font-semibold text-white">
                 <span>{q.question}</span>
-                <span className="text-red-400 transition-transform group-open:rotate-45">+</span>
+                <span className="text-2xl text-red-400 transition-transform group-open:rotate-45">+</span>
               </summary>
-              <dd className="mt-3 text-sm text-gray-400">{q.answer}</dd>
+              <dd className="mt-3 text-base leading-relaxed text-gray-200">{q.answer}</dd>
             </details>
           ))}
         </dl>
@@ -360,8 +360,8 @@ export default function Home() {
               <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
                 Mobile Detailing in Austin
               </h3>
-              <p className="mt-2 max-w-xl text-sm text-gray-300">
-                Quality, convenient on-site detailing brought to you. Book now for mobile detailing in Austin - pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit on approval; the rest on-site.
+              <p className="mt-2 max-w-xl text-base text-gray-100 sm:text-lg">
+                Quality on-site detailing brought to you. Pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit when we approve; the rest on-site.
               </p>
             </div>
             <Link

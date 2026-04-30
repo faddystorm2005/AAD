@@ -227,13 +227,13 @@ export default function BookingsList() {
   }
 
   if (bookings.length === 0) {
-    return <p className="text-sm text-gray-400">No active bookings</p>;
+    return <p className="text-base text-gray-300">No bookings yet.</p>;
   }
 
   return (
     <div className="space-y-3">
       {deleteError && (
-        <div className="rounded-lg border border-red-700 bg-red-900/40 p-3 text-sm text-red-200">
+        <div role="alert" className="rounded-xl border-2 border-red-700 bg-red-900/40 p-4 text-base text-red-100">
           {deleteError}
         </div>
       )}
@@ -246,30 +246,32 @@ export default function BookingsList() {
         return (
           <div
             key={b.id}
-            className="lift-hover animate-fade-up rounded-lg border border-gray-600 bg-gray-800 p-4"
+            className="lift-hover animate-fade-up rounded-xl border border-gray-600 bg-gray-800 p-5"
             style={{ animationDelay: `${i * 60}ms` }}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <p className="font-semibold text-white">{b.service}</p>
-                <p className="mt-1 text-sm text-gray-400">
+                <p className="text-lg font-semibold text-white">{b.service}</p>
+                <p className="mt-1 text-base text-gray-200">
                   {new Date(b.scheduled_at).toLocaleString()}
                 </p>
                 <div className="mt-1">
                   <BookingWeather date={b.scheduled_at} compact />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-sm text-gray-300">
                   {b.address}, {b.city}, {b.state} {b.zip}
                 </p>
                 {status === 'declined' && b.decline_reason && (
-                  <p className="mt-2 text-xs text-red-300">Reason: {b.decline_reason}</p>
+                  <p className="mt-2 text-sm text-red-200">Reason: {b.decline_reason}</p>
                 )}
               </div>
-              <div className="flex flex-col items-end gap-1 text-xs">
-                <span className={`rounded-full border px-2 py-0.5 font-medium ${badge.className}`}>
+              <div className="flex flex-col items-end gap-2 text-sm">
+                <span className={`rounded-full border px-3 py-1 text-sm font-semibold ${badge.className}`}>
                   {badge.label}
                 </span>
-                <span className="text-gray-400">Total ${Number(b.total).toFixed(2)}</span>
+                <span className="text-base font-semibold text-gray-200">
+                  ${Number(b.total).toFixed(2)}
+                </span>
               </div>
             </div>
 
@@ -278,7 +280,7 @@ export default function BookingsList() {
                 href={b.payment_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="press mt-3 inline-block rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+                className="btn-primary press mt-4 inline-block rounded-xl px-5 py-3 text-base font-semibold"
               >
                 Pay ${Number(b.deposit_amount).toFixed(2)} deposit →
               </a>
@@ -297,28 +299,28 @@ export default function BookingsList() {
             )}
 
             {b.cancel_requested_at && CUSTOMER_CANCELLABLE.includes(status) && (
-              <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-900/30 p-3 text-xs text-amber-200">
-                <p className="font-semibold">Cancellation request pending</p>
-                <p className="mt-1 text-amber-200/80">
-                  We&apos;re reviewing your request. You&apos;ll get a text/email
-                  once it&apos;s decided. The booking is still scheduled until then.
+              <div className="mt-4 rounded-xl border-2 border-amber-500/50 bg-amber-900/30 p-4 text-base text-amber-100">
+                <p className="font-bold">Cancellation request pending</p>
+                <p className="mt-2">
+                  We&apos;re reviewing your request. You&apos;ll get a text and email
+                  as soon as it&apos;s decided. Your booking is still scheduled until then.
                 </p>
                 {b.cancel_request_reason && (
-                  <p className="mt-2 text-amber-200/60">
+                  <p className="mt-3 text-sm text-amber-200/80">
                     Your note: &ldquo;{b.cancel_request_reason}&rdquo;
                   </p>
                 )}
               </div>
             )}
 
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-700 pt-4">
+              <div className="flex flex-wrap items-center gap-2">
                 {CUSTOMER_CANCELLABLE.includes(status) && !b.cancel_requested_at && (
                   <>
                     <button
                       type="button"
                       onClick={() => setReschedulingBooking(b)}
-                      className="text-xs text-blue-400 hover:text-blue-300"
+                      className="press rounded-lg border-2 border-blue-500/50 bg-blue-950/40 px-4 py-2 text-sm font-semibold text-blue-200 hover:bg-blue-900/40"
                     >
                       Reschedule
                     </button>
@@ -326,7 +328,7 @@ export default function BookingsList() {
                       type="button"
                       onClick={() => handleRequestCancellation(b.id)}
                       disabled={cancellingId === b.id}
-                      className="text-xs text-gray-400 hover:text-red-400 disabled:opacity-50"
+                      className="press rounded-lg border-2 border-gray-600 bg-gray-900 px-4 py-2 text-sm font-semibold text-gray-200 hover:border-red-500/60 hover:text-red-200 disabled:opacity-50"
                     >
                       {cancellingId === b.id
                         ? 'Submitting…'
@@ -339,15 +341,15 @@ export default function BookingsList() {
                     type="button"
                     onClick={() => handleDelete(b.id)}
                     disabled={isDeleting}
-                    className="text-xs text-gray-500 hover:text-red-400 disabled:opacity-50"
+                    className="press rounded-lg border border-gray-700 px-3 py-2 text-sm font-medium text-gray-300 hover:text-red-300 disabled:opacity-50"
                   >
-                    {isDeleting ? 'Removing…' : 'Remove'}
+                    {isDeleting ? 'Removing…' : 'Remove from history'}
                   </button>
                 )}
               </div>
               <Link
                 href={`/booking-confirmation/${b.id}`}
-                className="text-xs text-gray-400 underline-offset-2 hover:text-white hover:underline"
+                className="press rounded-lg border border-gray-600 px-4 py-2 text-sm font-semibold text-gray-200 hover:bg-gray-700 hover:text-white"
               >
                 View details →
               </Link>

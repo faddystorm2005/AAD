@@ -178,7 +178,7 @@ function StatTile({ stat }: { stat: Stat }) {
           {stat.suffix ?? ''}
         </span>
       </div>
-      <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-gray-400 sm:text-xs">
+      <div className="mt-2 text-xs uppercase tracking-[0.18em] text-gray-300 sm:text-sm">
         {stat.label}
       </div>
     </div>

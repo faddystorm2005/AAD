@@ -159,18 +159,18 @@ export default function Dashboard() {
         <HeroSpotlight />
         <div className="relative mx-auto flex h-full w-full max-w-5xl items-end justify-between px-6 pb-6">
           <div className="animate-fade-up">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-red-400">
               {greeting}
             </p>
             <h1 className="text-gradient-hero mt-2 text-3xl font-bold capitalize tracking-[0.04em] sm:text-4xl">
               {friendlyName || 'Welcome back'}
             </h1>
-            <p className="mt-1 text-xs text-gray-400">{user?.email}</p>
+            <p className="mt-2 text-sm text-gray-200">{user?.email}</p>
           </div>
-          <div className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: '80ms' }}>
+          <div className="flex flex-wrap items-center gap-2 animate-fade-up sm:gap-3" style={{ animationDelay: '80ms' }}>
             <Link
               href="/"
-              className="press rounded-lg border border-white/30 bg-black/30 px-3 py-2 text-sm text-white backdrop-blur hover:bg-black/50"
+              className="press rounded-lg border border-white/30 bg-black/40 px-4 py-2.5 text-base font-semibold text-white backdrop-blur hover:bg-black/60"
               title="View public homepage with services and FAQ"
             >
               ← Home
@@ -178,20 +178,20 @@ export default function Dashboard() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="press rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                className="press rounded-lg bg-red-600 px-4 py-2.5 text-base font-semibold text-white hover:bg-red-700"
               >
                 Admin
               </Link>
             )}
             <Link
               href="/settings"
-              className="press rounded-lg border border-white/30 bg-black/30 px-4 py-2 text-sm text-white backdrop-blur hover:bg-black/50"
+              className="press rounded-lg border border-white/30 bg-black/40 px-4 py-2.5 text-base font-semibold text-white backdrop-blur hover:bg-black/60"
             >
               Settings
             </Link>
             <button
               onClick={handleSignOut}
-              className="press rounded-lg border border-white/30 bg-black/30 px-4 py-2 text-sm text-white backdrop-blur hover:bg-black/50"
+              className="press rounded-lg border border-white/30 bg-black/40 px-4 py-2.5 text-base font-semibold text-white backdrop-blur hover:bg-black/60"
             >
               Sign Out
             </button>
