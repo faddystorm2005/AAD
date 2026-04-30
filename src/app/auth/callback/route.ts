@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
  * forwards them to /dashboard (or wherever `next` says).
  *
  * Without this route the email link 404s and the user sees a white
- * "can't load this page" — that's the bug we're fixing.
+ * "can't load this page" - that's the bug we're fixing.
  *
  * Implementation note: we use the regular supabase-js client to call
  * exchangeCodeForSession. The session cookie itself is then set by the
@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic';
  *
  * For email-link flows that include the session in the URL fragment
  * (Supabase's older "implicit" flow), the @supabase/supabase-js client
- * picks them up automatically via detectSessionInUrl — those don't even
+ * picks them up automatically via detectSessionInUrl - those don't even
  * route through here. This handler is the safety net for the PKCE-style
  * `?code=` confirmation links.
  */

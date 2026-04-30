@@ -22,7 +22,7 @@ export type WeatherUnavailableReason = 'past' | 'too-far' | 'api-error' | 'inval
 export interface WeatherResult {
   date: string;
   forecast?: DailyWeather;
-  /** Set when forecast is missing — tells the UI which message to show. */
+  /** Set when forecast is missing - tells the UI which message to show. */
   unavailable?: WeatherUnavailableReason;
 }
 
@@ -48,7 +48,7 @@ function describeCode(code: number): { label: string; emoji: string } {
  * Fetch a single-day forecast for Austin. Returns `outOfRange` when the date
  * is past Open-Meteo's 16-day window (or in the past).
  *
- * Cached for 1h via Next's fetch revalidation — many bookings can share dates
+ * Cached for 1h via Next's fetch revalidation - many bookings can share dates
  * without hammering the API.
  */
 export async function getAustinForecast(date: string): Promise<WeatherResult> {
@@ -109,7 +109,7 @@ export async function getAustinForecast(date: string): Promise<WeatherResult> {
   const precipChance = Math.round(d.precipitation_probability_max?.[0] ?? 0);
   let { label, emoji } = describeCode(code);
 
-  // Open-Meteo's daily weathercode is the worst event of the day — a 30-min
+  // Open-Meteo's daily weathercode is the worst event of the day - a 30-min
   // afternoon storm with 10% rain chance still gets labeled "Thunderstorm".
   // Downgrade the label/emoji when the day is overwhelmingly likely to be dry.
   const SEVERE_CODES = new Set([

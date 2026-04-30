@@ -26,6 +26,6 @@ export const AAD_GALLERY: SitePhoto[] = [
 ];
 
 // Featured images used in specific layout slots.
-export const HERO_IMAGE: SitePhoto = AAD_GALLERY[4]; // 05.jpg — Porsche GT3 RS
-export const DASHBOARD_BANNER: SitePhoto = AAD_GALLERY[0]; // 01.jpg — red-wheel foam
-export const BOOK_CTA_IMAGE: SitePhoto = AAD_GALLERY[3]; // 04.jpg — Alfa wheel
+export const HERO_IMAGE: SitePhoto = AAD_GALLERY[4]; // 05.jpg - Porsche GT3 RS
+export const DASHBOARD_BANNER: SitePhoto = AAD_GALLERY[0]; // 01.jpg - red-wheel foam
+export const BOOK_CTA_IMAGE: SitePhoto = AAD_GALLERY[3]; // 04.jpg - Alfa wheel

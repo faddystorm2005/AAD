@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  // Best-effort lookup — gracefully report "not connected" if the operator
+  // Best-effort lookup - gracefully report "not connected" if the operator
   // hasn't run the schema migration yet (so the column doesn't exist).
   const { data, error } = await supabaseAdmin
     .from('profiles')

@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
  * Small client component for the public homepage nav. If the visitor is
  * already signed in, it renders a "Dashboard" link straight to /dashboard
  * so they can get back to their account without going through /auth again.
- * Otherwise it renders nothing — the nav already has a "Book Now" CTA
+ * Otherwise it renders nothing - the nav already has a "Book Now" CTA
  * which handles new visitors.
  */
 export default function HomeNavAccountLink() {

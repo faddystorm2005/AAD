@@ -84,7 +84,7 @@ export default function DailyCapacityPanel({ session }: Props) {
     setUpdatingDay(day);
     setError(null);
 
-    // Optimistic update — flip the help flag AND recompute per-day /
+    // Optimistic update - flip the help flag AND recompute per-day /
     // per-slot capacity so the UI numbers update instantly. Don't wait for
     // Supabase Realtime (often disabled on the daily_capacity table).
     const next = !current;

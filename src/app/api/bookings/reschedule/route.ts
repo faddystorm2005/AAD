@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
  * availability check. Customer can reschedule their own pending/approved/
  * confirmed bookings. Admin can also reschedule in_progress.
  *
- * Updates the Google Calendar event for the booking too (in place — same
+ * Updates the Google Calendar event for the booking too (in place - same
  * google_event_id, just updated start/end).
  */
 
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          'Ceramic Coating is mornings only — please pick the first slot of the day (9:00 AM).',
+          'Ceramic Coating is mornings only - please pick the first slot of the day (9:00 AM).',
       },
       { status: 400 }
     );
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
         .neq('status', 'completed')
         .neq('id', bookingId)
         .is('completed_at', null),
-        // 'cancelled' deliberately not filtered — see availability/route.ts.
+        // 'cancelled' deliberately not filtered - see availability/route.ts.
       supabaseAdmin
         .from('daily_capacity')
         .select('is_help_available')

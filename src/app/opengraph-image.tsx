@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 /**
- * Open Graph image for social sharing — what shows up on Facebook,
+ * Open Graph image for social sharing - what shows up on Facebook,
  * iMessage, Twitter, LinkedIn, etc. when someone pastes the site link.
  *
  * Standard OG dimensions are 1200x630. Generated at build time with the
@@ -12,7 +12,7 @@ import { join } from "path";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt =
-  "Austin Auto Detail — Mobile detailing services in Austin, TX";
+  "Austin Auto Detail - Mobile detailing services in Austin, TX";
 
 export default function OpengraphImage() {
   const logo = readFileSync(
@@ -100,7 +100,7 @@ export default function OpengraphImage() {
             lineHeight: 1.3,
           }}
         >
-          Expert mobile detailing — we come to you.
+          Expert mobile detailing - we come to you.
         </div>
 
         {/* Bottom red accent bar */}

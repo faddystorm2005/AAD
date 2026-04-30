@@ -277,7 +277,7 @@ export default function SettingsPage() {
           {loadingHistory ? (
             <div className="h-20 animate-pulse rounded-lg bg-gray-800/60" />
           ) : history.length === 0 ? (
-            <p className="text-sm text-gray-500">Nothing here yet — your past bookings will show up after they wrap up.</p>
+            <p className="text-sm text-gray-500">Nothing here yet - your past bookings will show up after they wrap up.</p>
           ) : (
             <ul className="space-y-2">
               {history.map((b) => (

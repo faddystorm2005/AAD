@@ -154,7 +154,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     const vehicle = vehicles.find((v) => v.id === vehicleId);
     if (vehicle) {
       // Clear any "please select a vehicle" error since the user just did.
-      // Same pattern below for date/time/address — user fixing the issue
+      // Same pattern below for date/time/address - user fixing the issue
       // should make the error message disappear.
       setError('');
       setFormData((prev) => ({
@@ -261,7 +261,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
         throw new Error('Booking submitted but no ID was returned');
       }
 
-      // Booking is now 'pending' awaiting admin approval. No payment yet —
+      // Booking is now 'pending' awaiting admin approval. No payment yet -
       // the customer waits on the confirmation page until admin approves.
       window.location.href = `/booking-confirmation/${data.bookingId}`;
     } catch (err: any) {
@@ -399,7 +399,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
               {ceramic && (
                 <div className="rounded-lg border border-yellow-700 bg-yellow-900/20 p-3 text-xs text-yellow-200">
-                  Ceramic Coating is <strong>mornings only</strong> — bookable only
+                  Ceramic Coating is <strong>mornings only</strong> - bookable only
                   at the <strong>first slot of the day (9:00 AM)</strong>. It&apos;s a
                   full-day job, so it&apos;s the only car detailed that day
                   (1 ceramic per day). Lasts up to <strong>10 years</strong>.
@@ -492,8 +492,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                     </div>
                     <p className="mt-2 text-xs text-gray-500">
                       {availability.isHelpAvailable
-                        ? `Help available — up to ${availability.perDayCapacity} cars / day, 2 per slot.`
-                        : `Solo day — up to ${availability.perDayCapacity} cars / day, 1 per slot.`}{' '}
+                        ? `Help available - up to ${availability.perDayCapacity} cars / day, 2 per slot.`
+                        : `Solo day - up to ${availability.perDayCapacity} cars / day, 1 per slot.`}{' '}
                       Currently booked: {availability.totalBookings}.
                     </p>
                   </>
@@ -617,39 +617,48 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 <div className="border-t border-gray-600 pt-4">
                   <div className="flex justify-between text-gray-400 mb-2">
                     <span>Service</span>
-                    <span>${pricing.service}</span>
+                    <span>${pricing.service.toFixed(2)}</span>
                   </div>
                   {pricing.addOns > 0 && (
                     <div className="flex justify-between text-gray-400 mb-2">
                       <span>Add-ons</span>
-                      <span>${pricing.addOns}</span>
+                      <span>${pricing.addOns.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-400 mb-2">
                     <span>Subtotal</span>
                     <span>${pricing.subtotal.toFixed(2)}</span>
                   </div>
-                  {pricing.discount > 0 && (
-                    <div className="flex justify-between text-green-400 mb-2">
-                      <span>
-                        {appliedPromo
-                          ? `Promo "${appliedPromo.code}" −${appliedPromo.rate}%`
-                          : 'Returning customer −10%'}
-                      </span>
-                      <span>−${pricing.discount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-white font-semibold mb-3">
+                  {pricing.discount > 0 && (() => {
+                    // Compute the actual applied rate from the dollar amount so
+                    // the label always matches the discount shown. effectiveRate
+                    // in calculatePricing is max(returning, custom, promo); the
+                    // exact source isn't returned, so we infer the label from
+                    // what we know about this booking on the client.
+                    const ratePct = Math.round((pricing.discount / pricing.subtotal) * 100);
+                    const label = appliedPromo
+                      ? `Promo "${appliedPromo.code}" -${appliedPromo.rate}%`
+                      : isReturning
+                      ? `Returning customer -${ratePct}%`
+                      : `Discount -${ratePct}%`;
+                    return (
+                      <div className="flex justify-between text-green-400 mb-2">
+                        <span>{label}</span>
+                        <span>-${pricing.discount.toFixed(2)}</span>
+                      </div>
+                    );
+                  })()}
+                  <div className="flex justify-between text-white font-semibold mb-3 border-t border-gray-700 pt-3">
                     <span>Total</span>
                     <span>${pricing.total.toFixed(2)}</span>
                   </div>
 
-                  {/* Promo code entry — appears in the review step. */}
+                  {/* Promo code entry - appears in the review step. */}
                   <div className="mb-3 rounded-lg border border-gray-700 bg-gray-900/40 p-3">
                     {appliedPromo ? (
                       <div className="flex items-center justify-between gap-2 text-sm">
                         <span className="text-green-300">
-                          ✓ Code <span className="font-mono font-semibold">{appliedPromo.code}</span> applied —{' '}
+                          ✓ Code <span className="font-mono font-semibold">{appliedPromo.code}</span> applied -{' '}
                           {appliedPromo.rate}% off
                         </span>
                         <button

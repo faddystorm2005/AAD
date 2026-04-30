@@ -19,12 +19,12 @@ const oswald = Oswald({
 });
 
 const SITE_URL = "https://austin-autodetail.com";
-const SOCIAL_TITLE = "Mobile Detailing Austin — Austin Auto Detail Services";
+const SOCIAL_TITLE = "Mobile Detailing Austin - Austin Auto Detail Services";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
 // so search engines and social previews stay consistent. Hits service
 // breadth, the mobile-comes-to-you trust signal, and a clear CTA.
 const SOCIAL_DESCRIPTION =
-  "Austin's premier mobile auto detailing service. Full interior + exterior detailing, ceramic coatings, paint correction, wax, and more — we bring the studio to your driveway. Quality over quantity. Book online in minutes.";
+  "Austin's premier mobile auto detailing service. Full interior + exterior detailing, ceramic coatings, paint correction, wax, and more - we bring the studio to your driveway. Quality over quantity. Book online in minutes.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -93,7 +93,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${oswald.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-black text-white">
-        {/* Skip-to-content link — visible only when focused via keyboard.
+        {/* Skip-to-content link - visible only when focused via keyboard.
             Lets screen-reader / keyboard users bypass the sticky header nav
             and jump straight to page content. WCAG 2.4.1 (Bypass Blocks). */}
         <a

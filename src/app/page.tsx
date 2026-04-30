@@ -65,7 +65,7 @@ export default function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={DASHBOARD_BANNER.src}
-            alt="Mobile detailing in Austin — professional auto detailing at your location"
+            alt="Mobile detailing in Austin - professional auto detailing at your location"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
@@ -123,7 +123,7 @@ export default function Home() {
             <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
               auto detailing services
             </Link>
-            , and ceramic coatings — no driving across town, no waiting rooms.
+            , and ceramic coatings - no driving across town, no waiting rooms.
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ — adds keyword-rich content + answers common pre-booking questions */}
+      {/* FAQ - adds keyword-rich content + answers common pre-booking questions */}
       <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
@@ -236,7 +236,7 @@ export default function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={BOOK_CTA_IMAGE.src}
-            alt="Book mobile detailing in Austin — professional on-site car cleaning"
+            alt="Book mobile detailing in Austin - professional on-site car cleaning"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
@@ -249,7 +249,7 @@ export default function Home() {
                 Mobile Detailing in Austin
               </h3>
               <p className="mt-2 max-w-xl text-sm text-gray-300">
-                Quality, convenient on-site detailing brought to you. Book now for mobile detailing in Austin — pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit on approval; the rest on-site.
+                Quality, convenient on-site detailing brought to you. Book now for mobile detailing in Austin - pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit on approval; the rest on-site.
               </p>
             </div>
             <Link
@@ -273,7 +273,7 @@ export default function Home() {
             <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
               book mobile detailing in Austin
             </Link>{' '}
-            online — we&apos;ll confirm within 24 hours.
+            online - we&apos;ll confirm within 24 hours.
           </p>
         </div>
       </section>
@@ -334,7 +334,7 @@ const SERVICES = [
   {
     icon: '🚗',
     title: 'Interior + Exterior Detailing',
-    description: 'Full vehicle deep clean — vacuum, shampoo, wash, decontaminate, and dress every surface inside and out.',
+    description: 'Full vehicle deep clean - vacuum, shampoo, wash, decontaminate, and dress every surface inside and out.',
   },
   {
     icon: '✨',
@@ -349,7 +349,7 @@ const SERVICES = [
   {
     icon: '🛡️',
     title: '6-Month Wax',
-    description: 'Long-lasting wax application for daily protection from sun, rain, and road grime — without committing to a coating.',
+    description: 'Long-lasting wax application for daily protection from sun, rain, and road grime - without committing to a coating.',
   },
   {
     icon: '🧽',
@@ -358,15 +358,15 @@ const SERVICES = [
   },
   {
     icon: '📍',
-    title: 'Mobile — We Come To You',
-    description: 'Driveway, office parking lot, garage — anywhere in the Austin area. Three slots a day so you get our full attention.',
+    title: 'Mobile - We Come To You',
+    description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
   },
 ];
 
 const STEPS = [
   {
     title: 'Pick a slot',
-    description: '9 AM, 1 PM, or 5 PM, any day. Real-time availability — no calls, no back-and-forth.',
+    description: '9 AM, 1 PM, or 5 PM, any day. Real-time availability - no calls, no back-and-forth.',
   },
   {
     title: 'We confirm',
@@ -392,18 +392,18 @@ const REASONS = [
   {
     headline: '10 yrs',
     title: 'Ceramic coatings that last',
-    description: 'Premium products and patient prep. Our ceramic coatings hold up for years — not months.',
+    description: 'Premium products and patient prep. Our ceramic coatings hold up for years - not months.',
   },
 ];
 
 const FAQS = [
   {
     question: 'Where do you offer mobile detailing in Austin?',
-    answer: 'We service Austin and surrounding areas. Our detail van is fully self-contained — we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.',
+    answer: 'We service Austin and surrounding areas. Our detail van is fully self-contained - we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.',
   },
   {
     question: 'How long does a typical detail take?',
-    answer: 'Most interior + exterior details take 2–3 hours. Paint correction adds 1–2 hours. Ceramic coatings are a full-day job — that’s why we only book one ceramic coating per day at the 9 AM slot.',
+    answer: 'Most interior + exterior details take 2–3 hours. Paint correction adds 1–2 hours. Ceramic coatings are a full-day job - that’s why we only book one ceramic coating per day at the 9 AM slot.',
   },
   {
     question: 'Do I need to be home during the service?',
@@ -419,6 +419,6 @@ const FAQS = [
   },
   {
     question: 'Can I cancel or reschedule?',
-    answer: 'Reach out as soon as you can. We try to be flexible — life happens. The deposit is refundable up to 24 hours before your appointment.',
+    answer: 'Yes, you can cancel or reschedule from your account at any time before service. Note: deposits are non-refundable, but any deposit you have already paid converts into account credit toward a future booking. Reach out if you need help.',
   },
 ];

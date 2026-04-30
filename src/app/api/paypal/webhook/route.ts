@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * PayPal webhook handler — mirrors the Square handler.
+ * PayPal webhook handler - mirrors the Square handler.
  *
  * The new @paypal/paypal-server-sdk does NOT include a webhook helper, so
  * we verify by calling PayPal's /v1/notifications/verify-webhook-signature
@@ -35,7 +35,7 @@ function paypalApiBase(): string {
 /**
  * Get a fresh OAuth access token for calling PayPal's verify endpoint.
  * (We can't reuse the SDK's token since the verify endpoint is a different
- * API than Orders — but the credentials are the same.)
+ * API than Orders - but the credentials are the same.)
  */
 async function getAccessToken(): Promise<string | null> {
   const id = process.env.PAYPAL_CLIENT_ID;
@@ -117,7 +117,7 @@ async function verifyWebhook(req: NextRequest, rawBody: string): Promise<boolean
  * resource lives at event.resource. The reference_id we set on the order
  * lives in supplementary_data.related_ids.order_id (the order ID), but we
  * stamped our internal booking UUID onto purchase_units[].reference_id
- * — the SDK echoes that back via custom_id OR via the parent order, which
+ * - the SDK echoes that back via custom_id OR via the parent order, which
  * we look up if needed.
  */
 function extractBookingId(event: any): string | null {
@@ -128,7 +128,7 @@ function extractBookingId(event: any): string | null {
   const r = event?.resource;
   if (!r) return null;
 
-  // Most direct: custom_id (we don't currently set this — fall through).
+  // Most direct: custom_id (we don't currently set this - fall through).
   if (typeof r.custom_id === 'string' && r.custom_id) return r.custom_id;
 
   // Fallback: invoice_id (also unset by us).

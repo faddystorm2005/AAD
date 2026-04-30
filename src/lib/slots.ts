@@ -12,7 +12,7 @@ export const SLOT_LABELS: Record<SlotTime, string> = {
   '17:00:00': '5:00 PM',
 };
 
-// Ceramic coating runs the 9 AM (first) slot only — it's a full-day job
+// Ceramic coating runs the 9 AM (first) slot only - it's a full-day job
 // that needs an early start and time to cure. Only car detailed that day.
 export const CERAMIC_SLOT: SlotTime = '09:00:00';
 

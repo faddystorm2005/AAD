@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
  * (frees the slot in availability), records reason, removes from Google.
  *
  * Refuses cancellation of in_progress, completed, or already-cancelled
- * bookings — those are terminal/in-flight states the customer shouldn't
+ * bookings - those are terminal/in-flight states the customer shouldn't
  * be able to undo unilaterally.
  *
  * If the bookings table doesn't have 'cancelled' as a valid status enum
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Build the cancel update. cancel_reason and cancelled_at are optional
-  // columns — try writing them, fall back if they don't exist.
+  // columns - try writing them, fall back if they don't exist.
   const cancelLabel = isAdmin
     ? `Cancelled by admin${reason ? `: ${reason}` : ''}`
     : `Cancelled by customer${reason ? `: ${reason}` : ''}`;

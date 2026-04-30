@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Austin Auto Detail",
     short_name: "AAD",
     description:
-      "Premium mobile detailing in Austin. Book a wash, track your appointment, and pay your deposit — all in one place.",
+      "Premium mobile detailing in Austin. Book a wash, track your appointment, and pay your deposit - all in one place.",
     start_url: "/",
     scope: "/",
     display: "standalone",

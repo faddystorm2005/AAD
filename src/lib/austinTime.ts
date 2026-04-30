@@ -1,6 +1,6 @@
 // Time helpers for AAD Detailing in Austin, TX.
 // Austin observes DST (CDT = UTC-5 in summer, CST = UTC-6 in winter), so
-// we never hardcode an offset — `Intl` handles the DST switch automatically.
+// we never hardcode an offset - `Intl` handles the DST switch automatically.
 
 const AUSTIN_TZ = 'America/Chicago';
 
@@ -23,14 +23,14 @@ export function todayAustinDateString(): string {
  * date alone is enough to determine the offset unambiguously.
  */
 export function austinOffsetFor(dateStr: string): string {
-  // Noon UTC on the given date is always 6am or 7am Austin — same calendar date,
+  // Noon UTC on the given date is always 6am or 7am Austin - same calendar date,
   // and well after the 2am DST switch on transition days.
   const ref = new Date(`${dateStr}T12:00:00Z`);
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: AUSTIN_TZ,
     timeZoneName: 'longOffset',
   }).formatToParts(ref);
-  // `longOffset` returns strings like "GMT-05:00" — strip the "GMT" prefix.
+  // `longOffset` returns strings like "GMT-05:00" - strip the "GMT" prefix.
   const tz = parts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT-06:00';
   return tz.replace('GMT', '');
 }

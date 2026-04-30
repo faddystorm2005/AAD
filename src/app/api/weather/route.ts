@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 /**
  * GET /api/weather?date=YYYY-MM-DD
  *
- * Public — no auth (just a forecast lookup). Cached at the upstream-fetch
+ * Public - no auth (just a forecast lookup). Cached at the upstream-fetch
  * layer for 1h via Next.js revalidation, so repeated lookups for the same
  * date hit the cache.
  */

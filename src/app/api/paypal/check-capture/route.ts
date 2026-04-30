@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * directly, and if the order has been captured, flips deposit_paid + status
  * on the booking row.
  *
- * Public — no auth. Anyone with a booking UUID can trigger a check, which
+ * Public - no auth. Anyone with a booking UUID can trigger a check, which
  * is fine: it only ever advances the booking state forward (approved →
  * confirmed) based on PayPal's own confirmation. Worst case is wasted PayPal
  * API calls from random scraping.
@@ -49,7 +49,7 @@ async function getAccessToken(): Promise<string | null> {
 /**
  * Pull the PayPal order ID out of a saved payment_url. PayPal's approve link
  * looks like `https://www.sandbox.paypal.com/checkoutnow?token=8FG10923KF7134137`
- * — the token param IS the order ID.
+ * - the token param IS the order ID.
  */
 function extractOrderIdFromPayUrl(payUrl: string | null | undefined): string | null {
   if (!payUrl) return null;
@@ -146,7 +146,7 @@ export async function GET(req: NextRequest) {
     } else {
       const text = await captureRes.text().catch(() => '');
       console.error('[paypal check-capture] capture call failed', captureRes.status, text.slice(0, 300));
-      // 422 with ORDER_ALREADY_CAPTURED is fine — re-fetch to see captures.
+      // 422 with ORDER_ALREADY_CAPTURED is fine - re-fetch to see captures.
       if (captureRes.status === 422) {
         const refetch = await fetch(
           `${paypalApiBase()}/v2/checkout/orders/${orderId}`,

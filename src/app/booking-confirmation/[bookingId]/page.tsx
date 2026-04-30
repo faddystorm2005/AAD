@@ -41,7 +41,7 @@ const STATUS_HEADER: Record<BookingStatus, { title: string; subtitle: string; to
     tone: 'yellow',
   },
   approved: {
-    title: 'Approved — pay deposit',
+    title: 'Approved - pay deposit',
     subtitle: 'Your booking was approved. Pay the $30 deposit below to lock in your slot.',
     tone: 'blue',
   },
@@ -146,7 +146,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
     };
   }, [bookingId]);
 
-  // Polling fallback — when the booking is in 'approved' status (waiting on
+  // Polling fallback - when the booking is in 'approved' status (waiting on
   // deposit), we hit /api/paypal/check-capture which queries PayPal directly
   // and captures the order if the buyer has approved. If captured, it flips
   // the booking to confirmed in our DB. Then we re-fetch to update the UI.
@@ -159,7 +159,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
     if (!booking || booking.status !== 'approved') return;
     let cancelled = false;
     const tick = async () => {
-      // Ask PayPal directly via our server. Best-effort — failures are silent.
+      // Ask PayPal directly via our server. Best-effort - failures are silent.
       try {
         await fetch(`/api/paypal/check-capture?bookingId=${bookingId}`);
       } catch {
@@ -184,7 +184,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   }, [booking, bookingId]);
 
   const handleManualRefresh = async () => {
-    // Customer clicked "I paid — check now". First ask PayPal directly,
+    // Customer clicked "I paid - check now". First ask PayPal directly,
     // then refresh from DB.
     try {
       await fetch(`/api/paypal/check-capture?bookingId=${bookingId}`);
@@ -287,7 +287,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
                 onClick={handleManualRefresh}
                 className="press text-xs text-blue-300 underline hover:text-blue-200"
               >
-                I paid — check now
+                I paid - check now
               </button>
             </div>
           )}

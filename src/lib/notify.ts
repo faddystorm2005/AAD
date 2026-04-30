@@ -1,17 +1,17 @@
 /**
  * SMS (Twilio) + Email (Resend) notifications.
  *
- * Both helpers are best-effort: they never throw — the caller's main flow
+ * Both helpers are best-effort: they never throw - the caller's main flow
  * (booking creation, stage update, etc.) must keep working even if
  * notifications fail or aren't configured.
  *
  * Required env vars (set in Vercel → Settings → Environment Variables):
  *   TWILIO_ACCOUNT_SID
  *   TWILIO_AUTH_TOKEN
- *   TWILIO_FROM_NUMBER       — Twilio number that sends SMS, e.g. "+15125550100"
- *   ADMIN_NOTIFY_PHONE       — Admin's phone, e.g. "+15125559999"
+ *   TWILIO_FROM_NUMBER       - Twilio number that sends SMS, e.g. "+15125550100"
+ *   ADMIN_NOTIFY_PHONE       - Admin's phone, e.g. "+15125559999"
  *   RESEND_API_KEY
- *   NOTIFY_FROM_EMAIL        — verified sender, e.g. "alerts@austinautodetail.com"
+ *   NOTIFY_FROM_EMAIL        - verified sender, e.g. "alerts@austinautodetail.com"
  *
  * If env vars are missing, the helpers log "[notify] skipped" and return.
  */
@@ -171,7 +171,7 @@ export async function notifyAdminNewBooking(opts: {
   });
 
   const body =
-    `🚗 NEW BOOKING — Austin Auto Detail\n` +
+    `🚗 NEW BOOKING - Austin Auto Detail\n` +
     `${opts.customerName || 'Customer'}: ${opts.service}\n` +
     `${when}\n` +
     `${opts.address}\n` +
@@ -196,7 +196,7 @@ export async function notifyCustomerCarReady(opts: {
 
   const smsBody =
     `Hey ${name}! 🚗✨ Your ${opts.service} is complete. ` +
-    `Thanks for choosing Austin Auto Detail — see you next time!`;
+    `Thanks for choosing Austin Auto Detail - see you next time!`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
@@ -206,8 +206,8 @@ export async function notifyCustomerCarReady(opts: {
       </div>
       <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Your car is ready! 🚗✨</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hey ${name},</p>
-      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> is complete. Thanks for choosing Austin Auto Detail — we'd love to see you again.</p>
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">— Austin Auto Detail</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> is complete. Thanks for choosing Austin Auto Detail - we'd love to see you again.</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
     </div>
   `;
 

@@ -142,7 +142,7 @@ export async function exchangeCodeAndStore(
 
   // Google only returns a refresh_token on the FIRST consent. Re-using a
   // connection without revoking gives an empty refresh_token. We require it
-  // — tell the caller to disconnect and reconnect with prompt=consent.
+  // - tell the caller to disconnect and reconnect with prompt=consent.
   if (!json.refresh_token) {
     return {
       success: false,
@@ -168,7 +168,7 @@ export async function exchangeCodeAndStore(
 export async function disconnectGoogle(adminUserId: string): Promise<void> {
   const tokens = await getAdminTokens(adminUserId);
   if (tokens?.refreshToken) {
-    // Best-effort revoke. Ignore errors — we'll clear our copy regardless.
+    // Best-effort revoke. Ignore errors - we'll clear our copy regardless.
     fetch(`https://oauth2.googleapis.com/revoke?token=${tokens.refreshToken}`, {
       method: 'POST',
     }).catch(() => {});
@@ -245,14 +245,14 @@ function buildEventBody(b: BookingForGoogle) {
  * `google_event_id` is null, otherwise updates the existing event. Stores
  * the resulting event ID on the booking row.
  *
- * Best-effort — never throws. Logs and moves on if Google is unreachable.
+ * Best-effort - never throws. Logs and moves on if Google is unreachable.
  */
 export async function pushBookingToGoogle(
   adminUserId: string,
   bookingId: string
 ): Promise<void> {
   // Hard short-circuit: if Google OAuth isn't configured at the platform level,
-  // skip everything — no DB queries, no logs. Lets the integration ship before
+  // skip everything - no DB queries, no logs. Lets the integration ship before
   // the operator has done the Google Cloud setup.
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) return;
   try {

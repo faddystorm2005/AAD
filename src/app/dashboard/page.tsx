@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
-      {/* Ambient red glow — keeps the page from feeling flat. */}
+      {/* Ambient red glow - keeps the page from feeling flat. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[600px]"
@@ -153,7 +153,7 @@ export default function Dashboard() {
           <BookingsList />
         </div>
 
-        {/* Gallery — fills the empty space below bookings with car photos. */}
+        {/* Gallery - fills the empty space below bookings with car photos. */}
         <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '420ms' }}>
           <GalleryStrip />
         </div>

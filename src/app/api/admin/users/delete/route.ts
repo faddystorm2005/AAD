@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
  *   accidentally wiping a customer mid-flight. Force should only be
  *   used after the admin has manually cancelled their bookings.
  * - Refuses self-delete unless self is the LAST step (which would
- *   lock them out — caught by the last-admin check too)
+ *   lock them out - caught by the last-admin check too)
  *
  * Cascading: assumes a foreign-key cascade is set on profiles → bookings
  * and vehicles. If not, those rows are orphaned (still owned by the
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            'Cannot delete the last admin — the system needs at least one. Promote someone else first.',
+            'Cannot delete the last admin - the system needs at least one. Promote someone else first.',
         },
         { status: 409 }
       );

@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/availability?from=YYYY-MM-DD&to=YYYY-MM-DD
  *
  * Returns availability for every date in the inclusive range.
- * No auth required — booking customers (anonymous-ish) need to see slots.
+ * No auth required - booking customers (anonymous-ish) need to see slots.
  * Counts ALL bookings on each day regardless of payment status, so a slot
  * held by a pending or unpaid booking still blocks new ones.
  */
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   // Pull bookings that fall in the range. Filter by slot_date so we ignore
   // legacy bookings that pre-date the slot system. A completed booking
-  // (completed_at set OR status='completed') frees up the slot — the work
+  // (completed_at set OR status='completed') frees up the slot - the work
   // is done, capacity should be available again.
   const { data: bookings, error: bookingsErr } = await supabaseAdmin
     .from('bookings')
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     .neq('status', 'declined')
     .neq('status', 'completed')
     .is('completed_at', null);
-    // NOTE: not filtering 'cancelled' here — it isn't in the booking_status
+    // NOTE: not filtering 'cancelled' here - it isn't in the booking_status
     // enum on this DB. Cancel route falls back to 'declined' status, which
     // is already excluded. Re-add this filter once the enum has 'cancelled'.
 

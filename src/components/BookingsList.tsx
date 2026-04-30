@@ -93,14 +93,14 @@ export default function BookingsList() {
     if (!session?.access_token) return;
     if (
       !window.confirm(
-        "Cancel this booking? The slot will free up. If you've already paid the deposit, contact Austin Auto Detail about a refund."
+        "Cancel this booking? The slot will free up. Note: deposits are non-refundable, but if you've already paid one, you'll get an account credit toward a future booking."
       )
     ) {
       return;
     }
     setCancellingId(bookingId);
     setDeleteError(null);
-    // Optimistic — flip status to cancelled locally so the UI reacts
+    // Optimistic - flip status to cancelled locally so the UI reacts
     // immediately. Roll back on failure.
     const prev = bookings;
     setBookings((list) =>

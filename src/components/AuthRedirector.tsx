@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 /**
  * Side-effect-only component that redirects logged-in visitors to /dashboard.
- * Renders nothing — the homepage's marketing content stays visible until
+ * Renders nothing - the homepage's marketing content stays visible until
  * the redirect fires, so crawlers always see real content.
  */
 export default function AuthRedirector() {

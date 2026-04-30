@@ -1,4 +1,4 @@
-# Supabase Email Templates — Austin Auto Detail
+# Supabase Email Templates - Austin Auto Detail
 
 These templates live in the Supabase Dashboard, not in this repo. This file is
 just a record of what to paste so you can re-apply if Supabase ever loses them.
@@ -8,12 +8,12 @@ pick the template name → paste the Subject + HTML body → Save.
 
 ---
 
-## Confirm signup (Bug 4 — required)
+## Confirm signup (Bug 4 - required)
 
 ### Subject
 
 ```
-Welcome to Austin Auto Detail — Confirm your email
+Welcome to Austin Auto Detail - Confirm your email
 ```
 
 ### HTML body
@@ -105,7 +105,7 @@ If/when we enable passwordless sign-in, use the same template with these tweaks:
 
 ---
 
-## Custom SMTP (highly recommended — better deliverability)
+## Custom SMTP (highly recommended - better deliverability)
 
 Right now Supabase sends from `noreply@mail.app.supabase.io` which often hits
 spam. Switch to your own domain via Resend so emails arrive from
@@ -146,4 +146,4 @@ Required Supabase Dashboard config for the email-confirmation flow to work:
 
 Then test by signing up a fresh email address. The confirmation link should
 land on `/auth/callback`, exchange the code for a session, and redirect to
-`/dashboard` — no white page.
+`/dashboard` - no white page.

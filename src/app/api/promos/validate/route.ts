@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
  * POST /api/promos/validate
  * Body: { code: string }
  *
- * Public — used by the booking form to look up a code's discount rate.
+ * Public - used by the booking form to look up a code's discount rate.
  * Returns { valid: boolean, rate?: number, reason?: string }.
  *
  * NOTE: This is read-only. The actual discount apply + uses_count

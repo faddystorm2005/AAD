@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
   // Ceramic-only-at-5pm hard rule.
   if (isCeramic && body.slotTime !== CERAMIC_SLOT) {
     return NextResponse.json(
-      { error: 'Ceramic Coating is mornings only — please pick the first slot of the day (9:00 AM).' },
+      { error: 'Ceramic Coating is mornings only - please pick the first slot of the day (9:00 AM).' },
       { status: 400 }
     );
   }
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
         .neq('status', 'declined')
         .neq('status', 'completed')
         .is('completed_at', null),
-        // 'cancelled' deliberately not filtered — see availability/route.ts.
+        // 'cancelled' deliberately not filtered - see availability/route.ts.
       supabaseAdmin
         .from('daily_capacity')
         .select('is_help_available')
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
   const isReturning = (count ?? 0) > 0;
 
   // Per-customer custom discount (set by an admin in the Manage Users panel).
-  // Best-effort — if the columns don't exist yet we just skip it.
+  // Best-effort - if the columns don't exist yet we just skip it.
   let customDiscountRate = 0;
   let discountSingleUse = false;
   try {
@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
         promoCodeUsed = promo.code;
       }
     } catch {
-      // promo_codes table doesn't exist yet — silently skip.
+      // promo_codes table doesn't exist yet - silently skip.
     }
   }
 
@@ -256,7 +256,7 @@ export async function POST(req: NextRequest) {
     try {
       await supabaseAdmin.rpc('increment_promo_uses', { p_id: promoCodeId });
     } catch {
-      // RPC missing — fall back to a read+write (small race risk but OK).
+      // RPC missing - fall back to a read+write (small race risk but OK).
       const { data: cur } = await supabaseAdmin
         .from('promo_codes')
         .select('uses_count')
@@ -277,7 +277,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Fire-and-forget: SMS the admin so they know to approve. Doesn't block
-  // the response — even if Twilio is unreachable the customer's booking
+  // the response - even if Twilio is unreachable the customer's booking
   // still saves and they see the confirmation page.
   try {
     const { data: customer } = await supabaseAdmin

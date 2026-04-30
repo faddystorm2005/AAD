@@ -176,7 +176,7 @@ export default function AdminPage() {
     setUpdatingId(bookingId);
     setActionError(null);
 
-    // Optimistic update — mirror the server-side logic in
+    // Optimistic update - mirror the server-side logic in
     // /api/admin/update-stage so the UI reflects the change instantly.
     const prev = bookings;
     const now = new Date().toISOString();
@@ -270,7 +270,7 @@ export default function AdminPage() {
     setUpdatingId(bookingId);
     setActionError(null);
 
-    // Optimistic — flip to 'approved' immediately. The Square payment URL
+    // Optimistic - flip to 'approved' immediately. The Square payment URL
     // comes back in the response; we patch it in once we have it.
     const prev = bookings;
     const now = new Date().toISOString();
@@ -299,7 +299,7 @@ export default function AdminPage() {
           list.map((b) => (b.id === bookingId ? { ...b, payment_url: paymentUrl } : b))
         );
       }
-      setActionSuccess('Booking approved — deposit link sent to customer.');
+      setActionSuccess('Booking approved - deposit link sent to customer.');
     } catch (err: any) {
       setBookings(prev);
       setActionError(err.message || 'Approve failed');
@@ -312,7 +312,7 @@ export default function AdminPage() {
     if (!session?.access_token) return;
     if (
       !window.confirm(
-        'Permanently delete this booking? This wipes the row from the database — there is no undo.'
+        'Permanently delete this booking? This wipes the row from the database - there is no undo.'
       )
     ) {
       return;
@@ -351,7 +351,7 @@ export default function AdminPage() {
     setUpdatingId(bookingId);
     setActionError(null);
 
-    // Optimistic — mark declined and stash the reason so the slot frees up
+    // Optimistic - mark declined and stash the reason so the slot frees up
     // and the row moves out of the active list immediately.
     const prevBookings = bookings;
     const now = new Date().toISOString();
@@ -386,7 +386,7 @@ export default function AdminPage() {
         delete next[bookingId];
         return next;
       });
-      setActionSuccess('Booking declined — slot freed.');
+      setActionSuccess('Booking declined - slot freed.');
     } catch (err: any) {
       setBookings(prevBookings);
       setActionError(err.message || 'Decline failed');

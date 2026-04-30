@@ -37,7 +37,7 @@ export const ADD_ONS: AddOn[] = [
     id: CERAMIC_ADDON_ID,
     name: 'Ceramic Coating',
     price: 500,
-    description: 'Lasts up to 10 years. Mornings only — first slot of the day (9:00 AM), full-day job, 1 per day.',
+    description: 'Lasts up to 10 years. Mornings only - first slot of the day (9:00 AM), full-day job, 1 per day.',
   },
 ];
 
@@ -87,7 +87,7 @@ export function calculatePricing(
   const isReturning = opts.isReturning ?? false;
 
   // Use the highest of (returning, per-user, promo code). Discounts don't
-  // stack — pick the best one to keep math simple and predictable.
+  // stack - pick the best one to keep math simple and predictable.
   // All rates are clamped to [0, 50%].
   const customRate = Math.max(0, Math.min(50, opts.customDiscountRate ?? 0)) / 100;
   const promoRate = Math.max(0, Math.min(50, opts.promoDiscountRate ?? 0)) / 100;

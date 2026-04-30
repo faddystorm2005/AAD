@@ -20,7 +20,7 @@ export interface CalendarEvent {
 }
 
 /**
- * Escape per RFC 5545 §3.3.11 — backslash, comma, semicolon, and newline
+ * Escape per RFC 5545 §3.3.11 - backslash, comma, semicolon, and newline
  * have special meaning in TEXT properties.
  */
 function escapeText(s: string): string {

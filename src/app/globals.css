@@ -28,7 +28,7 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* iOS safe areas — padding so content doesn't slip under the notch /
+  /* iOS safe areas - padding so content doesn't slip under the notch /
      dynamic island / status bar / home indicator. Pairs with
      viewport-fit=cover in viewport meta. Left/right are 0 on most
      phones in portrait but get applied in landscape on notched devices. */
@@ -48,7 +48,7 @@ h6 {
   letter-spacing: 0.01em;
 }
 
-/* Branded focus ring — replaces the browser default. Only shown on
+/* Branded focus ring - replaces the browser default. Only shown on
    keyboard focus thanks to :focus-visible. */
 *:focus {
   outline: none;
@@ -59,7 +59,7 @@ h6 {
   border-radius: 6px;
 }
 
-/* Smooth scrollbar in webkit browsers — small but premium-feeling touch. */
+/* Smooth scrollbar in webkit browsers - small but premium-feeling touch. */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -82,9 +82,9 @@ h6 {
 }
 
 /* ---------- Motion library ---------- */
-/* Default easings: 'cubic-bezier(0.22, 1, 0.36, 1)' — confident, premium glide. */
+/* Default easings: 'cubic-bezier(0.22, 1, 0.36, 1)' - confident, premium glide. */
 
-/* Motion-only keyframes — content is never hidden (no opacity:0 initial
+/* Motion-only keyframes - content is never hidden (no opacity:0 initial
    state) so crawlers and primitive SEO scanners always see CTAs and
    headings. Visual effect is a subtle slide-in / scale-in on top of
    already-visible content. */
@@ -163,7 +163,7 @@ h6 {
 
 /* ──────────── Premium polish layer ──────────── */
 
-/* Frosted-glass card — subtle blur + gradient border + inner glow.
+/* Frosted-glass card - subtle blur + gradient border + inner glow.
    Looks great on dark themes and lifts cards off the page on mobile. */
 .glass-card {
   position: relative;
@@ -186,7 +186,7 @@ h6 {
     0 12px 40px -16px rgba(0, 0, 0, 0.8);
 }
 
-/* Gradient red CTA — replaces flat bg-red-600 where you want extra punch.
+/* Gradient red CTA - replaces flat bg-red-600 where you want extra punch.
    Has a faint gloss at the top and a glow on hover. */
 .btn-primary {
   background: linear-gradient(180deg, #e83444 0%, #d62030 50%, #b81a28 100%);
@@ -241,7 +241,7 @@ h6 {
   animation: aad-check-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards;
 }
 
-/* Soft pulsing glow ring — for highlighting selected slots, success states,
+/* Soft pulsing glow ring - for highlighting selected slots, success states,
    etc. Pure CSS, GPU-only. */
 @keyframes aad-glow-pulse {
   0%, 100% {
@@ -259,7 +259,7 @@ h6 {
   animation: aad-glow-pulse 2.4s ease-in-out infinite;
 }
 
-/* Gradient hero text — pairs with Oswald headings for a premium feel.
+/* Gradient hero text - pairs with Oswald headings for a premium feel.
    Goes from off-white at the top to a faint red wash at the bottom. */
 .text-gradient-hero {
   background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 60%, #ff6b78 130%);
@@ -270,7 +270,7 @@ h6 {
 
 /* Scroll-reveal: sections fade up as they scroll into view.
    Modern browsers use animation-timeline (no JS). The CSS gracefully
-   degrades — older browsers just see the content normally. */
+   degrades - older browsers just see the content normally. */
 @supports (animation-timeline: view()) {
   .reveal-on-scroll {
     animation: aad-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -278,13 +278,13 @@ h6 {
     animation-range: entry 0% cover 30%;
   }
 }
-/* Make sure scroll-revealed elements are always visible to crawlers — even
+/* Make sure scroll-revealed elements are always visible to crawlers - even
    if a scanner doesn't support animation-timeline, content renders normally. */
 .reveal-on-scroll {
   opacity: 1;
 }
 
-/* Skeleton shimmer — replaces the basic animate-pulse with a more refined
+/* Skeleton shimmer - replaces the basic animate-pulse with a more refined
    left-to-right sheen. Use on a placeholder background. */
 .shimmer {
   position: relative;
@@ -305,7 +305,7 @@ h6 {
   background-size: 200% 100%;
 }
 
-/* Form input polish — smooth focus transitions across every <input>,
+/* Form input polish - smooth focus transitions across every <input>,
    <textarea>, and <select>. Doesn't override Tailwind borders/colors. */
 input,
 textarea,
@@ -318,7 +318,7 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(214, 32, 48, 0.18);
 }
 
-/* Button polish — applies a uniform cursor + disabled state. Doesn't
+/* Button polish - applies a uniform cursor + disabled state. Doesn't
    change Tailwind padding/colors so existing buttons stay the same. */
 button {
   cursor: pointer;
@@ -327,7 +327,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Respect users who prefer reduced motion — disable all decorative animations. */
+/* Respect users who prefer reduced motion - disable all decorative animations. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-fade-in,

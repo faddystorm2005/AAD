@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * Admin-only routes for managing users.
  *
  *   GET  /api/admin/users           → list profiles + per-user stats + admin toggle data
- *   POST /api/admin/users           → body: { userId, isAdmin: boolean } — toggle admin
+ *   POST /api/admin/users           → body: { userId, isAdmin: boolean } - toggle admin
  *
  * Per-user discount and booking history live in sibling routes.
  */
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
   const auth = await requireAdmin(req);
   if (auth instanceof NextResponse) return auth;
 
-  // Profiles — request the discount column too. If it doesn't exist yet
+  // Profiles - request the discount column too. If it doesn't exist yet
   // (admin hasn't run the SQL), fall back to a query without it.
   let profiles: any[] | null = null;
   let profilesErr: { message: string } | null = null;
@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (profilesErr) {
-    // Retry without the new columns — some installs haven't run the migrations.
+    // Retry without the new columns - some installs haven't run the migrations.
     const { data, error } = await supabaseAdmin
       .from('profiles')
       .select('id, email, full_name, phone, is_admin, created_at')
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
           {
             error:
-              'Cannot demote the last admin — the system needs at least one. Promote someone else first.',
+              'Cannot demote the last admin - the system needs at least one. Promote someone else first.',
           },
           { status: 409 }
         );

@@ -1,7 +1,7 @@
 /**
  * Booking workflow stages.
  *
- * Stages are *dynamic per booking* — the visible sequence depends on the
+ * Stages are *dynamic per booking* - the visible sequence depends on the
  * add-ons the customer chose. A basic wash skips paint correction and
  * coatings; a full detail with ceramic shows everything.
  *

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 /**
- * Sitemap for search engines. Only public pages — anything behind
+ * Sitemap for search engines. Only public pages - anything behind
  * auth (dashboard, admin, settings, etc.) is excluded since crawlers
  * can't reach those anyway and they have no SEO value.
  *

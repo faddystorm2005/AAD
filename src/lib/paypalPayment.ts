@@ -1,5 +1,5 @@
 /**
- * PayPal payment integration — mirrors the surface of squarePayment.ts so
+ * PayPal payment integration - mirrors the surface of squarePayment.ts so
  * /api/admin/approve can swap between the two via the PAYMENT_PROCESSOR
  * env var without other code changes.
  *
@@ -14,7 +14,7 @@
  *   6. check-capture sees APPROVED → calls POST /v2/checkout/orders/{id}/capture
  *      → status=COMPLETED → flips deposit_paid + status to confirmed
  *
- * !!! GOTCHA — DO NOT REMOVE THIS COMMENT !!!
+ * !!! GOTCHA - DO NOT REMOVE THIS COMMENT !!!
  * intent=CAPTURE does NOT auto-capture for server-side flows. The PayPal
  * v2 Orders API leaves the order at status=APPROVED after buyer approval
  * and requires the merchant to explicitly POST to /capture. This is
@@ -22,7 +22,7 @@
  * The capture call lives in src/app/api/paypal/check-capture/route.ts.
  *
  * Webhooks (/api/paypal/webhook) are wired up as a backup but the polling
- * is the source of truth — sandbox webhook delivery has been unreliable
+ * is the source of truth - sandbox webhook delivery has been unreliable
  * and the simulator can't validate against sandbox webhook IDs (cert/env
  * mismatch by PayPal's design).
  */
@@ -80,7 +80,7 @@ function getOrdersController(): OrdersController {
  *
  * @param amountInCents  Amount in cents (e.g., 3000 for $30)
  * @param description    Shown on PayPal checkout
- * @param orderId        Internal booking UUID — stamped on referenceId so
+ * @param orderId        Internal booking UUID - stamped on referenceId so
  *                       the webhook can correlate the payment back
  * @param returnUrl      Where PayPal sends the customer after payment
  */
@@ -96,7 +96,7 @@ export async function createPaymentLink(
   const value = (amountInCents / 100).toFixed(2);
 
   // Cancel URL: same destination, just flagged so the page can show a
-  // "you cancelled — try again" hint if we add one later.
+  // "you cancelled - try again" hint if we add one later.
   const cancelUrl = `${returnUrl}${returnUrl.includes('?') ? '&' : '?'}cancelled=true`;
 
   let response;
@@ -131,7 +131,7 @@ export async function createPaymentLink(
       prefer: 'return=representation',
     });
   } catch (err: any) {
-    // PayPal SDK errors put the real detail on .result, .body, or .response —
+    // PayPal SDK errors put the real detail on .result, .body, or .response -
     // not always .message. Surface everything we can find for debugging.
     const detail =
       err?.message ||
@@ -154,7 +154,7 @@ export async function createPaymentLink(
     throw new Error('PayPal order created but no ID returned');
   }
 
-  // Find the HATEOAS approve link — that's the customer-facing payment URL.
+  // Find the HATEOAS approve link - that's the customer-facing payment URL.
   const approveLink = order.links?.find((l) => l.rel === 'approve' || l.rel === 'payer-action');
   if (!approveLink?.href) {
     throw new Error('PayPal order created but no approve link returned');

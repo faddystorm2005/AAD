@@ -29,7 +29,7 @@ interface UserBooking {
 }
 
 interface Props {
-  /** Current admin's user_id — used to flag self-demote in the UI. */
+  /** Current admin's user_id - used to flag self-demote in the UI. */
   currentAdminId: string;
   /** Supabase access token for the API calls. */
   accessToken: string | null;
@@ -406,7 +406,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                               className="h-3.5 w-3.5"
                             />
                             <span>
-                              Single use only — auto-clears to 0% after their next booking
+                              Single use only - auto-clears to 0% after their next booking
                             </span>
                           </label>
                         </div>
@@ -467,7 +467,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                           <p className="text-xs text-gray-400">
                             {u.is_admin
                               ? 'Has admin access to this dashboard.'
-                              : 'Standard customer — no admin access.'}
+                              : 'Standard customer - no admin access.'}
                           </p>
                           <button
                             type="button"
@@ -483,7 +483,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                           </button>
                         </div>
 
-                        {/* Danger zone — delete user permanently */}
+                        {/* Danger zone - delete user permanently */}
                         {!isSelf && (
                           <div className="border-t border-red-900/40 pt-3">
                             <p className="text-xs font-semibold uppercase tracking-wider text-red-500">

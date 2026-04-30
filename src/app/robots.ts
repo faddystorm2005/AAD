@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 /**
- * robots.txt for crawlers — allows public marketing pages, blocks
+ * robots.txt for crawlers - allows public marketing pages, blocks
  * everything customer/admin-private and the API surface.
  *
  * Next.js generates the actual /robots.txt file at build time from this.

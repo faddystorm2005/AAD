@@ -1,4 +1,4 @@
-/* AAD Detailing service worker — minimal offline support, no push notifications.
+/* AAD Detailing service worker - minimal offline support, no push notifications.
  *
  * BUMP THE VERSION every time you ship code that needs all clients to refresh.
  * The activate handler purges any cache that doesn't match the new version
@@ -43,7 +43,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never cache Next.js dev/HMR or API routes — they must always hit the network.
+  // Never cache Next.js dev/HMR or API routes - they must always hit the network.
   if (
     url.pathname.startsWith("/api/") ||
     url.pathname.startsWith("/_next/webpack-hmr") ||

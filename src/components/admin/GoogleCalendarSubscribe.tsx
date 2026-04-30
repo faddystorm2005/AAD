@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 
 interface Props {
-  /** The admin's Supabase user_id — used to build the ICS subscription URL. */
+  /** The admin's Supabase user_id - used to build the ICS subscription URL. */
   adminUserId: string;
-  /** The admin's Supabase access token — used to call the status/disconnect endpoints. */
+  /** The admin's Supabase access token - used to call the status/disconnect endpoints. */
   accessToken: string | null;
 }
 
@@ -18,7 +18,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Build the ICS subscription URL — works on localhost AND production.
+  // Build the ICS subscription URL - works on localhost AND production.
   const icsUrl =
     typeof window !== 'undefined'
       ? `${window.location.origin}/api/admin/calendar?u=${adminUserId}`
@@ -158,7 +158,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
 
       {open && (
         <div className="mt-4 space-y-5 border-t border-white/10 pt-4">
-          {/* OAuth — instant push */}
+          {/* OAuth - instant push */}
           <div className="space-y-3">
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
@@ -192,7 +192,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
           <div className="border-t border-white/10 pt-4 space-y-3">
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-                Or — subscribe via URL (no sign-in, ~12h delay)
+                Or - subscribe via URL (no sign-in, ~12h delay)
               </h3>
               <p className="mt-1 text-xs text-gray-400">
                 Read-only ICS feed Google polls on its own schedule.
@@ -215,7 +215,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
               </button>
             </div>
             <p className="text-xs text-yellow-300">
-              ⚠️ Keep this URL private — anyone with it can see your bookings.
+              ⚠️ Keep this URL private - anyone with it can see your bookings.
             </p>
           </div>
         </div>
