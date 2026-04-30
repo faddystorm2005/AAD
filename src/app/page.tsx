@@ -111,6 +111,12 @@ export default function Home() {
                 Explore Services
               </a>
             </div>
+            <p
+              className="animate-fade-up mt-3 text-sm text-gray-300"
+              style={{ animationDelay: '320ms' }}
+            >
+              Prefer to call? <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">(480) 793-3782</a>
+            </p>
           </div>
         </div>
       </section>
@@ -154,6 +160,11 @@ export default function Home() {
               <div className="text-3xl">{s.icon}</div>
               <h3 className="mt-4 text-lg font-bold text-white">{s.title}</h3>
               <p className="mt-2 text-base text-gray-200">{s.description}</p>
+              {s.priceLabel ? (
+                <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-red-300">
+                  {s.priceLabel}
+                </p>
+              ) : null}
               <Link
                 href="/auth"
                 className="mt-4 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200"
@@ -381,7 +392,11 @@ export default function Home() {
             Contact Austin Auto Detail
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Mobile detailing across Austin and the surrounding area. The fastest way to reach us is to{' '}
+            Mobile detailing across Austin and the surrounding area. Call or text{' '}
+            <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
+              (480) 793-3782
+            </a>
+            , or{' '}
             <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
               book online
             </Link>
@@ -399,6 +414,11 @@ export default function Home() {
             </p>
             <p className="mt-3 text-base text-gray-200">
               Mobile detailing in Austin. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
+            </p>
+            <p className="mt-4 text-base text-gray-200">
+              <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
+                (480) 793-3782
+              </a>
             </p>
           </div>
           <nav aria-label="Services">
@@ -450,41 +470,49 @@ const SERVICES = [
     icon: '🚗',
     title: 'Exterior Detailing',
     description: 'Hand wash, decontamination, clay bar, and trim/tire dressing. Your paint reset to like-new.',
+    priceLabel: 'Part of full detail, from $199',
   },
   {
     icon: '🛋️',
     title: 'Interior Detailing',
     description: 'Vacuum, shampoo carpets and seats, wipe and dress every surface. Cabin completely reset.',
+    priceLabel: 'Part of full detail, from $199',
   },
   {
     icon: '✨',
     title: 'Ceramic Coating',
     description: 'Premium clear coat that lasts up to 10 years. Adds gloss and protects paint from UV, water spots, and contaminants.',
+    priceLabel: 'Quote',
   },
   {
     icon: '🪞',
     title: 'Paint Correction',
     description: 'One- or two-step paint correction to remove swirl marks, oxidation, and minor scratches. Restores depth and clarity.',
+    priceLabel: 'Add-on, from $95',
   },
   {
     icon: '🛡️',
     title: '6-Month Wax',
     description: 'Long-lasting wax application for daily protection from sun, rain, and road grime - without committing to a coating.',
+    priceLabel: 'Add-on, from $50',
   },
   {
     icon: '🔧',
     title: 'Engine Bay Cleaning',
     description: 'Deep degrease and dress under the hood. Brings the engine bay back to showroom clean.',
+    priceLabel: 'Add-on, from $25',
   },
   {
     icon: '🧴',
     title: 'Stain Removal',
     description: 'Targeted treatment for stubborn upholstery, carpet, and seat stains. Coffee, ink, pet, you name it.',
+    priceLabel: 'Add-on, from $30',
   },
   {
     icon: '📍',
     title: 'Mobile - We Come To You',
     description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
+    priceLabel: '',
   },
 ];
 
