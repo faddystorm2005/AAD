@@ -32,6 +32,7 @@ export default function Home() {
           </Link>
           <div className="hidden items-center gap-6 text-base font-medium text-gray-100 sm:flex">
             <a href="#services" className="hover:text-red-300">Services</a>
+            <a href="#recent-work" className="hover:text-red-300">Work</a>
             <a href="#how-it-works" className="hover:text-red-300">How It Works</a>
             <a href="#faq" className="hover:text-red-300">FAQ</a>
             <a href="#contact" className="hover:text-red-300">Contact</a>
@@ -171,6 +172,40 @@ export default function Home() {
               >
                 Book this service →
               </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Recent Work, real photos placed right after services so the
+          work itself sells what the cards described. */}
+      <section
+        id="recent-work"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
+      >
+        <div className="reveal-on-scroll">
+          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Recent Work
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Real cars, real drivers. A look at recent details from across Austin.
+          </p>
+        </div>
+
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {GALLERY.map((p, i) => (
+            <div
+              key={p.src}
+              className="reveal-on-scroll lift-hover animate-fade-up relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={p.src}
+                alt={p.alt}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
           ))}
         </div>
@@ -598,4 +633,14 @@ const FAQS = [
     question: 'Can I cancel or reschedule?',
     answer: 'Yes. To reschedule, open your booking and pick a new time. You can do that yourself any time before service. To cancel, tap Request Cancellation and add a quick reason. We\'ll review within 24 hours. Once approved, your $30 deposit becomes account credit toward a future booking.',
   },
+];
+
+const GALLERY = [
+  { src: '/images/aad/gallery-audi-s4-red-leather.jpg', alt: 'Audi S4 with red diamond-stitched leather, detailed by Austin Auto Detail' },
+  { src: '/images/aad/gallery-mercedes-gle-interior.jpg', alt: 'Mercedes GLE interior with brown leather, detailed by Austin Auto Detail' },
+  { src: '/images/aad/gallery-bmw-engine-bay.jpg', alt: 'BMW engine bay deep cleaned by Austin Auto Detail' },
+  { src: '/images/aad/gallery-ford-super-duty.jpg', alt: 'Ford Super Duty interior detailed by Austin Auto Detail' },
+  { src: '/images/aad/gallery-toyota-tundra-console.jpg', alt: 'Toyota Tundra console area detailed by Austin Auto Detail' },
+  { src: '/images/aad/gallery-nissan-rogue-interior.jpg', alt: 'Nissan Rogue interior detailed by Austin Auto Detail' },
+  { src: '/images/aad/gallery-suv-cargo-area.jpg', alt: 'SUV cargo area cleaned by Austin Auto Detail' },
 ];
