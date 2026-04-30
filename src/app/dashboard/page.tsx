@@ -18,6 +18,7 @@ export default function Dashboard() {
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [justSignedIn, setJustSignedIn] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -31,21 +32,32 @@ export default function Dashboard() {
     })();
   }, [user]);
 
-  // First-time users land here from /auth/callback with ?firstTime=1.
-  // Auto-open the Add Vehicle modal so they can finish onboarding without
-  // having to find the button. We read window.location.search directly
-  // instead of useSearchParams to avoid pulling another <Suspense> wrapper
-  // into this page (Next.js 16 prerender requirement).
+  // Post-sign-in handling. /auth/callback tags the redirect with
+  //   ?signedIn=1            - show a confirmation toast
+  //   ?firstTime=1           - also auto-open the Add Vehicle modal
+  // We read window.location.search directly to avoid pulling another
+  // <Suspense> wrapper in (Next.js 16 prerender requirement).
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get('firstTime') === '1') {
-      setShowAddVehicle(true);
-      // Clean the URL so a refresh doesn't re-trigger the modal.
-      const cleaned = window.location.pathname;
-      window.history.replaceState({}, '', cleaned);
+    const signedIn = params.get('signedIn') === '1';
+    const firstTime = params.get('firstTime') === '1';
+
+    if (signedIn) setJustSignedIn(true);
+    if (firstTime) setShowAddVehicle(true);
+
+    if (signedIn || firstTime) {
+      // Clean the URL so a refresh doesn't re-fire the toast/modal.
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
+
+  // Auto-dismiss the sign-in toast after a few seconds.
+  useEffect(() => {
+    if (!justSignedIn) return;
+    const t = setTimeout(() => setJustSignedIn(false), 4500);
+    return () => clearTimeout(t);
+  }, [justSignedIn]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -54,6 +66,51 @@ export default function Dashboard() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Sign-in confirmation toast. Slides down from the top after a fresh
+          sign-in so the user gets unmistakable feedback that the magic link
+          worked, not just a silent page change. Auto-dismisses after 4.5s. */}
+      {justSignedIn && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="animate-fade-up fixed left-1/2 top-4 z-50 -translate-x-1/2"
+        >
+          <div className="flex items-center gap-3 rounded-full border border-green-500/40 bg-green-900/80 px-5 py-3 text-sm shadow-2xl shadow-green-900/40 backdrop-blur-md">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500/20">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-green-300"
+                aria-hidden="true"
+              >
+                <path d="M5 13l4 4L19 7" className="animate-check-draw" />
+              </svg>
+            </span>
+            <div className="text-left">
+              <div className="font-semibold text-green-100">You're signed in</div>
+              {user?.email && (
+                <div className="text-xs text-green-200/80">{user.email}</div>
+              )}
+            </div>
+            <button
+              onClick={() => setJustSignedIn(false)}
+              className="ml-2 text-green-300/60 hover:text-white"
+              aria-label="Dismiss"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Ambient red glow - keeps the page from feeling flat. */}
       <div
         aria-hidden

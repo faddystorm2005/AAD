@@ -67,6 +67,7 @@ export async function GET(req: NextRequest) {
   // path - we'd rather not block the redirect on a non-critical check.
   const userId = data.session?.user?.id;
   let destination = next.startsWith('/') ? next : '/dashboard';
+  let firstTime = false;
 
   if (userId && destination === '/dashboard') {
     try {
@@ -74,13 +75,15 @@ export async function GET(req: NextRequest) {
         .from('vehicles')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', userId);
-      if ((count ?? 0) === 0) {
-        destination = '/dashboard?firstTime=1';
-      }
+      if ((count ?? 0) === 0) firstTime = true;
     } catch {
-      // Ignore - fall through to /dashboard.
+      // Ignore - fall through to default destination.
     }
   }
 
-  return NextResponse.redirect(`${origin}${destination}`);
+  // Tag the redirect so the dashboard can show a "you're signed in"
+  // confirmation toast - the redirect alone isn't a strong enough signal.
+  const sep = destination.includes('?') ? '&' : '?';
+  const tags = firstTime ? `${sep}signedIn=1&firstTime=1` : `${sep}signedIn=1`;
+  return NextResponse.redirect(`${origin}${destination}${tags}`);
 }
