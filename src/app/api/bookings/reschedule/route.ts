@@ -120,9 +120,9 @@ export async function POST(req: NextRequest) {
         .not('slot_time', 'is', null)
         .neq('status', 'declined')
         .neq('status', 'completed')
-        .neq('status', 'cancelled')
         .neq('id', bookingId)
         .is('completed_at', null),
+        // 'cancelled' deliberately not filtered — see availability/route.ts.
       supabaseAdmin
         .from('daily_capacity')
         .select('is_help_available')

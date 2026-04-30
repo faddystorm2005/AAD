@@ -37,8 +37,10 @@ export async function GET(req: NextRequest) {
     .not('slot_time', 'is', null)
     .neq('status', 'declined')
     .neq('status', 'completed')
-    .neq('status', 'cancelled')
     .is('completed_at', null);
+    // NOTE: not filtering 'cancelled' here — it isn't in the booking_status
+    // enum on this DB. Cancel route falls back to 'declined' status, which
+    // is already excluded. Re-add this filter once the enum has 'cancelled'.
 
   if (bookingsErr) {
     return NextResponse.json({ error: bookingsErr.message }, { status: 500 });

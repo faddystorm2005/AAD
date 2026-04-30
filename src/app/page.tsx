@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
+import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -29,6 +30,7 @@ export default function Home() {
             <a href="#how-it-works" className="hover:text-white">How It Works</a>
             <a href="#faq" className="hover:text-white">FAQ</a>
             <a href="#contact" className="hover:text-white">Contact</a>
+            <HomeNavAccountLink />
           </div>
           <Link
             href="/auth"
