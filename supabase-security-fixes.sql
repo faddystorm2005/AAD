@@ -77,7 +77,13 @@ revoke execute on function public.handle_new_user() from authenticated;
 
 revoke execute on function public.is_current_user_admin() from public;
 revoke execute on function public.is_current_user_admin() from anon;
-revoke execute on function public.is_current_user_admin() from authenticated;
+-- NOTE: do NOT revoke from authenticated. This function is called from
+-- inside RLS policies on profiles/vehicles/bookings, and signed-in users
+-- need EXECUTE permission for those policies to evaluate. Revoking it
+-- silently breaks every customer-facing read/write on those tables.
+-- The linter will still flag this as a WARN, but it's a false positive
+-- for our use case - we genuinely need authenticated to be able to call it.
+grant execute on function public.is_current_user_admin() to authenticated;
 
 
 -- 3. Replace the SECURITY DEFINER view with a SECURITY INVOKER view so the
