@@ -1,12 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import GalleryStrip from '@/components/GalleryStrip';
 import { HERO_IMAGE } from '@/lib/siteImages';
 
+/**
+ * Next.js 16 requires any component reading useSearchParams to be wrapped
+ * in a <Suspense> boundary so the prerender doesn't bail. The default
+ * export is just a thin shell that provides that boundary; the actual
+ * UI lives in <AuthInner />.
+ */
 export default function Auth() {
+  return (
+    <Suspense fallback={<AuthFallback />}>
+      <AuthInner />
+    </Suspense>
+  );
+}
+
+function AuthFallback() {
+  return (
+    <main className="min-h-screen bg-black px-6 py-16 text-white">
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+      </div>
+    </main>
+  );
+}
+
+function AuthInner() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
