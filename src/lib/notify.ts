@@ -225,3 +225,159 @@ export async function notifyCustomerCarReady(opts: {
   }
   await Promise.allSettled(promises);
 }
+
+/**
+ * Tell the admin a customer requested a cancellation. Booking is still
+ * in its prior status; admin needs to log into /admin to approve or deny.
+ */
+export async function notifyAdminCancellationRequest(opts: {
+  bookingId: string;
+  customerName: string | null;
+  customerPhone: string | null;
+  service: string;
+  scheduledAt: string;
+  reason: string | null;
+}): Promise<void> {
+  let to = process.env.ADMIN_NOTIFY_PHONE || null;
+  if (!to) {
+    const { data: admin } = await supabaseAdmin
+      .from('profiles')
+      .select('phone')
+      .eq('is_admin', true)
+      .not('phone', 'is', null)
+      .limit(1)
+      .maybeSingle();
+    to = admin?.phone ?? null;
+  }
+  if (!to) {
+    console.log('[notify] cancel-request sms skipped: no admin phone configured');
+    return;
+  }
+
+  const when = new Date(opts.scheduledAt).toLocaleString('en-US', {
+    timeZone: 'America/Chicago',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
+  const body =
+    `⚠️ CANCEL REQUEST - Austin Auto Detail\n` +
+    `${opts.customerName || 'Customer'}: ${opts.service}\n` +
+    `${when}\n` +
+    (opts.customerPhone ? `📞 ${opts.customerPhone}\n` : '') +
+    (opts.reason ? `Reason: ${opts.reason}\n` : '') +
+    `\nReview: https://austinautodetail.vercel.app/admin`;
+
+  await sendSms(to, body);
+}
+
+/**
+ * Tell the customer their cancellation was approved. If account credit was
+ * issued, mention the dollar amount and where to find it.
+ */
+export async function notifyCustomerCancellationApproved(opts: {
+  customerName: string | null;
+  customerPhone: string | null;
+  customerEmail: string | null;
+  service: string;
+  creditIssued: number;
+}): Promise<void> {
+  const name = opts.customerName?.split(' ')[0] || 'there';
+  const creditLine =
+    opts.creditIssued > 0
+      ? ` We've added a $${opts.creditIssued.toFixed(2)} account credit toward your next booking.`
+      : '';
+
+  const smsBody =
+    `Hi ${name}, your cancellation for "${opts.service}" was approved.` +
+    `${creditLine} - Austin Auto Detail`;
+
+  const emailHtml = `
+    <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
+      <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+      </div>
+      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Cancellation approved</h1>
+      <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your cancellation for <strong style="color: #fff;">${opts.service}</strong> has been approved.</p>
+      ${
+        opts.creditIssued > 0
+          ? `<p style="color: #c8c8c8; line-height: 1.6;">We added a <strong style="color: #fff;">$${opts.creditIssued.toFixed(
+              2
+            )}</strong> account credit. It will apply automatically to your next booking.</p>`
+          : ''
+      }
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+    </div>
+  `;
+
+  const promises: Promise<unknown>[] = [];
+  if (opts.customerPhone) promises.push(sendSms(opts.customerPhone, smsBody));
+  if (opts.customerEmail) {
+    promises.push(
+      sendEmail({
+        to: opts.customerEmail,
+        subject: 'Cancellation approved',
+        html: emailHtml,
+        text: smsBody,
+      })
+    );
+  }
+  await Promise.allSettled(promises);
+}
+
+/**
+ * Tell the customer their cancellation was denied. Includes optional
+ * admin note explaining why.
+ */
+export async function notifyCustomerCancellationDenied(opts: {
+  customerName: string | null;
+  customerPhone: string | null;
+  customerEmail: string | null;
+  service: string;
+  note: string | null;
+}): Promise<void> {
+  const name = opts.customerName?.split(' ')[0] || 'there';
+
+  const smsBody =
+    `Hi ${name}, your cancellation request for "${opts.service}" was not approved.` +
+    (opts.note ? ` Note: ${opts.note}` : '') +
+    ` Please reach out if you need help. - Austin Auto Detail`;
+
+  const emailHtml = `
+    <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
+      <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+      </div>
+      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Cancellation request update</h1>
+      <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your cancellation request for <strong style="color: #fff;">${opts.service}</strong> couldn't be approved this time. Your booking is still scheduled.</p>
+      ${
+        opts.note
+          ? `<p style="color: #c8c8c8; line-height: 1.6;"><strong style="color: #fff;">Note:</strong> ${opts.note}</p>`
+          : ''
+      }
+      <p style="color: #c8c8c8; line-height: 1.6;">If something changed, just reply or text us and we'll work it out.</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+    </div>
+  `;
+
+  const promises: Promise<unknown>[] = [];
+  if (opts.customerPhone) promises.push(sendSms(opts.customerPhone, smsBody));
+  if (opts.customerEmail) {
+    promises.push(
+      sendEmail({
+        to: opts.customerEmail,
+        subject: 'Cancellation request update',
+        html: emailHtml,
+        text: smsBody,
+      })
+    );
+  }
+  await Promise.allSettled(promises);
+}

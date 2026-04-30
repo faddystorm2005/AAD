@@ -45,6 +45,8 @@ export interface BookingRow {
   is_ceramic?: boolean;
   slot_date?: string | null;
   slot_time?: string | null;
+  cancel_requested_at?: string | null;
+  cancel_request_reason?: string | null;
 }
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
@@ -89,39 +91,49 @@ export default function BookingsList() {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [reschedulingBooking, setReschedulingBooking] = useState<BookingRow | null>(null);
 
-  const handleCancel = async (bookingId: string) => {
+  // Customers no longer cancel directly - they submit a request and the
+  // admin approves or denies (and may issue an account credit).
+  const handleRequestCancellation = async (bookingId: string) => {
     if (!session?.access_token) return;
-    if (
-      !window.confirm(
-        "Cancel this booking? The slot will free up. Note: deposits are non-refundable, but if you've already paid one, you'll get an account credit toward a future booking."
-      )
-    ) {
-      return;
-    }
+    const reason = window.prompt(
+      "Request cancellation? Tell us briefly why so we can decide quickly. We'll review and get back to you. If we approve and you've paid a deposit, you'll get account credit toward a future booking.",
+      ''
+    );
+    // Null = user pressed Cancel on the prompt itself. Empty string is OK.
+    if (reason === null) return;
+
     setCancellingId(bookingId);
     setDeleteError(null);
-    // Optimistic - flip status to cancelled locally so the UI reacts
-    // immediately. Roll back on failure.
     const prev = bookings;
+    // Optimistic: stamp cancel_requested_at locally so the badge appears
+    // instantly. Rolls back if the API call fails.
     setBookings((list) =>
-      list.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
+      list.map((b) =>
+        b.id === bookingId
+          ? {
+              ...b,
+              cancel_requested_at: new Date().toISOString(),
+              cancel_request_reason: reason || null,
+            }
+          : b
+      )
     );
     try {
-      const res = await fetch('/api/bookings/cancel', {
+      const res = await fetch('/api/bookings/cancel-request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ bookingId }),
+        body: JSON.stringify({ bookingId, reason }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body?.error || 'Cancel failed');
+        throw new Error(body?.error || 'Request failed');
       }
     } catch (err: any) {
       setBookings(prev);
-      setDeleteError(err.message || 'Cancel failed');
+      setDeleteError(err.message || 'Request failed');
     } finally {
       setCancellingId(null);
     }
@@ -171,7 +183,7 @@ export default function BookingsList() {
       const { data } = await supabase
         .from('bookings')
         .select(
-          'id, service, scheduled_at, address, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time'
+          'id, service, scheduled_at, address, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason'
         )
         .eq('user_id', user.id)
         .order('scheduled_at', { ascending: true });
@@ -284,9 +296,24 @@ export default function BookingsList() {
               </div>
             )}
 
+            {b.cancel_requested_at && CUSTOMER_CANCELLABLE.includes(status) && (
+              <div className="mt-3 rounded-lg border border-amber-500/40 bg-amber-900/30 p-3 text-xs text-amber-200">
+                <p className="font-semibold">Cancellation request pending</p>
+                <p className="mt-1 text-amber-200/80">
+                  We&apos;re reviewing your request. You&apos;ll get a text/email
+                  once it&apos;s decided. The booking is still scheduled until then.
+                </p>
+                {b.cancel_request_reason && (
+                  <p className="mt-2 text-amber-200/60">
+                    Your note: &ldquo;{b.cancel_request_reason}&rdquo;
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="mt-3 flex items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-3">
-                {CUSTOMER_CANCELLABLE.includes(status) && (
+                {CUSTOMER_CANCELLABLE.includes(status) && !b.cancel_requested_at && (
                   <>
                     <button
                       type="button"
@@ -297,11 +324,13 @@ export default function BookingsList() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleCancel(b.id)}
+                      onClick={() => handleRequestCancellation(b.id)}
                       disabled={cancellingId === b.id}
                       className="text-xs text-gray-400 hover:text-red-400 disabled:opacity-50"
                     >
-                      {cancellingId === b.id ? 'Cancelling…' : 'Cancel booking'}
+                      {cancellingId === b.id
+                        ? 'Submitting…'
+                        : 'Request cancellation'}
                     </button>
                   </>
                 )}

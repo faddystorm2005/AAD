@@ -201,6 +201,25 @@ export async function POST(req: NextRequest) {
     { isReturning, customDiscountRate, promoDiscountRate }
   );
 
+  // Apply account credit toward the total (if any). We deduct up to the
+  // total, never more. Credit is removed from the customer's balance below
+  // after the booking is successfully inserted.
+  let creditApplied = 0;
+  let availableCredit = 0;
+  try {
+    const { data: prof } = await supabaseAdmin
+      .from('profiles')
+      .select('credit_balance')
+      .eq('id', userId)
+      .maybeSingle();
+    availableCredit = Math.max(0, Number(prof?.credit_balance ?? 0));
+    creditApplied = Math.min(availableCredit, pricing.total);
+    creditApplied = Math.round(creditApplied * 100) / 100;
+  } catch {
+    // credit_balance column missing - act as if zero. Migration not run yet.
+  }
+  const totalAfterCredit = Math.max(0, pricing.total - creditApplied);
+
   // Combine slot date + time into a TIMESTAMPTZ for `scheduled_at`. Austin
   // observes DST, so we look up the right offset (-05:00 CDT or -06:00 CST)
   // for the slot's calendar date.
@@ -227,7 +246,8 @@ export async function POST(req: NextRequest) {
       discount_applied: pricing.discount > 0,
       discount_amount: pricing.discount,
       subtotal: pricing.subtotal,
-      total: pricing.total,
+      total: totalAfterCredit,
+      credit_applied: creditApplied,
       booking_stage: 'requested',
       status: 'pending',
     })
@@ -239,6 +259,25 @@ export async function POST(req: NextRequest) {
       { error: insertError?.message || 'Failed to save booking' },
       { status: 500 }
     );
+  }
+
+  // Decrement the customer's credit balance by the amount applied. Best
+  // effort - if this fails the worst case is the customer used credit they
+  // shouldn't have, admin can manually reverse it in Manage Users. We
+  // never fail the booking on this.
+  if (creditApplied > 0) {
+    const newBalance = Math.max(0, availableCredit - creditApplied);
+    const { error: creditErr } = await supabaseAdmin
+      .from('profiles')
+      .update({ credit_balance: newBalance })
+      .eq('id', userId);
+    if (creditErr) {
+      console.error('[create-booking] credit decrement failed', {
+        userId,
+        bookingId: booking.id,
+        error: creditErr.message,
+      });
+    }
   }
 
   // Single-use discount: clear it immediately so the customer's NEXT

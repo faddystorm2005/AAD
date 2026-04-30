@@ -21,6 +21,7 @@ type Status =
   | 'pending'
   | 'approved'
   | 'declined'
+  | 'cancelled'
   | 'confirmed'
   | 'in_progress'
   | 'completed';
@@ -29,6 +30,7 @@ const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
   approved: { label: 'Approved · awaiting deposit', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
+  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-400 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
   in_progress: { label: 'In progress', className: 'bg-green-900/40 text-green-300 border-green-800' },
   completed: { label: 'Completed', className: 'bg-gray-800 text-gray-300 border-gray-700' },
@@ -83,6 +85,8 @@ interface AdminBooking {
   created_at: string;
   started_at: string | null;
   completed_at: string | null;
+  cancel_requested_at: string | null;
+  cancel_request_reason: string | null;
   customer: Customer | null;
   vehicle: Vehicle | null;
 }
@@ -98,11 +102,13 @@ export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'pending' | 'active' | 'all'>('pending');
+  const [filter, setFilter] = useState<'pending' | 'cancel_requests' | 'active' | 'all'>('pending');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [cancelCreditDraft, setCancelCreditDraft] = useState<Record<string, string>>({});
+  const [cancelDenyNoteDraft, setCancelDenyNoteDraft] = useState<Record<string, string>>({});
 
   // Auto-clear success banner after 2.5s.
   useEffect(() => {
@@ -342,6 +348,120 @@ export default function AdminPage() {
     }
   };
 
+  const handleCancelApprove = async (bookingId: string) => {
+    if (!session?.access_token) return;
+    const raw = (cancelCreditDraft[bookingId] ?? '').trim();
+    const creditAmount = raw ? Number(raw) : 0;
+    if (raw && (!Number.isFinite(creditAmount) || creditAmount < 0)) {
+      setActionError('Credit amount must be a non-negative number.');
+      return;
+    }
+    if (
+      !window.confirm(
+        creditAmount > 0
+          ? `Approve cancellation and add $${creditAmount.toFixed(2)} account credit?`
+          : 'Approve cancellation with no credit issued?'
+      )
+    ) {
+      return;
+    }
+    setUpdatingId(bookingId);
+    setActionError(null);
+
+    const prev = bookings;
+    const now = new Date().toISOString();
+    // Optimistic: clear the request marker and flip to a cancelled-ish status.
+    setBookings((list) =>
+      list.map((b) =>
+        b.id === bookingId
+          ? {
+              ...b,
+              status: 'cancelled',
+              cancel_requested_at: null,
+              cancel_request_reason: null,
+              decline_reason: `Cancellation approved${creditAmount > 0 ? ` ($${creditAmount.toFixed(2)} credit)` : ''}`,
+              declined_at: now,
+            }
+          : b
+      )
+    );
+
+    try {
+      const res = await fetch('/api/admin/cancel-approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ bookingId, creditAmount }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error || 'Approve failed');
+      }
+      setCancelCreditDraft((prev) => {
+        const next = { ...prev };
+        delete next[bookingId];
+        return next;
+      });
+      setActionSuccess(
+        creditAmount > 0
+          ? `Cancellation approved. $${creditAmount.toFixed(2)} credit issued.`
+          : 'Cancellation approved.'
+      );
+    } catch (err: any) {
+      setBookings(prev);
+      setActionError(err.message || 'Approve failed');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleCancelDeny = async (bookingId: string) => {
+    if (!session?.access_token) return;
+    const note = (cancelDenyNoteDraft[bookingId] ?? '').trim();
+    if (!window.confirm('Deny this cancellation request? The booking will continue as scheduled.')) {
+      return;
+    }
+    setUpdatingId(bookingId);
+    setActionError(null);
+
+    const prev = bookings;
+    setBookings((list) =>
+      list.map((b) =>
+        b.id === bookingId
+          ? { ...b, cancel_requested_at: null, cancel_request_reason: null }
+          : b
+      )
+    );
+
+    try {
+      const res = await fetch('/api/admin/cancel-deny', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ bookingId, note }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body?.error || 'Deny failed');
+      }
+      setCancelDenyNoteDraft((prev) => {
+        const next = { ...prev };
+        delete next[bookingId];
+        return next;
+      });
+      setActionSuccess('Cancellation request denied. Customer notified.');
+    } catch (err: any) {
+      setBookings(prev);
+      setActionError(err.message || 'Deny failed');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const handleDecline = async (bookingId: string) => {
     if (!session?.access_token) return;
     const reason = (declineReasonDraft[bookingId] ?? '').trim();
@@ -422,10 +542,12 @@ export default function AdminPage() {
   }
 
   const pendingCount = bookings.filter((b) => b.status === 'pending').length;
+  const cancelRequestCount = bookings.filter((b) => b.cancel_requested_at).length;
 
   const visible = bookings.filter((b) => {
     const status: Status = b.status ?? 'pending';
     if (filter === 'pending') return status === 'pending';
+    if (filter === 'cancel_requests') return Boolean(b.cancel_requested_at);
     if (filter === 'active') return status !== 'declined' && status !== 'completed';
     return true;
   });
@@ -490,6 +612,18 @@ export default function AdminPage() {
             }`}
           >
             Pending {pendingCount > 0 && `(${pendingCount})`}
+          </button>
+          <button
+            onClick={() => setFilter('cancel_requests')}
+            className={`rounded-full px-4 py-1.5 text-sm ${
+              filter === 'cancel_requests'
+                ? 'bg-amber-600 text-white'
+                : cancelRequestCount > 0
+                  ? 'bg-amber-900/40 text-amber-200 ring-1 ring-amber-500/50'
+                  : 'bg-gray-800 text-gray-300'
+            }`}
+          >
+            Cancel Requests {cancelRequestCount > 0 && `(${cancelRequestCount})`}
           </button>
           <button
             onClick={() => setFilter('active')}
@@ -739,6 +873,107 @@ export default function AdminPage() {
                               : <span className="text-gray-500">Not completed</span>}
                           </p>
                         </div>
+
+                        {b.cancel_requested_at && (
+                          <div className="md:col-span-2 rounded-lg border border-amber-500/50 bg-amber-900/30 p-4">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-200">
+                              Cancellation Requested
+                            </h3>
+                            <p className="mt-2 text-sm text-amber-100">
+                              Customer requested cancellation on{' '}
+                              {new Date(b.cancel_requested_at).toLocaleString()}.
+                            </p>
+                            {b.cancel_request_reason && (
+                              <p className="mt-2 text-sm text-amber-100">
+                                <span className="font-semibold">Reason:</span>{' '}
+                                {b.cancel_request_reason}
+                              </p>
+                            )}
+
+                            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+                              <div className="flex-1">
+                                <label
+                                  htmlFor={`credit-${b.id}`}
+                                  className="block text-xs font-medium text-amber-200"
+                                >
+                                  Account credit to issue (optional)
+                                </label>
+                                <div className="mt-1 flex items-center">
+                                  <span className="rounded-l-lg border border-r-0 border-amber-500/40 bg-black/40 px-3 py-2 text-sm text-amber-200">
+                                    $
+                                  </span>
+                                  <input
+                                    id={`credit-${b.id}`}
+                                    type="number"
+                                    inputMode="decimal"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder={`e.g. ${Number(b.deposit_amount).toFixed(2)}`}
+                                    value={cancelCreditDraft[b.id] ?? ''}
+                                    onChange={(e) =>
+                                      setCancelCreditDraft((prev) => ({
+                                        ...prev,
+                                        [b.id]: e.target.value,
+                                      }))
+                                    }
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="w-full rounded-r-lg border border-amber-500/40 bg-black/40 px-3 py-2 text-sm text-white placeholder-amber-200/40 focus:border-amber-400 focus:outline-none"
+                                  />
+                                </div>
+                                <p className="mt-1 text-xs text-amber-200/60">
+                                  Adds to the customer&apos;s account credit. Auto-applied to next booking.
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                disabled={updatingId === b.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCancelApprove(b.id);
+                                }}
+                                className="shrink-0 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+                              >
+                                {updatingId === b.id ? 'Working…' : 'Approve cancellation'}
+                              </button>
+                            </div>
+
+                            <div className="mt-4 border-t border-amber-500/30 pt-3">
+                              <label
+                                htmlFor={`deny-${b.id}`}
+                                className="block text-xs font-medium text-amber-200"
+                              >
+                                Or deny the request (optional note to customer)
+                              </label>
+                              <div className="mt-1 flex flex-col gap-2 sm:flex-row">
+                                <input
+                                  id={`deny-${b.id}`}
+                                  type="text"
+                                  placeholder="e.g. Slot can't be refilled this close to the date"
+                                  value={cancelDenyNoteDraft[b.id] ?? ''}
+                                  onChange={(e) =>
+                                    setCancelDenyNoteDraft((prev) => ({
+                                      ...prev,
+                                      [b.id]: e.target.value,
+                                    }))
+                                  }
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="flex-1 rounded-lg border border-amber-500/40 bg-black/40 px-3 py-2 text-sm text-white placeholder-amber-200/40 focus:border-amber-400 focus:outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  disabled={updatingId === b.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCancelDeny(b.id);
+                                  }}
+                                  className="shrink-0 rounded-lg border border-amber-500/40 bg-black/30 px-4 py-2 text-sm font-semibold text-amber-200 hover:bg-amber-900/40 disabled:opacity-50"
+                                >
+                                  Deny request
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {b.status === 'pending' && (
                           <div className="md:col-span-2">
