@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import GalleryStrip from '@/components/GalleryStrip';
 import { HERO_IMAGE } from '@/lib/siteImages';
 
@@ -15,6 +15,14 @@ export default function Auth() {
 
   const { signIn, signUp } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Surface ?error=... messages forwarded from /auth/callback (e.g., when
+  // a confirmation link has expired or already been used).
+  useEffect(() => {
+    const incoming = searchParams.get('error');
+    if (incoming) setError(incoming);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

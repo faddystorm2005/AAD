@@ -62,9 +62,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string) => {
+    // Tell Supabase where to send the user after they click the email
+    // confirmation link. Without this, Supabase falls back to the project's
+    // Site URL setting in the dashboard — which has bitten us before when
+    // it pointed at a stale .vercel.app preview. Hardcoding the production
+    // origin here ensures the link always lands on a route we control.
+    const emailRedirectTo =
+      typeof window !== 'undefined'
+        ? `${window.location.origin}/auth/callback`
+        : undefined;
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: { emailRedirectTo },
     });
     return { error };
   };

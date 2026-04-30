@@ -399,7 +399,7 @@ const REASONS = [
 const FAQS = [
   {
     question: 'Where do you offer mobile detailing in Austin?',
-    answer: 'We service Austin and surrounding areas. As long as you have space for the vehicle and we can access water/power if your service requires it, we can come to you — driveway, office parking lot, or garage.',
+    answer: 'We service Austin and surrounding areas. Our detail van is fully self-contained — we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.',
   },
   {
     question: 'How long does a typical detail take?',
