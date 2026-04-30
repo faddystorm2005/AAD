@@ -433,6 +433,10 @@ export default function Home() {
             <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
               (480) 793-3782
             </a>
+            , email{' '}
+            <a href="mailto:info@austin-autodetail.com" className="font-semibold text-red-300 underline-offset-4 hover:underline">
+              info@austin-autodetail.com
+            </a>
             , or{' '}
             <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
               book online
@@ -458,6 +462,11 @@ export default function Home() {
             <p className="mt-4 text-base text-gray-200">
               <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
                 (480) 793-3782
+              </a>
+            </p>
+            <p className="mt-2 text-base text-gray-200">
+              <a href="mailto:info@austin-autodetail.com" className="font-semibold text-red-300 underline-offset-4 hover:underline">
+                info@austin-autodetail.com
               </a>
             </p>
             <p className="mt-2 text-sm text-gray-300">
