@@ -12,6 +12,7 @@ import GalleryStrip from '@/components/GalleryStrip';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import QuickActions from '@/components/dashboard/QuickActions';
+import PhonePrompt from '@/components/dashboard/PhonePrompt';
 import { supabase } from '@/lib/supabaseClient';
 import { BOOK_CTA_IMAGE, DASHBOARD_BANNER } from '@/lib/siteImages';
 
@@ -199,6 +200,10 @@ export default function Dashboard() {
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-10">
+
+        {/* Nag for phone number - persistent banner that nukes itself once
+            saved. Phone is required for booking confirmations + day-of texts. */}
+        <PhonePrompt />
 
         {/* Personal stats strip - animated counters with the user's own data. */}
         <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '60ms' }}>
