@@ -1,27 +1,41 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Mouse-following soft red glow for the hero. Subtle, premium - the kind of
  * effect you'd see on a luxury car website. Pure CSS transform on a single
  * div, no per-frame React state, no rerender churn.
  *
- * Disabled when prefers-reduced-motion is set.
+ * Renders null on touch devices, narrow screens, and when
+ * prefers-reduced-motion is set. The mix-blend-screen overlay is expensive
+ * to composite during scroll, so we avoid it entirely on mobile where the
+ * cursor effect would be useless anyway.
  */
 export default function HeroSpotlight() {
   const ref = useRef<HTMLDivElement>(null);
+  // Start false to match SSR. Flip to true in useEffect only on devices
+  // that have a real cursor and a wide-enough screen.
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    if (typeof window === 'undefined') return;
 
-    if (
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasHover = window.matchMedia('(hover: hover)').matches;
+    const wideEnough = window.innerWidth >= 1024;
+
+    if (reducedMotion || !hasHover || !wideEnough) {
       return;
     }
+
+    setEnabled(true);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const el = ref.current;
+    if (!el) return;
 
     const onMove = (e: MouseEvent) => {
       const parent = el.parentElement;
@@ -36,7 +50,9 @@ export default function HeroSpotlight() {
     const parent = el.parentElement;
     parent?.addEventListener('mousemove', onMove);
     return () => parent?.removeEventListener('mousemove', onMove);
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <div
