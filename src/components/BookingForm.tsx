@@ -770,6 +770,27 @@ export default function BookingForm({ onClose }: BookingFormProps) {
             </div>
           )}
 
+          {/* Running total - persistent across all 3 steps once a vehicle is
+              picked. Customer always knows what they're committing to before
+              tapping Next or Submit. */}
+          {selectedVehicle && (
+            <div className="mt-6 flex items-center justify-between rounded-xl border-2 border-red-700/50 bg-gradient-to-r from-red-950/40 to-red-900/20 p-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-300">
+                  Running Total
+                </p>
+                <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">
+                  ${pricing.total.toFixed(2)}
+                </p>
+              </div>
+              <p className="text-right text-xs text-gray-300 sm:text-sm">
+                ${pricing.deposit.toFixed(2)} deposit
+                <br />
+                holds your slot
+              </p>
+            </div>
+          )}
+
           {error && (
             <div role="alert" className="rounded-xl border-2 border-red-700 bg-red-900/40 p-4 text-base text-red-100 mt-6">
               {error}
