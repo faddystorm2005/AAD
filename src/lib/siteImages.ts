@@ -21,7 +21,7 @@ export const AAD_GALLERY: SitePhoto[] = [
   { src: '/images/aad/12.jpg', alt: 'BMW M4 CS taillight polish' },
   { src: '/images/aad/13.jpg', alt: 'Tesla Model 3 foam cannon wash' },
   { src: '/images/aad/14.jpg', alt: 'Porsche wheel dressing application' },
-  { src: '/images/aad/15.jpg', alt: 'Audi R8 ready for detail' },
+  { src: '/images/aad/15.jpg', alt: 'Mercedes S-Class luxury interior detail' },
   { src: '/images/aad/16.jpg', alt: 'BMW X6 foam pre-wash' },
 ];
 
