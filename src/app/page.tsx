@@ -18,28 +18,28 @@ export default function Home() {
     <main role="main" className="relative min-h-screen overflow-hidden bg-black text-white">
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
         <nav
-          className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-3"
+          className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-4"
           aria-label="Primary"
         >
           <Link
             href="/"
-            className="text-sm font-bold uppercase tracking-[0.18em] text-white"
+            className="text-base font-bold uppercase tracking-[0.18em] text-white"
             aria-label="Austin Auto Detail home"
           >
             Austin Auto Detail
           </Link>
-          <div className="hidden items-center gap-6 text-sm text-gray-300 sm:flex">
-            <a href="#services" className="hover:text-white">Mobile Detailing Services</a>
-            <a href="#how-it-works" className="hover:text-white">How It Works</a>
-            <a href="#faq" className="hover:text-white">FAQ</a>
-            <a href="#contact" className="hover:text-white">Contact</a>
+          <div className="hidden items-center gap-6 text-base font-medium text-gray-100 sm:flex">
+            <a href="#services" className="hover:text-red-300">Services</a>
+            <a href="#how-it-works" className="hover:text-red-300">How It Works</a>
+            <a href="#faq" className="hover:text-red-300">FAQ</a>
+            <a href="#contact" className="hover:text-red-300">Contact</a>
             <HomeNavAccountLink />
           </div>
           <Link
             href="/auth"
-            className="btn-primary press shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2 sm:text-sm"
+            className="btn-primary press shrink-0 rounded-lg px-4 py-2.5 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-base"
           >
             Book Now
           </Link>
@@ -77,7 +77,7 @@ export default function Home() {
           {/* Soft red glow that follows the cursor for premium polish. */}
           <HeroSpotlight />
           <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end px-6 pb-12">
-            <p className="animate-fade-up text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+            <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.4em] text-red-400 sm:text-base">
               Quality Over Quantity
             </p>
             <h1
@@ -89,10 +89,10 @@ export default function Home() {
               in Austin
             </h1>
             <p
-              className="animate-fade-up mt-5 max-w-xl text-base text-gray-300 sm:text-lg"
+              className="animate-fade-up mt-5 max-w-xl text-lg text-gray-100 sm:text-xl"
               style={{ animationDelay: '160ms' }}
             >
-              Quality mobile detailing services brought to you wherever you are in Austin. Interior + exterior detailing, ceramic coatings, paint correction, and Austin car cleaning at your driveway, office, or garage. Book your appointment in 60 seconds.
+              Professional detailing brought right to your driveway, office, or garage. Interior, exterior, ceramic coatings, and paint correction. Booking takes about a minute.
             </p>
             <div
               className="animate-fade-up mt-8 flex flex-wrap gap-3"
@@ -100,13 +100,13 @@ export default function Home() {
             >
               <Link
                 href="/auth"
-                className="btn-primary press inline-block rounded-lg px-6 py-3 text-sm font-semibold"
+                className="btn-primary press inline-block rounded-xl px-7 py-4 text-base font-semibold sm:text-lg"
               >
                 Book Mobile Detailing →
               </Link>
               <a
                 href="#services"
-                className="press inline-block rounded-lg border border-white/30 bg-black/30 px-6 py-3 text-sm font-medium text-white backdrop-blur hover:bg-black/50"
+                className="press inline-block rounded-xl border-2 border-white/40 bg-black/40 px-7 py-4 text-base font-semibold text-white backdrop-blur hover:bg-black/60 sm:text-lg"
               >
                 Explore Services
               </a>
@@ -316,14 +316,14 @@ export default function Home() {
             </details>
           ))}
         </dl>
-        <p className="mt-8 text-center text-sm text-gray-400">
+        <p className="mt-8 text-center text-base text-gray-200">
           Still have questions?{' '}
-          <a href="#contact" className="text-red-400 underline-offset-4 hover:underline">
-            Contact Austin Auto Detail
+          <a href="#contact" className="text-red-300 underline-offset-4 hover:underline">
+            Contact us
           </a>{' '}
           or{' '}
-          <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
-            book mobile detailing in Austin
+          <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
+            book a detail
           </Link>{' '}
           to get started.
         </p>
@@ -354,7 +354,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
           <div className="relative flex flex-col items-start gap-4 p-10 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-red-500">
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-red-400">
                 Ready when you are
               </p>
               <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
@@ -366,7 +366,7 @@ export default function Home() {
             </div>
             <Link
               href="/auth"
-              className="btn-primary press inline-block shrink-0 rounded-lg px-6 py-3 text-sm font-semibold"
+              className="btn-primary press inline-block shrink-0 rounded-xl px-7 py-4 text-base font-semibold sm:text-lg"
             >
               Book Now →
             </Link>
@@ -380,43 +380,43 @@ export default function Home() {
           <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Contact Austin Auto Detail
           </h2>
-          <p className="mt-3 text-gray-400">
-            Mobile detailing services across Austin and surrounding areas. The fastest way to reach us is to{' '}
-            <Link href="/auth" className="text-red-400 underline-offset-4 hover:underline">
-              book mobile detailing in Austin
-            </Link>{' '}
-            online - we&apos;ll confirm within 24 hours.
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Mobile detailing across Austin and the surrounding area. The fastest way to reach us is to{' '}
+            <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
+              book online
+            </Link>
+            . We&apos;ll confirm within 24 hours.
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 px-6 py-10">
+      <footer className="relative z-10 border-t border-white/10 px-6 py-12">
         <div className="mx-auto grid w-full max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">
+            <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
               Austin Auto Detail
             </p>
-            <p className="mt-3 text-xs text-gray-400">
-              Mobile detailing in Austin. Quality over quantity. We come to you for interior + exterior detailing, ceramic coatings, paint correction, and more.
+            <p className="mt-3 text-base text-gray-200">
+              Mobile detailing in Austin. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
             </p>
           </div>
           <nav aria-label="Services">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
               Services
             </p>
-            <ul className="mt-3 space-y-2 text-sm text-gray-300">
+            <ul className="mt-3 space-y-2 text-base text-gray-200">
               <li><a href="#services" className="hover:text-white">Mobile Detailing</a></li>
               <li><a href="#services" className="hover:text-white">Ceramic Coating</a></li>
               <li><a href="#services" className="hover:text-white">Paint Correction</a></li>
-              <li><a href="#services" className="hover:text-white">Austin Car Cleaning</a></li>
+              <li><a href="#services" className="hover:text-white">Car Cleaning</a></li>
             </ul>
           </nav>
           <nav aria-label="Site">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
               Site
             </p>
-            <ul className="mt-3 space-y-2 text-sm text-gray-300">
+            <ul className="mt-3 space-y-2 text-base text-gray-200">
               <li><a href="#main-content" className="hover:text-white">Home</a></li>
               <li><a href="#how-it-works" className="hover:text-white">How It Works</a></li>
               <li><a href="#faq" className="hover:text-white">FAQ</a></li>
@@ -424,17 +424,17 @@ export default function Home() {
             </ul>
           </nav>
           <nav aria-label="Account">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
               Get Started
             </p>
-            <ul className="mt-3 space-y-2 text-sm text-gray-300">
-              <li><Link href="/auth" className="hover:text-white">Book Mobile Detailing</Link></li>
+            <ul className="mt-3 space-y-2 text-base text-gray-200">
+              <li><Link href="/auth" className="hover:text-white">Book a Detail</Link></li>
               <li><Link href="/auth" className="hover:text-white">Sign In</Link></li>
               <li><Link href="/auth" className="hover:text-white">Create Account</Link></li>
             </ul>
           </nav>
         </div>
-        <div className="mx-auto mt-8 flex w-full max-w-5xl items-center justify-between border-t border-white/10 pt-6 text-xs text-gray-500">
+        <div className="mx-auto mt-8 flex w-full max-w-5xl items-center justify-between border-t border-white/10 pt-6 text-sm text-gray-300">
           <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
         </div>
       </footer>

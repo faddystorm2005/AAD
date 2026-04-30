@@ -32,7 +32,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
     setError('');
 
     if (!formData.make || !formData.model || !formData.color) {
-      setError('Please fill in all required fields');
+      setError('Please fill in the year, make, model, and color.');
       return;
     }
 
@@ -45,119 +45,150 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6 animate-fade-in">
-      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-black p-8 animate-scale-in">
-        <h2 className="text-2xl font-bold text-white mb-6">Add Vehicle</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
+      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
+              Add a car
+            </p>
+            <h2 className="mt-1 text-2xl sm:text-3xl font-bold text-white">
+              Tell us about your car
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            type="button"
+            aria-label="Close add vehicle form"
+            className="press shrink-0 rounded-full border border-white/20 bg-white/5 p-3 text-xl text-gray-300 hover:bg-white/10 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+        <p className="mb-6 text-base text-gray-300">
+          We use this to size the detail and remember it for next time.
+        </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Year <span className="text-red-600">*</span>
+              <label htmlFor="vehicle-year" className="block text-base font-semibold text-white mb-2">
+                Year <span className="text-red-500">*</span>
               </label>
               <input
+                id="vehicle-year"
                 type="number"
                 name="year"
                 value={formData.year}
                 onChange={handleChange}
                 min="1990"
                 max={new Date().getFullYear() + 1}
-                className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none"
+                inputMode="numeric"
+                className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Size <span className="text-red-600">*</span>
+              <label htmlFor="vehicle-size" className="block text-base font-semibold text-white mb-2">
+                Size <span className="text-red-500">*</span>
               </label>
               <select
+                id="vehicle-size"
                 name="size"
                 value={formData.size}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none"
+                className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none"
               >
-                <option value="small">Small Sedan</option>
+                <option value="small">Small Sedan / Coupe</option>
                 <option value="suv">SUV</option>
-                <option value="truck">Truck/3-Row</option>
+                <option value="truck">Truck / 3-Row</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Make <span className="text-red-600">*</span>
+            <label htmlFor="vehicle-make" className="block text-base font-semibold text-white mb-2">
+              Make <span className="text-red-500">*</span>
             </label>
             <input
+              id="vehicle-make"
               type="text"
               name="make"
               value={formData.make}
               onChange={handleChange}
-              placeholder="e.g., Toyota"
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              placeholder="Toyota"
+              autoComplete="off"
+              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Model <span className="text-red-600">*</span>
+            <label htmlFor="vehicle-model" className="block text-base font-semibold text-white mb-2">
+              Model <span className="text-red-500">*</span>
             </label>
             <input
+              id="vehicle-model"
               type="text"
               name="model"
               value={formData.model}
               onChange={handleChange}
-              placeholder="e.g., Camry"
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              placeholder="Camry"
+              autoComplete="off"
+              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Color <span className="text-red-600">*</span>
+            <label htmlFor="vehicle-color" className="block text-base font-semibold text-white mb-2">
+              Color <span className="text-red-500">*</span>
             </label>
             <input
+              id="vehicle-color"
               type="text"
               name="color"
               value={formData.color}
               onChange={handleChange}
-              placeholder="e.g., Silver"
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              placeholder="Silver"
+              autoComplete="off"
+              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Nickname (optional)
+            <label htmlFor="vehicle-nickname" className="block text-base font-semibold text-white mb-2">
+              Nickname <span className="text-gray-400 text-sm font-normal">(optional)</span>
             </label>
             <input
+              id="vehicle-nickname"
               type="text"
               name="nickname"
               value={formData.nickname}
               onChange={handleChange}
-              placeholder="e.g., Daily Driver"
-              className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              placeholder="Daily driver"
+              autoComplete="off"
+              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
             />
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-900/50 border border-red-700 p-3 text-sm text-red-200">
+            <div role="alert" className="rounded-xl border-2 border-red-700 bg-red-900/40 p-4 text-base text-red-100">
               {error}
             </div>
           )}
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col-reverse gap-3 pt-4 sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-600 px-4 py-2 text-white hover:bg-gray-800"
+              className="press flex-1 rounded-xl border-2 border-gray-600 px-5 py-4 text-base font-semibold text-white hover:bg-gray-800"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+              className="btn-primary press flex-1 rounded-xl px-5 py-4 text-base font-semibold disabled:opacity-50"
             >
-              {loading ? 'Adding...' : 'Add Vehicle'}
+              {loading ? 'Adding…' : 'Add this car'}
             </button>
           </div>
         </form>

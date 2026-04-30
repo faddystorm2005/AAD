@@ -54,12 +54,12 @@ export default function MarqueeTestimonials() {
             key={`${t.name}-${i}`}
             className="glass-card w-72 shrink-0 rounded-2xl p-5 sm:w-80"
           >
-            <p className="text-sm leading-relaxed text-gray-200">
+            <p className="text-base leading-relaxed text-gray-100">
               &ldquo;{t.text}&rdquo;
             </p>
-            <p className="mt-4 text-xs uppercase tracking-wider text-gray-500">
-              <span className="text-red-400">{t.name}</span>
-              {t.vehicle && <span className="text-gray-600"> · {t.vehicle}</span>}
+            <p className="mt-4 text-sm uppercase tracking-wider text-gray-300">
+              <span className="text-red-300">{t.name}</span>
+              {t.vehicle && <span className="text-gray-400"> · {t.vehicle}</span>}
             </p>
           </div>
         ))}

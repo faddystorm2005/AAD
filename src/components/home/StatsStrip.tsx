@@ -107,7 +107,7 @@ function StatTile({ stat, active }: { stat: Stat; active: boolean }) {
           {stat.suffix ?? ''}
         </span>
       </div>
-      <div className="mt-2 text-[11px] uppercase tracking-[0.2em] text-gray-500 sm:text-xs">
+      <div className="mt-3 text-xs uppercase tracking-[0.2em] text-gray-200 sm:text-sm">
         {stat.label}
       </div>
     </div>
