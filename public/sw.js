@@ -1,5 +1,12 @@
-/* AAD Detailing service worker — minimal offline support, no push notifications. */
-const VERSION = "aad-v1";
+/* AAD Detailing service worker — minimal offline support, no push notifications.
+ *
+ * BUMP THE VERSION every time you ship code that needs all clients to refresh.
+ * The activate handler purges any cache that doesn't match the new version
+ * names, so every visitor gets a clean slate on their next page load.
+ *
+ * v1 → v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
+ */
+const VERSION = "aad-v2";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
