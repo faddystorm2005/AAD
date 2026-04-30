@@ -530,8 +530,8 @@ const REASONS = [
 const TRUST_PILLARS = [
   {
     icon: '👤',
-    title: 'Same Owner, Every Visit',
-    description: 'Alex personally handles every detail. No rotating crew, no quality lottery. You get the same hands every time.',
+    title: 'Owner-Operated',
+    description: 'Hands-on, locally run, and accountable. No revolving crew of contractors. The person who answers the phone is the person who details the car.',
   },
   {
     icon: '✅',
