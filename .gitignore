@@ -43,3 +43,6 @@ next-env.d.ts
 .vercel
 
 AAD-FULL-SOURCE.txt
+
+# Claude Code internal state (scheduled task locks, agent run output, etc.)
+.claude/
