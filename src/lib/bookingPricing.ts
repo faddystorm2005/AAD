@@ -29,6 +29,7 @@ export const ADD_ONS: AddOn[] = [
   { id: 'stain', name: 'Stain Removal', price: 30 },
   { id: 'leather', name: 'Leather Conditioner', price: 10 },
   { id: 'windshield', name: 'Windshield Coating', price: 40 },
+  { id: 'headlight', name: 'Headlight Restoration', price: 80 },
   { id: 'paint1', name: '1-Step Paint Correction', price: 95 },
   { id: 'paint2', name: '2-Step Paint Correction', price: 125 },
   // Ceramic Coating: full-day job at the 9 AM slot, only 1 per day.
