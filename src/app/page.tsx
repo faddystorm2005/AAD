@@ -5,8 +5,9 @@ import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
  * visitors see real content (services, value prop, CTAs) instead of a
- * loading splash. Logged-in visitors are silently redirected to /dashboard
- * via the AuthRedirector client component.
+ * loading splash. Logged-in visitors see the same marketing page; they
+ * can navigate to their account via the "My Dashboard" link in the nav
+ * (rendered by HomeNavAccountLink based on their auth state).
  */
 export default function Home() {
   return (

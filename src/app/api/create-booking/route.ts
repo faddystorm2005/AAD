@@ -242,12 +242,21 @@ export async function POST(req: NextRequest) {
   }
 
   // Single-use discount: clear it immediately so the customer's NEXT
-  // booking goes back to normal pricing. Best-effort.
+  // booking goes back to normal pricing. If the update fails we log it
+  // but don't fail the booking - worst case the customer keeps the
+  // discount one extra time, admin can correct in the Manage Users panel.
   if (discountSingleUse && customDiscountRate > 0) {
-    await userClient
+    const { error: clearErr } = await userClient
       .from('profiles')
       .update({ custom_discount_rate: 0, discount_single_use: false })
       .eq('id', userId);
+    if (clearErr) {
+      console.error('[create-booking] single-use discount clear failed', {
+        userId,
+        bookingId: booking.id,
+        error: clearErr.message,
+      });
+    }
   }
 
   // Promo code accounting: increment uses_count and stamp the code on the
