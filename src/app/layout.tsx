@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { VehicleProvider } from "@/contexts/VehicleContext";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -108,6 +109,7 @@ export default function RootLayout({
           </VehicleProvider>
         </AuthProvider>
         <ServiceWorkerRegister />
+        <SpeedInsights />
       </body>
     </html>
   );
