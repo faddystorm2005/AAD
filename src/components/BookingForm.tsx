@@ -283,25 +283,56 @@ export default function BookingForm({ onClose }: BookingFormProps) {
       })
     : '';
 
+  // Plain-English heading + caption per step. Older / less-technical users
+  // do better when each screen tells them exactly what to do.
+  const stepHeadings: Record<number, { title: string; caption: string }> = {
+    1: {
+      title: 'Pick your car & extras',
+      caption:
+        "Choose which car needs detailing, then check any extras you'd like. Skip extras if you just want a basic detail.",
+    },
+    2: {
+      title: 'When and where',
+      caption:
+        "Pick a day, choose a time that works, and tell us where to come.",
+    },
+    3: {
+      title: 'Review and submit',
+      caption:
+        "Look it over. We'll text you to confirm before charging anything.",
+    },
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6 overflow-y-auto py-8 animate-fade-in">
-      <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-black p-8 animate-scale-in">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">Book a Detail</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
+      <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
+              Step {step} of 3
+            </p>
+            <h2 className="mt-1 text-2xl sm:text-3xl font-bold text-white">
+              {stepHeadings[step].title}
+            </h2>
+          </div>
           <button
             onClick={onClose}
             disabled={isProcessing}
-            className="text-gray-400 hover:text-white text-xl disabled:opacity-50"
+            aria-label="Close booking form"
+            className="press shrink-0 rounded-full border border-white/20 bg-white/5 p-3 text-xl text-gray-300 hover:bg-white/10 hover:text-white disabled:opacity-50"
           >
             ✕
           </button>
         </div>
+        <p className="mb-6 text-base text-gray-300">
+          {stepHeadings[step].caption}
+        </p>
 
         <div className="flex gap-2 mb-8">
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`h-1 flex-1 rounded-full ${s <= step ? 'bg-red-600' : 'bg-gray-700'}`}
+              className={`h-2 flex-1 rounded-full ${s <= step ? 'bg-red-600' : 'bg-gray-700'}`}
             />
           ))}
         </div>
@@ -309,107 +340,137 @@ export default function BookingForm({ onClose }: BookingFormProps) {
         <form onSubmit={handleSubmit}>
           {/* Step 1: Vehicle & Add-ons */}
           {step === 1 && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  Select Vehicle <span className="text-red-600">*</span>
+                <label className="block text-base font-semibold text-white mb-3">
+                  Which car? <span className="text-red-500">*</span>
                 </label>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {vehiclesLoading ? (
-                    <div className="text-gray-400">Loading vehicles...</div>
+                    <div className="text-base text-gray-300">Loading your saved cars...</div>
                   ) : vehicles.length === 0 ? (
-                    <div className="text-gray-400">
-                      No vehicles saved. Please add a vehicle first.
+                    <div className="rounded-xl border border-amber-500/40 bg-amber-900/30 p-4 text-base text-amber-100">
+                      You haven&apos;t added a car yet. Close this window and tap
+                      &ldquo;+ Add Vehicle&rdquo; first.
                     </div>
                   ) : (
-                    vehicles.map((vehicle) => (
-                      <label
-                        key={vehicle.id}
-                        className={`flex items-center gap-3 p-3 rounded-lg border border-gray-600 hover:border-gray-500 ${
-                          isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="vehicleId"
-                          value={vehicle.id}
-                          checked={formData.vehicleId === vehicle.id}
-                          onChange={() => handleVehicleChange(vehicle.id)}
-                          disabled={isProcessing}
-                          className="w-4 h-4"
-                        />
-                        <div className="flex-1">
-                          <p className="text-white font-medium">
-                            {vehicle.year} {vehicle.make} {vehicle.model}
-                            {vehicle.nickname && ` • ${vehicle.nickname}`}
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            {vehicle.color} • {vehicle.size}
-                          </p>
-                        </div>
-                      </label>
-                    ))
+                    vehicles.map((vehicle) => {
+                      const checked = formData.vehicleId === vehicle.id;
+                      return (
+                        <label
+                          key={vehicle.id}
+                          className={`flex items-center gap-4 rounded-xl border-2 p-4 transition-colors ${
+                            checked
+                              ? 'border-red-500 bg-red-950/40'
+                              : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
+                          } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        >
+                          <input
+                            type="radio"
+                            name="vehicleId"
+                            value={vehicle.id}
+                            checked={checked}
+                            onChange={() => handleVehicleChange(vehicle.id)}
+                            disabled={isProcessing}
+                            className="w-5 h-5 accent-red-600"
+                          />
+                          <div className="flex-1">
+                            <p className="text-base font-semibold text-white">
+                              {vehicle.year} {vehicle.make} {vehicle.model}
+                              {vehicle.nickname && (
+                                <span className="text-gray-400"> · {vehicle.nickname}</span>
+                              )}
+                            </p>
+                            <p className="text-sm text-gray-300">
+                              {vehicle.color} · {vehicle.size}
+                            </p>
+                          </div>
+                        </label>
+                      );
+                    })
                   )}
                 </div>
               </div>
 
               {selectedVehicle && (
-                <div className="rounded-lg bg-red-900/20 border border-red-700 p-4">
-                  <p className="text-sm text-red-200">
-                    Service: <span className="font-semibold">{SERVICES[formData.serviceSize].name}</span>
+                <div className="rounded-xl bg-red-950/40 border border-red-700/60 p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-red-300">
+                    Base Detail Price
                   </p>
-                  <p className="text-lg font-bold text-red-400 mt-1">
+                  <p className="mt-2 text-base font-semibold text-white">
+                    {SERVICES[formData.serviceSize].name}
+                  </p>
+                  <p className="mt-1 text-3xl font-bold text-red-400">
                     ${SERVICES[formData.serviceSize].price}
+                  </p>
+                  <p className="mt-2 text-sm text-red-200/80">
+                    Sized for your {selectedVehicle.year} {selectedVehicle.make}{' '}
+                    {selectedVehicle.model}.
                   </p>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-3">
-                  Add-ons (Optional)
+                <label className="block text-base font-semibold text-white mb-1">
+                  Want to add anything? <span className="text-gray-400 text-sm font-normal">(optional)</span>
                 </label>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {ADD_ONS.map((addon) => (
-                    <label
-                      key={addon.id}
-                      className={`flex items-start gap-3 p-2 rounded ${
-                        isProcessing ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.selectedAddOns.includes(addon.id)}
-                        onChange={() => handleAddOnToggle(addon.id)}
-                        disabled={isProcessing}
-                        className="mt-1 w-4 h-4"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-white text-sm">{addon.name}</span>
-                          <span className="text-gray-400 text-sm">+${addon.price}</span>
+                <p className="mb-3 text-sm text-gray-300">
+                  Skip this if you just want a regular detail.
+                </p>
+                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                  {ADD_ONS.map((addon) => {
+                    const checked = formData.selectedAddOns.includes(addon.id);
+                    return (
+                      <label
+                        key={addon.id}
+                        className={`flex items-start gap-3 rounded-xl border-2 p-3 transition-colors ${
+                          checked
+                            ? 'border-red-500 bg-red-950/30'
+                            : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
+                        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => handleAddOnToggle(addon.id)}
+                          disabled={isProcessing}
+                          className="mt-1 w-5 h-5 accent-red-600"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-base font-semibold text-white">
+                              {addon.name}
+                            </span>
+                            <span className="text-base font-semibold text-red-300">
+                              +${addon.price}
+                            </span>
+                          </div>
+                          {addon.description && (
+                            <p className="mt-1 text-sm text-gray-300">{addon.description}</p>
+                          )}
                         </div>
-                        {addon.description && (
-                          <p className="mt-0.5 text-xs text-gray-400">{addon.description}</p>
-                        )}
-                      </div>
-                    </label>
-                  ))}
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
               {ceramic && (
-                <div className="rounded-lg border border-yellow-700 bg-yellow-900/20 p-3 text-xs text-yellow-200">
-                  Ceramic Coating is <strong>mornings only</strong> - bookable only
-                  at the <strong>first slot of the day (9:00 AM)</strong>. It&apos;s a
-                  full-day job, so it&apos;s the only car detailed that day
-                  (1 ceramic per day). Lasts up to <strong>10 years</strong>.
+                <div className="rounded-xl border-2 border-yellow-600 bg-yellow-900/30 p-4 text-sm text-yellow-100">
+                  <p className="font-semibold text-base">About Ceramic Coating</p>
+                  <p className="mt-2">
+                    It&apos;s an all-day job, so we only do <strong>one ceramic per day</strong>.
+                    The only available time is <strong>9:00 AM</strong>. The coating lasts
+                    up to <strong>10 years</strong>.
+                  </p>
                 </div>
               )}
 
               {pricing.addOns > 0 && (
-                <div className="rounded-lg bg-gray-800 p-3">
-                  <p className="text-sm text-gray-300">
-                    Add-ons total: <span className="font-semibold text-white">${pricing.addOns}</span>
+                <div className="rounded-xl bg-gray-900 border border-gray-700 p-4">
+                  <p className="text-base text-gray-200">
+                    Extras subtotal:{' '}
+                    <span className="font-bold text-white">${pricing.addOns.toFixed(2)}</span>
                   </p>
                 </div>
               )}
@@ -418,11 +479,14 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
           {/* Step 2: Date / Slot / Address */}
           {step === 2 && (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Date <span className="text-red-600">*</span>
+                <label className="block text-base font-semibold text-white mb-2">
+                  What day works? <span className="text-red-500">*</span>
                 </label>
+                <p className="mb-3 text-sm text-gray-300">
+                  Tap the box to pick a date on the calendar.
+                </p>
                 <input
                   type="date"
                   name="slotDate"
@@ -433,35 +497,38 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                     setFormData((prev) => ({ ...prev, slotDate: e.target.value, slotTime: '' }));
                   }}
                   disabled={isProcessing}
-                  className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none disabled:opacity-50"
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none disabled:opacity-50"
                 />
                 {formData.slotDate && (
-                  <div className="mt-2">
+                  <div className="mt-3">
                     <BookingWeather date={formData.slotDate} />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Time slot <span className="text-red-600">*</span>
+                <label className="block text-base font-semibold text-white mb-2">
+                  Pick a time <span className="text-red-500">*</span>
                 </label>
+                <p className="mb-3 text-sm text-gray-300">
+                  Tap whichever time works best.
+                </p>
                 {loadingAvailability ? (
-                  <p className="text-sm text-gray-400">Checking availability...</p>
+                  <p className="text-base text-gray-300">Checking what&apos;s open...</p>
                 ) : availability ? (
                   <>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-3">
                       {SLOT_TIMES.map((time) => {
                         const slot = availability.slots.find((s) => s.time === time)!;
                         const usable = ceramic ? slot.availableForCeramic : slot.availableForRegular;
                         const isSelected = formData.slotTime === time;
                         let reason = '';
                         if (!usable) {
-                          if (ceramic && time !== CERAMIC_SLOT) reason = 'Ceramic = 1st slot AM';
-                          else if (slot.ceramicTaken) reason = 'Ceramic booked';
+                          if (ceramic && time !== CERAMIC_SLOT) reason = 'Mornings only';
+                          else if (slot.ceramicTaken) reason = 'Booked';
                           else if (slot.takenCount >= slot.perSlotCapacity) reason = 'Full';
                           else if (availability.totalBookings >= availability.perDayCapacity) reason = 'Day full';
-                          else reason = 'Unavailable';
+                          else reason = 'Not available';
                         }
                         return (
                           <button
@@ -472,93 +539,101 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                               if (error) setError('');
                               setFormData((prev) => ({ ...prev, slotTime: time }));
                             }}
-                            className={`rounded-lg border px-3 py-3 text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                            className={`rounded-xl border-2 px-3 py-4 text-base transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
                               isSelected
-                                ? 'border-red-500 bg-red-600 text-white'
+                                ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50'
                                 : usable
-                                ? 'border-gray-600 bg-gray-800 text-white hover:bg-gray-700'
-                                : 'border-gray-700 bg-gray-900 text-gray-500'
+                                ? 'border-gray-700 bg-gray-900 text-white hover:border-gray-500'
+                                : 'border-gray-800 bg-gray-900/50 text-gray-500'
                             }`}
                           >
-                            <p className="font-semibold">{slot.label}</p>
-                            <p className="mt-1 text-[10px] uppercase tracking-wider">
+                            <p className="text-base font-bold">{slot.label}</p>
+                            <p className="mt-1 text-xs uppercase tracking-wider opacity-90">
                               {usable
-                                ? `${slot.takenCount}/${slot.perSlotCapacity} booked`
+                                ? slot.takenCount === 0
+                                  ? 'Open'
+                                  : `${slot.takenCount}/${slot.perSlotCapacity} booked`
                                 : reason}
                             </p>
                           </button>
                         );
                       })}
                     </div>
-                    <p className="mt-2 text-xs text-gray-500">
-                      {availability.isHelpAvailable
-                        ? `Help available - up to ${availability.perDayCapacity} cars / day, 2 per slot.`
-                        : `Solo day - up to ${availability.perDayCapacity} cars / day, 1 per slot.`}{' '}
-                      Currently booked: {availability.totalBookings}.
-                    </p>
                   </>
                 ) : (
-                  <p className="text-sm text-gray-400">Pick a date to see slots.</p>
+                  <p className="text-base text-gray-300">Pick a date above first.</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Street Address <span className="text-red-600">*</span>
+                <label htmlFor="booking-address" className="block text-base font-semibold text-white mb-2">
+                  Street address <span className="text-red-500">*</span>
                 </label>
+                <p className="mb-3 text-sm text-gray-300">
+                  Where should we come? Driveway, office lot, garage, all good.
+                </p>
                 <input
+                  id="booking-address"
                   type="text"
                   name="address"
+                  autoComplete="street-address"
                   value={formData.address}
                   onChange={handleChange}
                   disabled={isProcessing}
                   placeholder="123 Main St"
-                  className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    City <span className="text-red-600">*</span>
+                  <label htmlFor="booking-city" className="block text-base font-semibold text-white mb-2">
+                    City <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="booking-city"
                     type="text"
                     name="city"
+                    autoComplete="address-level2"
                     value={formData.city}
                     onChange={handleChange}
                     disabled={isProcessing}
                     placeholder="Austin"
-                    className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    State <span className="text-red-600">*</span>
+                  <label htmlFor="booking-state" className="block text-base font-semibold text-white mb-2">
+                    State <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="booking-state"
                     type="text"
                     name="state"
+                    autoComplete="address-level1"
                     value={formData.state}
                     onChange={handleChange}
                     disabled={isProcessing}
                     placeholder="TX"
                     maxLength={2}
-                    className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white uppercase focus:border-red-500 focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white uppercase focus:border-red-500 focus:outline-none disabled:opacity-50"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    ZIP <span className="text-red-600">*</span>
+                  <label htmlFor="booking-zip" className="block text-base font-semibold text-white mb-2">
+                    ZIP <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="booking-zip"
                     type="text"
                     name="zip"
+                    autoComplete="postal-code"
+                    inputMode="numeric"
                     value={formData.zip}
                     onChange={handleChange}
                     disabled={isProcessing}
                     placeholder="78701"
-                    className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
                   />
                 </div>
               </div>
@@ -568,30 +643,19 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           {/* Step 3: Review */}
           {step === 3 && (
             <div className="space-y-6">
-              <div className="rounded-lg bg-gray-800 p-6 space-y-4">
-                <div>
-                  <p className="text-sm text-gray-400">Vehicle</p>
-                  <p className="text-lg font-semibold text-white">
-                    {selectedVehicle?.year} {selectedVehicle?.make} {selectedVehicle?.model}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-400">Service</p>
-                  <p className="text-lg font-semibold text-white">
-                    {SERVICES[formData.serviceSize].name}
-                  </p>
-                </div>
+              <div className="rounded-2xl bg-gray-900 border border-gray-700 p-5 space-y-5">
+                <ReviewLine label="Car" value={`${selectedVehicle?.year ?? ''} ${selectedVehicle?.make ?? ''} ${selectedVehicle?.model ?? ''}`.trim()} />
+                <ReviewLine label="Service" value={SERVICES[formData.serviceSize].name} />
 
                 {formData.selectedAddOns.length > 0 && (
                   <div>
-                    <p className="text-sm text-gray-400">Add-ons</p>
-                    <ul className="text-white space-y-1">
+                    <p className="text-sm uppercase tracking-wider text-gray-400">Extras</p>
+                    <ul className="mt-2 space-y-1">
                       {formData.selectedAddOns.map((id) => {
                         const addon = ADD_ONS.find((a) => a.id === id);
                         return (
-                          <li key={id} className="text-sm">
-                            {addon?.name}
+                          <li key={id} className="text-base text-white">
+                            • {addon?.name}
                           </li>
                         );
                       })}
@@ -599,42 +663,33 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   </div>
                 )}
 
-                <div>
-                  <p className="text-sm text-gray-400">Location</p>
-                  <p className="text-white">
-                    {formData.address}, {formData.city}, {formData.state} {formData.zip}
-                  </p>
-                </div>
+                <ReviewLine
+                  label="We'll come to"
+                  value={`${formData.address}, ${formData.city}, ${formData.state} ${formData.zip}`}
+                />
+                <ReviewLine
+                  label="Day & time"
+                  value={`${reviewWhen}${
+                    formData.slotTime ? ` (${SLOT_LABELS[formData.slotTime]})` : ''
+                  }`}
+                />
 
-                <div>
-                  <p className="text-sm text-gray-400">Scheduled</p>
-                  <p className="text-white">
-                    {reviewWhen}
-                    {formData.slotTime && ` (${SLOT_LABELS[formData.slotTime]})`}
-                  </p>
-                </div>
-
-                <div className="border-t border-gray-600 pt-4">
-                  <div className="flex justify-between text-gray-400 mb-2">
-                    <span>Service</span>
+                <div className="border-t border-gray-700 pt-4 space-y-2">
+                  <div className="flex justify-between text-base text-gray-300">
+                    <span>Detail</span>
                     <span>${pricing.service.toFixed(2)}</span>
                   </div>
                   {pricing.addOns > 0 && (
-                    <div className="flex justify-between text-gray-400 mb-2">
-                      <span>Add-ons</span>
+                    <div className="flex justify-between text-base text-gray-300">
+                      <span>Extras</span>
                       <span>${pricing.addOns.toFixed(2)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-gray-400 mb-2">
+                  <div className="flex justify-between text-base text-gray-300">
                     <span>Subtotal</span>
                     <span>${pricing.subtotal.toFixed(2)}</span>
                   </div>
                   {pricing.discount > 0 && (() => {
-                    // Compute the actual applied rate from the dollar amount so
-                    // the label always matches the discount shown. effectiveRate
-                    // in calculatePricing is max(returning, custom, promo); the
-                    // exact source isn't returned, so we infer the label from
-                    // what we know about this booking on the client.
                     const ratePct = Math.round((pricing.discount / pricing.subtotal) * 100);
                     const label = appliedPromo
                       ? `Promo "${appliedPromo.code}" -${appliedPromo.rate}%`
@@ -642,92 +697,94 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                       ? `Returning customer -${ratePct}%`
                       : `Discount -${ratePct}%`;
                     return (
-                      <div className="flex justify-between text-green-400 mb-2">
+                      <div className="flex justify-between text-base text-green-400">
                         <span>{label}</span>
                         <span>-${pricing.discount.toFixed(2)}</span>
                       </div>
                     );
                   })()}
-                  <div className="flex justify-between text-white font-semibold mb-3 border-t border-gray-700 pt-3">
+                  <div className="flex justify-between text-xl font-bold text-white pt-3 border-t border-gray-700">
                     <span>Total</span>
                     <span>${pricing.total.toFixed(2)}</span>
                   </div>
+                </div>
 
-                  {/* Promo code entry - appears in the review step. */}
-                  <div className="mb-3 rounded-lg border border-gray-700 bg-gray-900/40 p-3">
-                    {appliedPromo ? (
-                      <div className="flex items-center justify-between gap-2 text-sm">
-                        <span className="text-green-300">
-                          ✓ Code <span className="font-mono font-semibold">{appliedPromo.code}</span> applied -{' '}
-                          {appliedPromo.rate}% off
-                        </span>
+                {/* Promo code entry - appears in the review step. */}
+                <div className="rounded-xl border border-gray-700 bg-black/30 p-4">
+                  {appliedPromo ? (
+                    <div className="flex items-center justify-between gap-2 text-base">
+                      <span className="text-green-300">
+                        ✓ Code{' '}
+                        <span className="font-mono font-semibold">{appliedPromo.code}</span>{' '}
+                        applied · {appliedPromo.rate}% off
+                      </span>
+                      <button
+                        type="button"
+                        onClick={clearPromo}
+                        disabled={isProcessing}
+                        className="press text-sm text-gray-300 underline hover:text-white disabled:opacity-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <label className="block text-base font-semibold text-white">
+                        Have a promo code? <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={promoInput}
+                          onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                          placeholder="SPRING25"
+                          disabled={isProcessing || promoBusy}
+                          className="flex-1 rounded-xl border-2 border-gray-700 bg-gray-900 px-3 py-2 text-base font-mono text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
+                        />
                         <button
                           type="button"
-                          onClick={clearPromo}
-                          disabled={isProcessing}
-                          className="text-xs text-gray-400 underline hover:text-gray-200 disabled:opacity-50"
+                          onClick={applyPromo}
+                          disabled={isProcessing || promoBusy || !promoInput.trim()}
+                          className="btn-primary press shrink-0 rounded-xl px-4 py-2 text-base font-semibold disabled:opacity-50"
                         >
-                          Remove
+                          {promoBusy ? 'Checking…' : 'Apply'}
                         </button>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <label className="block text-xs font-medium text-gray-300">
-                          Have a promo code?
-                        </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={promoInput}
-                            onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                            placeholder="e.g. SPRING25"
-                            disabled={isProcessing || promoBusy}
-                            className="flex-1 rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm font-mono text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
-                          />
-                          <button
-                            type="button"
-                            onClick={applyPromo}
-                            disabled={isProcessing || promoBusy || !promoInput.trim()}
-                            className="press shrink-0 rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-                          >
-                            {promoBusy ? '…' : 'Apply'}
-                          </button>
-                        </div>
-                        {promoError && (
-                          <p className="text-xs text-red-300">{promoError}</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <div className="bg-red-900/20 border border-red-700 rounded p-3">
-                    <p className="text-sm text-red-200">
-                      Deposit on approval: <span className="font-bold">${pricing.deposit}</span>
-                    </p>
-                    <p className="text-xs text-red-300 mt-1">
-                      You won&apos;t be charged until Austin Auto Detail approves your booking.
-                      Remaining ${(pricing.total - pricing.deposit).toFixed(2)} due on-site.
-                    </p>
-                  </div>
+                      {promoError && (
+                        <p className="text-sm text-red-300">{promoError}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
+              </div>
+
+              <div className="rounded-2xl border-2 border-red-700 bg-red-950/40 p-5">
+                <p className="text-base font-semibold text-white">
+                  $ {pricing.deposit.toFixed(2)} deposit holds your slot
+                </p>
+                <p className="mt-2 text-base text-red-100">
+                  Nothing is charged until we approve your booking and send you a payment link. The remaining{' '}
+                  <strong>${(pricing.total - pricing.deposit).toFixed(2)}</strong> is paid on-site after the work is done.
+                </p>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="rounded-lg bg-red-900/50 border border-red-700 p-3 text-sm text-red-200 mb-6">
+            <div role="alert" className="rounded-xl border-2 border-red-700 bg-red-900/40 p-4 text-base text-red-100 mt-6">
               {error}
             </div>
           )}
 
-          <div className="flex gap-3 pt-6">
+          <div className="flex flex-col-reverse gap-3 pt-8 sm:flex-row">
             {step > 1 && (
               <button
                 type="button"
                 onClick={() => setStep(step - 1)}
                 disabled={isProcessing}
-                className="flex-1 rounded-lg border border-gray-600 px-4 py-2 text-white hover:bg-gray-800 disabled:opacity-50"
+                className="press flex-1 rounded-xl border-2 border-gray-600 px-5 py-4 text-base font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
               >
-                Back
+                ← Back
               </button>
             )}
             {step < 3 && (
@@ -735,23 +792,32 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 type="button"
                 onClick={handleNext}
                 disabled={isProcessing}
-                className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+                className="btn-primary press flex-1 rounded-xl px-5 py-4 text-base font-semibold disabled:opacity-50"
               >
-                Next
+                Next →
               </button>
             )}
             {step === 3 && (
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 font-semibold disabled:opacity-50"
+                className="btn-primary press flex-1 rounded-xl px-5 py-4 text-base font-bold disabled:opacity-50"
               >
-                {isProcessing ? 'Submitting...' : 'Submit for Approval'}
+                {isProcessing ? 'Sending…' : 'Send for approval'}
               </button>
             )}
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+function ReviewLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-sm uppercase tracking-wider text-gray-400">{label}</p>
+      <p className="mt-1 text-base font-semibold text-white">{value}</p>
     </div>
   );
 }
