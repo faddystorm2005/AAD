@@ -212,6 +212,37 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Our Mission - emotional anchor between the card grids and the FAQ.
+          Pull-quote layout so it reads as a statement of intent, not another
+          marketing tile. */}
+      <section
+        aria-label="Our mission"
+        className="relative z-10 border-y border-white/5 bg-gradient-to-b from-black via-zinc-950 to-black py-20"
+      >
+        <div className="mx-auto w-full max-w-3xl px-6 text-center">
+          <p className="reveal-on-scroll text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+            Our Mission
+          </p>
+          <blockquote
+            className="reveal-on-scroll mt-6 text-balance text-2xl font-semibold leading-snug text-white sm:text-3xl"
+          >
+            <span className="text-gradient-hero">
+              &ldquo;Keep every car looking brand new. The one you drive
+              home in should feel like the one you drove off the lot.&rdquo;
+            </span>
+          </blockquote>
+          <p className="reveal-on-scroll mt-6 text-base leading-relaxed text-gray-400">
+            We treat every vehicle like it&apos;s our own. That&apos;s why we
+            cap at three details a day, bring everything to your door, and
+            don&apos;t cut a single corner. Cars take you to the people and
+            places that matter, so they should look the part.
+          </p>
+          <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-500">
+            Alex, Founder
+          </p>
+        </div>
+      </section>
+
       {/* FAQ - adds keyword-rich content + answers common pre-booking questions */}
       <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
