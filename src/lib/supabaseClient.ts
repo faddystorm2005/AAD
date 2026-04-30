@@ -13,4 +13,19 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export const supabase = createClient(supabaseUrl ?? "", supabaseAnonKey ?? "");
+// Explicit auth options so the session-persistence behavior is documented
+// in code instead of relying on @supabase/supabase-js defaults that could
+// change in a future major version.
+//   persistSession      - write the session to localStorage so refreshes
+//                         and tab restores stay signed in.
+//   autoRefreshToken    - silently refresh the JWT before it expires so
+//                         users never have to re-enter the magic link.
+//   detectSessionInUrl  - parse OAuth/recovery URL fragments on mount
+//                         (needed for the Google OAuth callback flow).
+export const supabase = createClient(supabaseUrl ?? "", supabaseAnonKey ?? "", {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
