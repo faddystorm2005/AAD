@@ -212,6 +212,57 @@ export default function Home() {
         </div>
       </section>
 
+      {/* The Real Value - one hero stat + three trust pillars. Concrete proof
+          that bridges the marketing tiles above and the emotional Mission
+          quote below. Lead with time saved because it's the one thing brick-
+          and-mortar shops literally cannot match. */}
+      <section
+        aria-label="The real value"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16"
+      >
+        <div className="reveal-on-scroll text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+            The Real Value
+          </p>
+          <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
+            Get Your Saturday Back
+          </h2>
+        </div>
+
+        {/* Hero stat */}
+        <div className="reveal-on-scroll mt-10 flex flex-col items-center text-center">
+          <p className="text-6xl font-bold sm:text-7xl">
+            <span className="text-gradient-hero">4+ hrs</span>
+          </p>
+          <p className="mt-2 text-sm uppercase tracking-[0.25em] text-gray-400">
+            saved per detail
+          </p>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-gray-300">
+            No drop-off. No shop waiting room. No pickup. No Uber both ways.
+            We work in your driveway while you keep your day.
+          </p>
+        </div>
+
+        {/* Trust pillars */}
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {TRUST_PILLARS.map((p, i) => (
+            <div
+              key={p.title}
+              className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6 text-center"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-2xl">
+                {p.icon}
+              </div>
+              <h3 className="mt-4 text-base font-semibold text-white">
+                {p.title}
+              </h3>
+              <p className="mt-2 text-sm text-gray-400">{p.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Our Mission - emotional anchor between the card grids and the FAQ.
           Pull-quote layout so it reads as a statement of intent, not another
           marketing tile. */}
@@ -470,6 +521,27 @@ const REASONS = [
     headline: 'Fair Price',
     title: 'No surprises, no travel fees',
     description: 'Flat rates with travel included. Returning-customer discount on every visit. What you see is what you pay.',
+  },
+];
+
+// Three trust signals that pair with the time-saved stat above.
+// Each one answers a quiet objection: "is this guy reliable?",
+// "what if it sucks?", "what's the catch?".
+const TRUST_PILLARS = [
+  {
+    icon: '👤',
+    title: 'Same Owner, Every Visit',
+    description: 'Alex personally handles every detail. No rotating crew, no quality lottery. You get the same hands every time.',
+  },
+  {
+    icon: '✅',
+    title: 'Showroom-Ready, Guaranteed',
+    description: "Not happy with how something turned out? We make it right before we leave. That's the standard.",
+  },
+  {
+    icon: '🔒',
+    title: 'Just $30 to Hold Your Slot',
+    description: "Pay a small refundable-as-credit deposit to lock in. The rest is paid on-site after you've seen the work.",
   },
 ];
 
