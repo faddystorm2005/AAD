@@ -568,6 +568,6 @@ const FAQS = [
   },
   {
     question: 'Can I cancel or reschedule?',
-    answer: 'Yes, you can cancel or reschedule from your account at any time before service. Note: deposits are non-refundable, but any deposit you have already paid converts into account credit toward a future booking. Reach out if you need help.',
+    answer: 'Yes. To reschedule, open your booking and pick a new time. You can do that yourself any time before service. To cancel, tap Request Cancellation and add a quick reason. We\'ll review within 24 hours. Once approved, your $30 deposit becomes account credit toward a future booking.',
   },
 ];
