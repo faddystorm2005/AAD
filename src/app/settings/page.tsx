@@ -150,23 +150,23 @@ export default function SettingsPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="border-b border-white/10 bg-black/60 px-6 py-5 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between">
+      <div className="border-b border-white/10 bg-black/60 px-6 py-6 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold uppercase tracking-[0.18em]">Settings</h1>
-            <p className="text-xs text-gray-400">{user.email}</p>
+            <h1 className="text-2xl font-bold uppercase tracking-[0.18em]">Settings</h1>
+            <p className="mt-1 text-sm text-gray-200">{user.email}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/"
-              className="press rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 text-sm text-white hover:bg-black/60"
+              className="press rounded-lg border border-white/30 bg-black/40 px-4 py-2.5 text-base font-semibold text-white hover:bg-black/60"
               title="View public homepage"
             >
               ← Home
             </Link>
             <Link
               href="/dashboard"
-              className="press rounded-lg border border-white/30 bg-black/40 px-3 py-1.5 text-sm text-white hover:bg-black/60"
+              className="press rounded-lg border border-white/30 bg-black/40 px-4 py-2.5 text-base font-semibold text-white hover:bg-black/60"
             >
               Dashboard
             </Link>
@@ -179,66 +179,75 @@ export default function SettingsPage() {
         {/* Profile */}
         <section className="reveal-on-scroll animate-fade-up space-y-4">
           <div>
-            <h2 className="h-accent text-lg font-bold">Profile</h2>
-            <p className="text-sm text-gray-400">Your contact details. We use these to reach you about bookings.</p>
+            <h2 className="h-accent text-2xl font-bold">Your profile</h2>
+            <p className="mt-2 text-base text-gray-200">
+              Your contact details. We use these to reach you about bookings.
+            </p>
           </div>
 
-          <div className="glass-card rounded-xl p-5">
-            <div className="space-y-4">
+          <div className="glass-card rounded-2xl p-6">
+            <div className="space-y-5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <label htmlFor="settings-name" className="block text-base font-semibold text-white mb-2">
                   Full name
                 </label>
                 <input
+                  id="settings-name"
                   type="text"
+                  autoComplete="name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Your name"
-                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <label htmlFor="settings-phone" className="block text-base font-semibold text-white mb-2">
                   Phone
                 </label>
                 <input
+                  id="settings-phone"
                   type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="(512) 555-0123"
-                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <label htmlFor="settings-email" className="block text-base font-semibold text-white mb-2">
                   Email
                 </label>
                 <input
+                  id="settings-email"
                   type="email"
                   value={profile?.email ?? user.email ?? ''}
                   readOnly
-                  className="mt-1 w-full cursor-not-allowed rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-gray-400"
+                  className="w-full cursor-not-allowed rounded-xl border-2 border-gray-800 bg-gray-950 px-4 py-3 text-base text-gray-300"
                 />
-                <p className="mt-1 text-xs text-gray-500">
-                  Email is tied to your sign-in. Contact support to change it.
+                <p className="mt-2 text-sm text-gray-300">
+                  Email is tied to your sign-in. Reach out if you need to change it.
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   type="button"
                   onClick={handleSaveProfile}
                   disabled={!profileDirty || savingProfile}
-                  className="press rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="btn-primary press rounded-xl px-5 py-3 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {savingProfile ? 'Saving…' : 'Save changes'}
                 </button>
                 {profileMessage && (
                   <span
-                    className={`text-sm ${
-                      profileMessage.type === 'success' ? 'text-green-400' : 'text-red-300'
+                    role={profileMessage.type === 'error' ? 'alert' : 'status'}
+                    className={`text-base font-semibold ${
+                      profileMessage.type === 'success' ? 'text-green-300' : 'text-red-300'
                     }`}
                   >
                     {profileMessage.text}
@@ -251,17 +260,19 @@ export default function SettingsPage() {
 
         {/* Vehicles */}
         <section className="reveal-on-scroll animate-fade-up space-y-4" style={{ animationDelay: '80ms' }}>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="h-accent text-lg font-bold">My Vehicles</h2>
-              <p className="text-sm text-gray-400">Add or remove the cars we should know about.</p>
+              <h2 className="h-accent text-2xl font-bold">Your cars</h2>
+              <p className="mt-2 text-base text-gray-200">
+                Add or remove the cars you want us to detail.
+              </p>
             </div>
             <button
               type="button"
               onClick={() => setShowAddVehicle(true)}
-              className="btn-primary press rounded-lg px-3 py-1.5 text-sm font-medium"
+              className="btn-primary press rounded-xl px-5 py-3 text-base font-semibold"
             >
-              + Add
+              + Add a car
             </button>
           </div>
           <VehicleList />
@@ -270,37 +281,41 @@ export default function SettingsPage() {
         {/* Booking history */}
         <section className="reveal-on-scroll animate-fade-up space-y-4" style={{ animationDelay: '160ms' }}>
           <div>
-            <h2 className="h-accent text-lg font-bold">Booking history</h2>
-            <p className="text-sm text-gray-400">Completed and declined bookings.</p>
+            <h2 className="h-accent text-2xl font-bold">Past bookings</h2>
+            <p className="mt-2 text-base text-gray-200">
+              Bookings that already wrapped up or were declined.
+            </p>
           </div>
 
           {loadingHistory ? (
-            <div className="h-20 animate-pulse rounded-lg bg-gray-800/60" />
+            <div className="h-24 animate-pulse rounded-xl bg-gray-800/60" />
           ) : history.length === 0 ? (
-            <p className="text-sm text-gray-500">Nothing here yet - your past bookings will show up after they wrap up.</p>
+            <p className="text-base text-gray-300">
+              Nothing here yet. Your past bookings will appear once we&apos;ve worked on them.
+            </p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {history.map((b) => (
                 <li
                   key={b.id}
-                  className="rounded-lg border border-white/10 bg-gray-900/40 p-3 text-sm"
+                  className="rounded-xl border border-white/10 bg-gray-900/40 p-5"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{b.service}</p>
-                      <p className="text-xs text-gray-400">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-lg font-semibold text-white">{b.service}</p>
+                      <p className="mt-1 text-base text-gray-200">
                         {new Date(b.scheduled_at).toLocaleString()}
                       </p>
                       {b.status === 'declined' && b.decline_reason && (
-                        <p className="mt-1 text-xs text-red-300">Reason: {b.decline_reason}</p>
+                        <p className="mt-2 text-sm text-red-200">Reason: {b.decline_reason}</p>
                       )}
-                      <div className="mt-1">
+                      <div className="mt-2">
                         <BookingWeather date={b.scheduled_at} compact />
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1 text-xs">
+                    <div className="flex flex-col items-end gap-2">
                       <span
-                        className={`rounded-full border px-2 py-0.5 font-medium ${
+                        className={`rounded-full border px-3 py-1 text-sm font-semibold ${
                           b.status === 'completed'
                             ? 'border-green-700 bg-green-900/30 text-green-200'
                             : 'border-red-700 bg-red-900/30 text-red-200'
@@ -308,7 +323,9 @@ export default function SettingsPage() {
                       >
                         {b.status === 'completed' ? 'Completed' : 'Declined'}
                       </span>
-                      <span className="text-gray-400">${Number(b.total).toFixed(2)}</span>
+                      <span className="text-base font-semibold text-gray-200">
+                        ${Number(b.total).toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </li>
@@ -320,13 +337,13 @@ export default function SettingsPage() {
         {/* Account actions */}
         <section className="reveal-on-scroll animate-fade-up space-y-4" style={{ animationDelay: '240ms' }}>
           <div>
-            <h2 className="h-accent text-lg font-bold">Account</h2>
+            <h2 className="h-accent text-2xl font-bold">Account</h2>
           </div>
-          <div className="glass-card rounded-xl p-5">
+          <div className="glass-card rounded-2xl p-6">
             <button
               type="button"
               onClick={handleSignOut}
-              className="press rounded-lg border border-white/30 bg-black/40 px-4 py-2 text-sm text-white hover:bg-black/60"
+              className="press rounded-xl border-2 border-white/30 bg-black/40 px-5 py-3 text-base font-semibold text-white hover:bg-black/60"
             >
               Sign out
             </button>

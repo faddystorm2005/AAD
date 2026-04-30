@@ -259,101 +259,101 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
               </svg>
             </div>
           )}
-          <h1 className={`mb-2 text-2xl font-bold ${tone.title}`}>{header.title}</h1>
-          <p className={`text-sm ${tone.sub}`}>{header.subtitle}</p>
+          <h1 className={`mb-3 text-2xl font-bold sm:text-3xl ${tone.title}`}>{header.title}</h1>
+          <p className={`text-base ${tone.sub}`}>{header.subtitle}</p>
 
           {status === 'declined' && booking.decline_reason && (
-            <p className="mt-4 rounded-lg bg-red-900/40 p-3 text-sm text-red-200">
+            <p className="mt-4 rounded-xl border-2 border-red-700 bg-red-900/40 p-4 text-base text-red-100">
               <span className="font-semibold">Reason:</span> {booking.decline_reason}
             </p>
           )}
 
           {status === 'approved' && booking.payment_url && (
-            <div className="mt-5 flex flex-col items-center gap-2">
+            <div className="mt-5 flex flex-col items-center gap-3">
               <a
                 href={booking.payment_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="press inline-block rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white shadow-lg shadow-blue-900/40 hover:bg-blue-700"
+                className="press inline-block rounded-xl bg-blue-600 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-blue-900/40 hover:bg-blue-700 sm:text-lg"
               >
                 Pay ${Number(booking.deposit_amount).toFixed(2)} deposit →
               </a>
-              <div className="flex items-center gap-2 text-xs text-blue-300">
+              <div className="flex items-center gap-2 text-sm text-blue-200">
                 <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-blue-400" />
                 <span>Checking for payment every 3 seconds…</span>
               </div>
               <button
                 type="button"
                 onClick={handleManualRefresh}
-                className="press text-xs text-blue-300 underline hover:text-blue-200"
+                className="press rounded-lg border border-blue-500/40 bg-blue-950/40 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-900/40"
               >
-                I paid - check now
+                I paid &mdash; check now
               </button>
             </div>
           )}
 
           {status === 'approved' && !booking.payment_url && (
-            <p className="mt-5 rounded-lg bg-blue-900/40 p-3 text-sm text-blue-200">
-              Payment link is being set up. Refresh in a moment, or contact Austin Auto Detail if it doesn&apos;t appear.
+            <p className="mt-5 rounded-xl border-2 border-blue-700 bg-blue-900/40 p-4 text-base text-blue-100">
+              The payment link is being set up. Refresh in a moment, or reach out if it doesn&apos;t appear.
             </p>
           )}
         </div>
 
-        <div className="glass-card space-y-4 rounded-3xl p-8">
+        <div className="glass-card space-y-5 rounded-3xl p-6 sm:p-8">
           <div>
-            <p className="text-sm text-gray-400">Booking ID</p>
-            <p className="font-mono text-lg text-white">{booking.id}</p>
+            <p className="text-sm uppercase tracking-wider text-gray-300">Booking ID</p>
+            <p className="mt-1 font-mono text-base text-white sm:text-lg">{booking.id}</p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-400">Scheduled Date</p>
-            <p className="text-lg text-white">
+            <p className="text-sm uppercase tracking-wider text-gray-300">Scheduled for</p>
+            <p className="mt-1 text-lg font-semibold text-white">
               {new Date(booking.scheduled_at).toLocaleString()}
             </p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-400">Service Location</p>
-            <p className="text-white">
+            <p className="text-sm uppercase tracking-wider text-gray-300">We&apos;ll come to</p>
+            <p className="mt-1 text-base text-white">
               {booking.address}, {booking.city}, {booking.state} {booking.zip}
             </p>
           </div>
 
-          <div className="border-t border-gray-600 pt-4">
-            <p className="mb-2 text-sm text-gray-400">Cost Summary</p>
-            <div className="space-y-1">
-              <div className="flex justify-between text-gray-300">
+          <div className="border-t border-gray-600 pt-5">
+            <p className="mb-3 text-sm uppercase tracking-wider text-gray-300">Cost Summary</p>
+            <div className="space-y-2">
+              <div className="flex justify-between text-base text-gray-200">
                 <span>Subtotal</span>
                 <span>${Number(booking.subtotal).toFixed(2)}</span>
               </div>
               {Number(booking.discount_amount) > 0 && (
-                <div className="flex justify-between text-green-400">
-                  <span>Returning customer −10%</span>
-                  <span>−${Number(booking.discount_amount).toFixed(2)}</span>
+                <div className="flex justify-between text-base text-green-300">
+                  <span>Returning customer &minus;10%</span>
+                  <span>&minus;${Number(booking.discount_amount).toFixed(2)}</span>
                 </div>
               )}
-              <div className="flex justify-between font-semibold text-white">
+              <div className="flex justify-between text-xl font-bold text-white pt-2 border-t border-gray-700">
                 <span>Total</span>
                 <span>${Number(booking.total).toFixed(2)}</span>
               </div>
             </div>
           </div>
 
-          <div className="rounded-lg bg-gray-800 p-4">
-            <p className="text-sm text-gray-300">
+          <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
+            <p className="text-base text-gray-100">
               Deposit:{' '}
               <span
-                className={`font-semibold ${
-                  booking.deposit_paid ? 'text-green-400' : 'text-yellow-300'
+                className={`font-bold ${
+                  booking.deposit_paid ? 'text-green-300' : 'text-yellow-200'
                 }`}
               >
                 ${Number(booking.deposit_amount).toFixed(2)}{' '}
                 {booking.deposit_paid ? '(paid)' : '(pending)'}
               </span>
             </p>
-            <p className="mt-1 text-sm text-gray-400">
-              Balance Due On-Site:{' '}
-              <span className="font-semibold">
+            <p className="mt-2 text-base text-gray-200">
+              Balance due on-site:{' '}
+              <span className="font-bold text-white">
                 ${(Number(booking.total) - Number(booking.deposit_amount)).toFixed(2)}
               </span>
             </p>
@@ -362,9 +362,9 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
 
         <Link
           href="/dashboard"
-          className="btn-primary press block rounded-lg px-6 py-3 text-center font-medium"
+          className="btn-primary press block rounded-xl px-6 py-4 text-center text-base font-semibold sm:text-lg"
         >
-          Back to Dashboard
+          Back to dashboard
         </Link>
       </div>
     </main>

@@ -101,27 +101,33 @@ export default function RescheduleModal({
       aria-modal="true"
       aria-labelledby="reschedule-title"
     >
-      <div className="glass-card animate-scale-in w-full max-w-md rounded-2xl p-6">
+      <div className="glass-card animate-scale-in w-full max-w-md rounded-3xl p-6 sm:p-7">
         <div className="mb-4 flex items-start justify-between gap-3">
-          <h2 id="reschedule-title" className="text-lg font-bold text-white">
-            Reschedule booking
-          </h2>
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
+              Move it
+            </p>
+            <h2 id="reschedule-title" className="mt-1 text-2xl font-bold text-white">
+              Reschedule booking
+            </h2>
+          </div>
           <button
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="text-gray-400 hover:text-white disabled:opacity-50"
             aria-label="Close"
+            className="press shrink-0 rounded-full border border-white/20 bg-white/5 p-2.5 text-lg text-gray-200 hover:bg-white/10 hover:text-white disabled:opacity-50"
           >
             ✕
           </button>
         </div>
 
         {/* Date */}
-        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">
+        <label htmlFor="reschedule-date" className="block text-base font-semibold text-white">
           New date
         </label>
         <input
+          id="reschedule-date"
           type="date"
           min={todayAustinDateString()}
           value={slotDate}
@@ -131,22 +137,22 @@ export default function RescheduleModal({
             setError(null);
           }}
           disabled={submitting}
-          className="mt-2 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-white focus:border-red-500 focus:outline-none disabled:opacity-50"
+          className="mt-2 w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none disabled:opacity-50"
         />
         {slotDate && (
-          <div className="mt-2">
+          <div className="mt-3">
             <BookingWeather date={slotDate} compact />
           </div>
         )}
 
         {/* Slot */}
-        <label className="mt-4 block text-xs font-semibold uppercase tracking-wider text-gray-400">
-          New time slot
+        <label className="mt-5 block text-base font-semibold text-white">
+          New time
         </label>
         {loadingAvail ? (
-          <p className="mt-2 text-sm text-gray-400">Checking availability…</p>
+          <p className="mt-2 text-base text-gray-300">Checking what&apos;s open…</p>
         ) : availability ? (
-          <div className="mt-2 grid grid-cols-3 gap-2">
+          <div className="mt-2 grid grid-cols-3 gap-3">
             {SLOT_TIMES.map((time) => {
               const slot = availability.slots.find((s) => s.time === time)!;
               const usable = isCeramic ? slot.availableForCeramic : slot.availableForRegular;
@@ -154,11 +160,11 @@ export default function RescheduleModal({
               const isSelected = slotTime === time;
               let reason = '';
               if (!usable) {
-                if (isCeramic && time !== CERAMIC_SLOT) reason = 'Ceramic = 9am';
-                else if (slot.ceramicTaken) reason = 'Ceramic booked';
+                if (isCeramic && time !== CERAMIC_SLOT) reason = 'Mornings only';
+                else if (slot.ceramicTaken) reason = 'Booked';
                 else if (slot.takenCount >= slot.perSlotCapacity) reason = 'Full';
                 else if (availability.totalBookings >= availability.perDayCapacity) reason = 'Day full';
-                else reason = 'Unavailable';
+                else reason = 'Not available';
               }
               return (
                 <button
@@ -169,38 +175,38 @@ export default function RescheduleModal({
                     setSlotTime(time);
                     setError(null);
                   }}
-                  className={`rounded-lg border px-3 py-3 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                  className={`rounded-xl border-2 px-3 py-4 text-base transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                     isSelected
-                      ? 'border-red-500 bg-red-600 text-white'
+                      ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50'
                       : usable
-                      ? 'border-gray-600 bg-gray-800 text-white hover:bg-gray-700'
-                      : 'border-gray-700 bg-gray-900 text-gray-500'
+                      ? 'border-gray-700 bg-gray-900 text-white hover:border-gray-500'
+                      : 'border-gray-800 bg-gray-900/50 text-gray-500'
                   }`}
                 >
-                  <p className="font-semibold">{SLOT_LABELS[time as SlotTime]}</p>
-                  <p className="mt-1 text-[10px] uppercase tracking-wider">
-                    {isCurrent ? 'Current' : usable ? `${slot.takenCount}/${slot.perSlotCapacity}` : reason}
+                  <p className="text-base font-bold">{SLOT_LABELS[time as SlotTime]}</p>
+                  <p className="mt-1 text-xs uppercase tracking-wider opacity-90">
+                    {isCurrent ? 'Current' : usable ? (slot.takenCount === 0 ? 'Open' : `${slot.takenCount}/${slot.perSlotCapacity}`) : reason}
                   </p>
                 </button>
               );
             })}
           </div>
         ) : (
-          <p className="mt-2 text-sm text-gray-400">Pick a date to see slots.</p>
+          <p className="mt-2 text-base text-gray-300">Pick a date above first.</p>
         )}
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-700 bg-red-900/30 p-3 text-sm text-red-200">
+          <div role="alert" className="mt-4 rounded-xl border-2 border-red-700 bg-red-900/40 p-4 text-base text-red-100">
             {error}
           </div>
         )}
 
-        <div className="mt-6 flex gap-2">
+        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row">
           <button
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="flex-1 rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+            className="press flex-1 rounded-xl border-2 border-gray-600 px-5 py-3.5 text-base font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
           >
             Cancel
           </button>
@@ -208,7 +214,7 @@ export default function RescheduleModal({
             type="button"
             onClick={handleSubmit}
             disabled={submitting || !slotDate || !slotTime}
-            className="btn-primary press flex-1 rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50"
+            className="btn-primary press flex-1 rounded-xl px-5 py-3.5 text-base font-semibold disabled:opacity-50"
           >
             {submitting ? 'Saving…' : 'Reschedule'}
           </button>
