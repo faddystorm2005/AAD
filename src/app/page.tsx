@@ -439,6 +439,9 @@ export default function Home() {
             </Link>
             . We&apos;ll confirm within 24 hours.
           </p>
+          <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-red-300">
+            Available 7 days a week, by appointment.
+          </p>
         </div>
       </section>
 
@@ -456,6 +459,9 @@ export default function Home() {
               <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
                 (480) 793-3782
               </a>
+            </p>
+            <p className="mt-2 text-sm text-gray-300">
+              Available 7 days a week, by appointment.
             </p>
           </div>
           <nav aria-label="Services">
