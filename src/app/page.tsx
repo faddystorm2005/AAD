@@ -366,8 +366,13 @@ export default function Home() {
 const SERVICES = [
   {
     icon: '🚗',
-    title: 'Interior + Exterior Detailing',
-    description: 'Full vehicle deep clean - vacuum, shampoo, wash, decontaminate, and dress every surface inside and out.',
+    title: 'Exterior Detailing',
+    description: 'Hand wash, decontamination, clay bar, and trim/tire dressing. Your paint reset to like-new.',
+  },
+  {
+    icon: '🛋️',
+    title: 'Interior Detailing',
+    description: 'Vacuum, shampoo carpets and seats, wipe and dress every surface. Cabin completely reset.',
   },
   {
     icon: '✨',
@@ -385,9 +390,14 @@ const SERVICES = [
     description: 'Long-lasting wax application for daily protection from sun, rain, and road grime - without committing to a coating.',
   },
   {
-    icon: '🧽',
-    title: 'Engine Bay + Stain Removal',
-    description: 'Deep degrease the engine bay, lift stubborn upholstery stains, condition leather, treat windshields, and more.',
+    icon: '🔧',
+    title: 'Engine Bay Cleaning',
+    description: 'Deep degrease and dress under the hood. Brings the engine bay back to showroom clean.',
+  },
+  {
+    icon: '🧴',
+    title: 'Stain Removal',
+    description: 'Targeted treatment for stubborn upholstery, carpet, and seat stains. Coffee, ink, pet, you name it.',
   },
   {
     icon: '📍',
