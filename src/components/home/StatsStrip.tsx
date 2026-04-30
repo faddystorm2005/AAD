@@ -9,12 +9,17 @@ interface Stat {
   label: string;
 }
 
-// Edit these to reflect real numbers as the business grows.
+// Stats mix the three things customers care about: convenience, price/value,
+// and quality. The labels lean into trust + value over bland activity counts.
+//   #1 Trust + social proof (500+ trusted customers)
+//   #2 Convenience + quality alignment (3 cars/day max - "Quality Over Quantity")
+//   #3 Quality + trust (5-star average)
+//   #4 Quality + guarantee (100% showroom-ready, guaranteed)
 const STATS: Stat[] = [
-  { value: 500, suffix: '+', label: 'Details Completed' },
-  { value: 10, suffix: ' yr', label: 'Ceramic Coatings Last' },
-  { value: 60, suffix: 's', label: 'Average Booking Time' },
-  { value: 5, suffix: '★', label: 'Customer Rating' },
+  { value: 500, suffix: '+', label: 'Trusted Austin Customers' },
+  { value: 3, suffix: '/day', label: 'Cars Max - No Rush Jobs' },
+  { value: 5, suffix: '★', label: 'Average Customer Rating' },
+  { value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
 ];
 
 /**

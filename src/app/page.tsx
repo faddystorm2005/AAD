@@ -421,21 +421,24 @@ const STEPS = [
   },
 ];
 
+// Three reasons mapped to the three things customers actually weigh:
+// convenience, quality, price. Each headline is the dimension; each title +
+// description sells our take on it.
 const REASONS = [
   {
-    headline: 'Mobile',
-    title: 'No driving, no waiting',
-    description: 'We bring the studio to your driveway. Get back hours of your week.',
+    headline: 'Convenience',
+    title: 'We come to you',
+    description: 'Driveway, office, or garage - our van is fully self-contained. No driving across town, no waiting rooms.',
   },
   {
     headline: 'Quality',
     title: 'Quality over quantity',
-    description: 'Three details a day max. Your car gets focus and care, not assembly-line speed.',
+    description: 'Three details a day max. Your car gets focus and care, not assembly-line speed. Showroom-ready, guaranteed.',
   },
   {
-    headline: '10 yrs',
-    title: 'Ceramic coatings that last',
-    description: 'Premium products and patient prep. Our ceramic coatings hold up for years - not months.',
+    headline: 'Fair Price',
+    title: 'No surprises, no travel fees',
+    description: 'Flat rates with travel included. Returning-customer discount on every visit. What you see is what you pay.',
   },
 ];
 
