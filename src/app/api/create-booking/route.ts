@@ -19,6 +19,7 @@ interface CreateBookingPayload extends BookingData {
   slotDate: string; // YYYY-MM-DD
   slotTime: SlotTime;
   promoCode?: string | null;
+  notes?: string | null;
 }
 
 export async function POST(req: NextRequest) {
@@ -187,6 +188,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Customer-supplied special instructions. Trim, cap length, treat empty
+  // as null so the DB column stays clean.
+  const safeNotes =
+    typeof body.notes === 'string' && body.notes.trim().length > 0
+      ? body.notes.trim().slice(0, 500)
+      : null;
+
   const pricing = calculatePricing(
     {
       vehicleId: body.vehicleId,
@@ -250,6 +258,7 @@ export async function POST(req: NextRequest) {
       credit_applied: creditApplied,
       booking_stage: 'requested',
       status: 'pending',
+      notes: safeNotes,
     })
     .select()
     .single();
