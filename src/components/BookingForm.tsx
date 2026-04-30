@@ -40,7 +40,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [availability, setAvailability] = useState<DayAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const lastSubmissionRef = useRef<number>(0);
-  const [formData, setFormData] = useState<SlotFormData & { unit: string }>({
+  const [formData, setFormData] = useState<SlotFormData & { unit: string; notes: string }>({
     vehicleId: '',
     serviceSize: 'small',
     selectedAddOns: [],
@@ -52,6 +52,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     city: '',
     state: 'TX',
     zip: '',
+    notes: '',
   });
 
   const ceramic = isCeramicSelected(formData.selectedAddOns);
@@ -251,6 +252,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           city: formData.city,
           state: formData.state,
           zip: formData.zip,
+          notes: formData.notes.trim() || null,
           promoCode: appliedPromo?.code ?? null,
           origin: window.location.origin,
         }),
@@ -657,6 +659,32 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   />
                 </div>
               </div>
+
+              <div>
+                <label htmlFor="booking-notes" className="block text-base font-semibold text-white mb-2">
+                  Anything we should know? <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                </label>
+                <p className="mb-3 text-sm text-gray-300">
+                  Special instructions, gate codes, where to park, the friendly dog out back. Anything that helps us get to your car easily.
+                </p>
+                <textarea
+                  id="booking-notes"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={(e) => {
+                    if (error) setError('');
+                    setFormData((prev) => ({ ...prev, notes: e.target.value.slice(0, 500) }));
+                  }}
+                  disabled={isProcessing}
+                  rows={3}
+                  maxLength={500}
+                  placeholder="Park in the driveway, doorbell is broken, please knock loudly..."
+                  className="w-full resize-none rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
+                />
+                <p className="mt-1 text-xs text-gray-400">
+                  {formData.notes.length}/500 characters
+                </p>
+              </div>
             </div>
           )}
 
@@ -693,6 +721,15 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                     formData.slotTime ? ` (${SLOT_LABELS[formData.slotTime]})` : ''
                   }`}
                 />
+
+                {formData.notes.trim() && (
+                  <div>
+                    <p className="text-sm uppercase tracking-wider text-gray-400">Special instructions</p>
+                    <p className="mt-1 text-base text-white whitespace-pre-wrap">
+                      {formData.notes.trim()}
+                    </p>
+                  </div>
+                )}
 
                 <div className="border-t border-gray-700 pt-4 space-y-2">
                   <div className="flex justify-between text-base text-gray-300">
