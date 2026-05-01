@@ -673,5 +673,6 @@ const GALLERY = [
   { src: '/images/aad/gallery-ford-super-duty.jpg', alt: 'Ford Super Duty interior detailed by Austin Auto Detail' },
   { src: '/images/aad/gallery-toyota-tundra-console.jpg', alt: 'Toyota Tundra console area detailed by Austin Auto Detail' },
   { src: '/images/aad/gallery-nissan-rogue-interior.jpg', alt: 'Nissan Rogue interior detailed by Austin Auto Detail' },
+  { src: '/images/aad/gallery-ford-king-ranch.jpg', alt: 'Ford F-150 King Ranch interior detailed by Austin Auto Detail' },
   { src: '/images/aad/gallery-suv-cargo-area.jpg', alt: 'SUV cargo area cleaned by Austin Auto Detail' },
 ];
