@@ -316,7 +316,7 @@ h6 {
   }
 }
 .h2-cinematic.is-revealed {
-  animation: aad-h2-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: aad-h2-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Skeleton shimmer - replaces the basic animate-pulse with a more refined

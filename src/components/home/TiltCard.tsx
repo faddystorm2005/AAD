@@ -28,13 +28,13 @@ export default function TiltCard({ children, className = '', style }: TiltCardPr
       const rect = el.getBoundingClientRect();
       const px = (e.clientX - rect.left) / rect.width;
       const py = (e.clientY - rect.top) / rect.height;
-      const rotateY = (px - 0.5) * 14;
-      const rotateX = (0.5 - py) * 14;
-      el.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      const rotateY = (px - 0.5) * 20;
+      const rotateX = (0.5 - py) * 20;
+      el.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     };
 
     const onLeave = () => {
-      el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+      el.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg)';
     };
 
     el.addEventListener('mousemove', onMove);
