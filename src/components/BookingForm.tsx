@@ -152,6 +152,22 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     }
   }, [ceramic, formData.slotTime]);
 
+  // Prune incompatible add-ons when service type changes. If a
+  // customer selects add-ons under Full Detail and then switches
+  // to Interior, hidden add-ons would otherwise still be charged.
+  useEffect(() => {
+    setFormData((prev) => {
+      const stillValid = prev.selectedAddOns.filter((addonId) => {
+        const addon = ADD_ONS.find((a) => a.id === addonId);
+        return addon?.applicableServiceTypes.includes(serviceType) ?? false;
+      });
+      if (stillValid.length === prev.selectedAddOns.length) {
+        return prev;
+      }
+      return { ...prev, selectedAddOns: stillValid };
+    });
+  }, [serviceType]);
+
   const selectedVehicle = vehicles.find((v) => v.id === formData.vehicleId);
   const pricing = calculatePricing({ ...formData, serviceType }, {
     isReturning,
@@ -459,7 +475,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   Skip this if you just want a regular detail.
                 </p>
                 <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                  {ADD_ONS.map((addon) => {
+                  {ADD_ONS.filter((addon) => addon.applicableServiceTypes.includes(serviceType)).map((addon) => {
                     const checked = formData.selectedAddOns.includes(addon.id);
                     return (
                       <label

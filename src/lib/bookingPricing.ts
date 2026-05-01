@@ -52,17 +52,18 @@ export interface AddOn {
   price: number;
   /** Optional helper text shown beneath the name in the booking form. */
   description?: string;
+  applicableServiceTypes: ServiceType[];
 }
 
 export const ADD_ONS: AddOn[] = [
-  { id: 'wax', name: '6 Month Wax', price: 50 },
-  { id: 'engine', name: 'Engine Bay', price: 25 },
-  { id: 'stain', name: 'Stain Removal', price: 30 },
-  { id: 'leather', name: 'Leather Conditioner', price: 10 },
-  { id: 'windshield', name: 'Windshield Coating', price: 40 },
-  { id: 'headlight', name: 'Headlight Restoration', price: 80 },
-  { id: 'paint1', name: '1-Step Paint Correction', price: 95 },
-  { id: 'paint2', name: '2-Step Paint Correction', price: 125 },
+  { id: 'wax', name: '6 Month Wax', price: 50, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'engine', name: 'Engine Bay', price: 25, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'stain', name: 'Stain Removal', price: 30, applicableServiceTypes: ['interior', 'full_detail'] },
+  { id: 'leather', name: 'Leather Conditioner', price: 10, applicableServiceTypes: ['interior', 'full_detail'] },
+  { id: 'windshield', name: 'Windshield Coating', price: 40, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'headlight', name: 'Headlight Restoration', price: 80, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'paint1', name: '1-Step Paint Correction', price: 95, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'paint2', name: '2-Step Paint Correction', price: 125, applicableServiceTypes: ['exterior', 'full_detail'] },
   // Ceramic Coating: full-day job at the 9 AM slot, only 1 per day.
   // Adjust price to match Austin Auto Detail's actual ceramic coating rate.
   {
@@ -70,6 +71,7 @@ export const ADD_ONS: AddOn[] = [
     name: 'Ceramic Coating',
     price: 500,
     description: 'Multi-year protection. Mornings only - first slot of the day (9:00 AM), full-day job, 1 per day.',
+    applicableServiceTypes: ['exterior', 'full_detail'],
   },
 ];
 
