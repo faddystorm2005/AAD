@@ -1,3 +1,34 @@
+// ---------------------------------------------------------------
+// Service-type data model (added for service-type split rollout)
+//
+// These constants define the three bookable services and their
+// pricing matrix. They are NOT yet wired to the live booking flow
+// -- the existing SERVICES export continues to drive bookings
+// until Phase 6 of the service-type split, when SERVICE_PRICES
+// becomes the source of truth.
+// ---------------------------------------------------------------
+
+export const SERVICE_TYPES = ['exterior', 'interior', 'full_detail'] as const;
+export type ServiceType = typeof SERVICE_TYPES[number];
+
+export const SERVICE_TYPE_NAMES: Record<ServiceType, string> = {
+  exterior: 'Exterior Detail',
+  interior: 'Interior Detail',
+  full_detail: 'Full Detail',
+};
+
+// Default service type for backward compatibility with bookings
+// made before the split rolled out.
+export const SERVICE_TYPE_DEFAULT: ServiceType = 'full_detail';
+
+// Authoritative price matrix: service type x vehicle size.
+// Final launch prices, set via business decision.
+export const SERVICE_PRICES: Record<ServiceType, { small: number; suv: number; truck: number }> = {
+  exterior:    { small: 120, suv: 150, truck: 170 },
+  interior:    { small: 180, suv: 210, truck: 230 },
+  full_detail: { small: 249, suv: 299, truck: 329 },
+};
+
 export const SERVICES = {
   small: {
     name: 'Small Sedan / Coupe',
