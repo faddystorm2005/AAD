@@ -1,7 +1,7 @@
 'use client';
 
 interface Stat {
-  value: number;
+  value: number | string;
   suffix?: string;
   prefix?: string;
   label: string;
@@ -11,9 +11,9 @@ interface Stat {
 // and quality. Real numbers, no animation, so SSR and slow phones never show
 // placeholder zeros to users or search crawlers.
 const STATS: Stat[] = [
-  { value: 75, suffix: '+', label: 'Trusted Austin Customers' },     // TODO: real number from Alex
+  { value: 100, suffix: '+', label: 'Trusted Austin Customers' },
   { value: 3, suffix: '/day', label: 'Cars Max - No Rush Jobs' },
-  { value: 4.9, suffix: '★', label: 'Average Customer Rating' },     // TODO: real number from Alex
+  { value: '5.0', suffix: '★', label: 'Average Customer Rating' },
   { value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
 ];
 
