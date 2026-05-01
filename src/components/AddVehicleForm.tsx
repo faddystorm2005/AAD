@@ -6,7 +6,7 @@ import {
   VEHICLE_MAKES,
   ALL_MAKES,
   VEHICLE_YEARS,
-  OTHER_MAKE_VALUE,
+  getVehicleSize,
 } from '@/lib/vehicleData';
 
 interface AddVehicleFormProps {
@@ -21,15 +21,10 @@ const FIELD_CLASSES_DISABLED = `${FIELD_CLASSES} disabled:cursor-not-allowed dis
 export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
   const { addVehicle, loading } = useVehicles();
   const [error, setError] = useState('');
-  // True when the user picked "Other / Not Listed" from the make dropdown.
-  // While true, formData.make holds whatever the user typed (never the
-  // OTHER_MAKE_VALUE sentinel) and model is a freeform text input too.
-  const [useOtherMake, setUseOtherMake] = useState(false);
   const [formData, setFormData] = useState({
     year: 0, // 0 = nothing chosen yet; validates as falsy in handleSubmit
     make: '',
     model: '',
-    size: 'small' as const,
     color: '',
     nickname: '',
   });
@@ -44,16 +39,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
 
   const handleMakeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    if (value === OTHER_MAKE_VALUE) {
-      // Switch to "Other" mode. Clear make + model so freeform inputs start empty.
-      setUseOtherMake(true);
-      setFormData((prev) => ({ ...prev, make: '', model: '' }));
-    } else {
-      // Real make picked (or empty placeholder). Reset model so a stale
-      // selection from a different make doesn't carry over.
-      setUseOtherMake(false);
-      setFormData((prev) => ({ ...prev, make: value, model: '' }));
-    }
+    setFormData((prev) => ({ ...prev, make: value, model: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,7 +51,13 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
       return;
     }
 
-    const { error: submitError } = await addVehicle(formData);
+    const size = getVehicleSize(formData.make, formData.model);
+    if (size === null) {
+      setError('Could not determine vehicle size. Please contact support if this persists.');
+      return;
+    }
+
+    const { error: submitError } = await addVehicle({ ...formData, size });
     if (submitError) {
       setError(submitError.message);
     } else {
@@ -73,11 +65,8 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
     }
   };
 
-  // Dropdown shows the sentinel when useOtherMake is true; otherwise mirrors formData.make.
-  const makeSelectValue = useOtherMake ? OTHER_MAKE_VALUE : formData.make;
-  // Model options for the cascading dropdown. Empty when "Other" or no make.
-  const modelOptions =
-    !useOtherMake && formData.make ? VEHICLE_MAKES[formData.make] ?? [] : [];
+  // Model options for the cascading dropdown. Empty until a make is selected.
+  const modelOptions = formData.make ? VEHICLE_MAKES[formData.make] ?? [] : [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
@@ -105,42 +94,24 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label htmlFor="vehicle-year" className="block text-base font-semibold text-white mb-2">
-                Year <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="vehicle-year"
-                name="year"
-                value={formData.year ? String(formData.year) : ''}
-                onChange={handleChange}
-                className={FIELD_CLASSES}
-              >
-                <option value="">Select year</option>
-                {VEHICLE_YEARS.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="vehicle-size" className="block text-base font-semibold text-white mb-2">
-                Size <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="vehicle-size"
-                name="size"
-                value={formData.size}
-                onChange={handleChange}
-                className={FIELD_CLASSES}
-              >
-                <option value="small">Small Sedan / Coupe</option>
-                <option value="suv">SUV</option>
-                <option value="truck">Truck / 3-Row</option>
-              </select>
-            </div>
+          <div>
+            <label htmlFor="vehicle-year" className="block text-base font-semibold text-white mb-2">
+              Year <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="vehicle-year"
+              name="year"
+              value={formData.year ? String(formData.year) : ''}
+              onChange={handleChange}
+              className={FIELD_CLASSES}
+            >
+              <option value="">Select year</option>
+              {VEHICLE_YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -150,7 +121,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
             <select
               id="vehicle-make"
               name="make"
-              value={makeSelectValue}
+              value={formData.make}
               onChange={handleMakeChange}
               className={FIELD_CLASSES}
             >
@@ -160,62 +131,30 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
                   {m}
                 </option>
               ))}
-              <option value={OTHER_MAKE_VALUE}>Other / Not Listed</option>
             </select>
           </div>
-
-          {useOtherMake && (
-            <div>
-              <label htmlFor="vehicle-make-other" className="block text-base font-semibold text-white mb-2">
-                Make name <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="vehicle-make-other"
-                type="text"
-                name="make"
-                value={formData.make}
-                onChange={handleChange}
-                placeholder="Type the make"
-                autoComplete="off"
-                className={FIELD_CLASSES_PLACEHOLDER}
-              />
-            </div>
-          )}
 
           <div>
             <label htmlFor="vehicle-model" className="block text-base font-semibold text-white mb-2">
               Model <span className="text-red-500">*</span>
             </label>
-            {useOtherMake ? (
-              <input
-                id="vehicle-model"
-                type="text"
-                name="model"
-                value={formData.model}
-                onChange={handleChange}
-                placeholder="Type the model"
-                autoComplete="off"
-                className={FIELD_CLASSES_PLACEHOLDER}
-              />
-            ) : (
-              <select
-                id="vehicle-model"
-                name="model"
-                value={formData.model}
-                onChange={handleChange}
-                disabled={!formData.make}
-                className={FIELD_CLASSES_DISABLED}
-              >
-                <option value="">
-                  {formData.make ? 'Select model' : 'Pick a make first'}
+            <select
+              id="vehicle-model"
+              name="model"
+              value={formData.model}
+              onChange={handleChange}
+              disabled={!formData.make}
+              className={FIELD_CLASSES_DISABLED}
+            >
+              <option value="">
+                {formData.make ? 'Select model' : 'Pick a make first'}
+              </option>
+              {modelOptions.map((m) => (
+                <option key={m} value={m}>
+                  {m}
                 </option>
-                {modelOptions.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-            )}
+              ))}
+            </select>
           </div>
 
           <div>
