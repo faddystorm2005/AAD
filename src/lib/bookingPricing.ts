@@ -38,7 +38,7 @@ export const ADD_ONS: AddOn[] = [
     id: CERAMIC_ADDON_ID,
     name: 'Ceramic Coating',
     price: 500,
-    description: 'Lasts up to 10 years. Mornings only - first slot of the day (9:00 AM), full-day job, 1 per day.',
+    description: 'Multi-year protection. Mornings only - first slot of the day (9:00 AM), full-day job, 1 per day.',
   },
 ];
 

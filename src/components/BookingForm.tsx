@@ -465,8 +465,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   <p className="font-semibold text-base">About Ceramic Coating</p>
                   <p className="mt-2">
                     It&apos;s an all-day job, so we only do <strong>one ceramic per day</strong>.
-                    The only available time is <strong>9:00 AM</strong>. The coating lasts
-                    up to <strong>10 years</strong>.
+                    The only available time is <strong>9:00 AM</strong>. The coating provides
+                    <strong>multi-year protection</strong>.
                   </p>
                 </div>
               )}
