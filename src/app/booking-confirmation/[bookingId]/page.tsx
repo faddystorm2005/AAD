@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getBooking } from '@/lib/bookingService';
+import { SERVICE_TYPE_NAMES, ServiceType } from '@/lib/bookingPricing';
 
 type BookingStatus =
   | 'pending'
@@ -20,6 +21,7 @@ interface BookingConfirmationPageProps {
 interface ConfirmationBooking {
   id: string;
   status: BookingStatus;
+  service_type?: ServiceType | null;
   scheduled_at: string;
   address: string;
   unit: string | null;
@@ -304,6 +306,13 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           <div>
             <p className="text-sm uppercase tracking-wider text-gray-300">Booking ID</p>
             <p className="mt-1 font-mono text-base text-white sm:text-lg">{booking.id}</p>
+          </div>
+
+          <div>
+            <p className="text-sm uppercase tracking-wider text-gray-300">Service</p>
+            <p className="mt-1 text-base text-white">
+              {SERVICE_TYPE_NAMES[booking.service_type ?? 'full_detail']}
+            </p>
           </div>
 
           <div>

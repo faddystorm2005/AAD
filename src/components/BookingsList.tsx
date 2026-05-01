@@ -13,6 +13,7 @@ import {
   normalizeStage,
 } from '@/lib/bookingStages';
 import RescheduleModal from '@/components/RescheduleModal';
+import { SERVICE_TYPE_NAMES, ServiceType } from '@/lib/bookingPricing';
 
 type Status =
   | 'pending'
@@ -26,6 +27,7 @@ type Status =
 export interface BookingRow {
   id: string;
   service: string;
+  service_type?: ServiceType | null;
   scheduled_at: string;
   address: string;
   unit?: string | null;
@@ -184,7 +186,7 @@ export default function BookingsList() {
       const { data } = await supabase
         .from('bookings')
         .select(
-          'id, service, scheduled_at, address, unit, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason'
+          'id, service, service_type, scheduled_at, address, unit, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason'
         )
         .eq('user_id', user.id)
         .order('scheduled_at', { ascending: true });
@@ -252,7 +254,10 @@ export default function BookingsList() {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <p className="text-lg font-semibold text-white">{b.service}</p>
+                <p className="text-lg font-semibold text-white">
+                  {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
+                </p>
+                <p className="text-sm text-gray-400">{b.service}</p>
                 <p className="mt-1 text-base text-gray-200">
                   {new Date(b.scheduled_at).toLocaleString()}
                 </p>

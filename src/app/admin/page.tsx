@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
-import { ADD_ONS } from '@/lib/bookingPricing';
+import { ADD_ONS, SERVICE_TYPE_NAMES, ServiceType } from '@/lib/bookingPricing';
 import {
   Stage,
   STAGE_LABELS,
@@ -62,6 +62,7 @@ interface AdminBooking {
   user_id: string;
   vehicle_id: string;
   service: string;
+  service_type?: ServiceType | null;
   size: string;
   addons: string[] | null;
   scheduled_at: string;
@@ -690,13 +691,14 @@ export default function AdminPage() {
                   >
                     <div>
                       <p className="font-semibold text-white">
-                        {b.service}
+                        {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
                         {b.customer?.full_name && (
                           <span className="ml-2 text-sm font-normal text-gray-400">
                             · {b.customer.full_name}
                           </span>
                         )}
                       </p>
+                      <p className="text-xs text-gray-500">{b.service}</p>
                       <p className="text-sm text-gray-400">
                         {new Date(b.scheduled_at).toLocaleString()}
                       </p>
