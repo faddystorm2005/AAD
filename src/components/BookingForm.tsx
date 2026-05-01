@@ -9,6 +9,10 @@ import {
   BookingData,
   calculatePricing,
   isCeramicSelected,
+  SERVICE_TYPES,
+  ServiceType,
+  SERVICE_TYPE_NAMES,
+  SERVICE_TYPE_DEFAULT,
 } from '@/lib/bookingPricing';
 import { supabase } from '@/lib/supabaseClient';
 import {
@@ -40,6 +44,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [availability, setAvailability] = useState<DayAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const lastSubmissionRef = useRef<number>(0);
+  const [serviceType, setServiceType] = useState<ServiceType>(SERVICE_TYPE_DEFAULT);
+
   const [formData, setFormData] = useState<SlotFormData & { unit: string; notes: string }>({
     vehicleId: '',
     serviceSize: 'small',
@@ -243,6 +249,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
         body: JSON.stringify({
           vehicleId: formData.vehicleId,
           serviceSize: formData.serviceSize,
+          serviceType: serviceType,
           selectedAddOns: formData.selectedAddOns,
           slotDate: formData.slotDate,
           slotTime: formData.slotTime,
@@ -395,6 +402,36 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   )}
                 </div>
               </div>
+
+              {selectedVehicle && (
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
+                    Service Type
+                  </p>
+                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {SERVICE_TYPES.map((type) => (
+                      <label
+                        key={type}
+                        className={`flex cursor-pointer items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
+                          serviceType === type
+                            ? 'border-red-500 bg-red-500/10 text-white'
+                            : 'border-white/10 bg-white/5 text-gray-200 hover:border-white/20'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="serviceType"
+                          value={type}
+                          checked={serviceType === type}
+                          onChange={() => setServiceType(type)}
+                          className="sr-only"
+                        />
+                        {SERVICE_TYPE_NAMES[type]}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {selectedVehicle && (
                 <div className="rounded-xl bg-red-950/40 border border-red-700/60 p-5">
