@@ -12,6 +12,7 @@ export interface SavedBooking {
   addons: any[];
   scheduled_at: string;
   address: string;
+  unit?: string | null;
   city: string;
   state: string;
   zip: string;

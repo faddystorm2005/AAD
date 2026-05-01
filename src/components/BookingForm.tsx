@@ -246,9 +246,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           selectedAddOns: formData.selectedAddOns,
           slotDate: formData.slotDate,
           slotTime: formData.slotTime,
-          address: formData.unit.trim()
-            ? `${formData.address.trim()} ${formData.unit.trim()}`
-            : formData.address,
+          address: formData.address.trim(),
+          unit: formData.unit.trim() || null,
           city: formData.city,
           state: formData.state,
           zip: formData.zip,

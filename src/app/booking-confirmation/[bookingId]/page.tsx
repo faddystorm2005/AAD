@@ -22,6 +22,7 @@ interface ConfirmationBooking {
   status: BookingStatus;
   scheduled_at: string;
   address: string;
+  unit: string | null;
   city: string;
   state: string;
   zip: string;
@@ -315,7 +316,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           <div>
             <p className="text-sm uppercase tracking-wider text-gray-300">We&apos;ll come to</p>
             <p className="mt-1 text-base text-white">
-              {booking.address}, {booking.city}, {booking.state} {booking.zip}
+              {booking.address}{booking.unit ? ` ${booking.unit}` : ''}, {booking.city}, {booking.state} {booking.zip}
             </p>
           </div>
 

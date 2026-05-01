@@ -20,6 +20,7 @@ interface CreateBookingPayload extends BookingData {
   slotTime: SlotTime;
   promoCode?: string | null;
   notes?: string | null;
+  unit?: string | null;
 }
 
 export async function POST(req: NextRequest) {
@@ -246,6 +247,7 @@ export async function POST(req: NextRequest) {
       slot_time: body.slotTime,
       is_ceramic: isCeramic,
       address: body.address,
+      unit: body.unit?.trim() || null,
       city: body.city,
       state: body.state,
       zip: body.zip,

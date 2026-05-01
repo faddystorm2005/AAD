@@ -66,6 +66,7 @@ interface AdminBooking {
   addons: string[] | null;
   scheduled_at: string;
   address: string;
+  unit: string | null;
   city: string;
   state: string;
   zip: string;
@@ -700,7 +701,7 @@ export default function AdminPage() {
                         {new Date(b.scheduled_at).toLocaleString()}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {b.address}, {b.city}, {b.state} {b.zip}
+                        {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1 text-right text-xs">
@@ -790,7 +791,7 @@ export default function AdminPage() {
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                             Service address
                           </h3>
-                          <p className="mt-2 text-white">{b.address}</p>
+                          <p className="mt-2 text-white">{b.address}{b.unit ? ` ${b.unit}` : ''}</p>
                           <p className="text-sm text-gray-400">
                             {b.city}, {b.state} {b.zip}
                           </p>
