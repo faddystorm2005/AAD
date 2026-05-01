@@ -375,6 +375,11 @@ button:disabled {
   position: relative;
 }
 
+.homepage-cinematic section > * {
+  position: relative;
+  z-index: 2;
+}
+
 .homepage-cinematic section::before,
 .homepage-cinematic section::after {
   content: "";
