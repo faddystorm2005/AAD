@@ -378,6 +378,24 @@ button:disabled {
   background: linear-gradient(to top, #000000 0%, transparent 100%);
 }
 
+/* ---------------------------------------------------------------
+ * Recent Work photo color-grading on hover.
+ *
+ * Photos default to natural color. On hover, saturation and
+ * contrast subtly boost so the photo feels "lit up" under the
+ * cursor. Scoped to #recent-work images on the homepage only.
+ *
+ * Mobile / touch devices see only the default (no hover state).
+ * --------------------------------------------------------------- */
+.homepage-cinematic #recent-work img {
+  filter: saturate(1) contrast(1);
+  transition: filter 400ms ease;
+}
+
+.homepage-cinematic #recent-work img:hover {
+  filter: saturate(1.15) contrast(1.05);
+}
+
 /* Respect users who prefer reduced motion - disable all decorative animations. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
