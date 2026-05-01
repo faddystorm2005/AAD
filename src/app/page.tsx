@@ -192,7 +192,7 @@ export default function Home() {
           detailers. Pulls live from bookingPricing.ts. */}
       <section id="pricing" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Pricing
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -270,7 +270,7 @@ export default function Home() {
         className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
       >
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Recent Work
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -339,7 +339,7 @@ export default function Home() {
       {/* How it works */}
       <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             How It Works
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -364,7 +364,7 @@ export default function Home() {
       {/* Why us */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Why Austin Auto Detail
           </h2>
         </div>
@@ -468,7 +468,7 @@ export default function Home() {
       {/* FAQ - adds keyword-rich content + answers common pre-booking questions */}
       <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Frequently Asked Questions
           </h2>
         </div>
@@ -548,7 +548,7 @@ export default function Home() {
       {/* Contact */}
       <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Contact Austin Auto Detail
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
