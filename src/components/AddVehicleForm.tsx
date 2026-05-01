@@ -2,16 +2,31 @@
 
 import { useState } from 'react';
 import { useVehicles } from '@/contexts/VehicleContext';
+import {
+  VEHICLE_MAKES,
+  ALL_MAKES,
+  VEHICLE_YEARS,
+  OTHER_MAKE_VALUE,
+} from '@/lib/vehicleData';
 
 interface AddVehicleFormProps {
   onClose: () => void;
 }
 
+const FIELD_CLASSES =
+  'w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none';
+const FIELD_CLASSES_PLACEHOLDER = `${FIELD_CLASSES} placeholder-gray-500`;
+const FIELD_CLASSES_DISABLED = `${FIELD_CLASSES} disabled:cursor-not-allowed disabled:opacity-50`;
+
 export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
   const { addVehicle, loading } = useVehicles();
   const [error, setError] = useState('');
+  // True when the user picked "Other / Not Listed" from the make dropdown.
+  // While true, formData.make holds whatever the user typed (never the
+  // OTHER_MAKE_VALUE sentinel) and model is a freeform text input too.
+  const [useOtherMake, setUseOtherMake] = useState(false);
   const [formData, setFormData] = useState({
-    year: new Date().getFullYear(),
+    year: 0, // 0 = nothing chosen yet; validates as falsy in handleSubmit
     make: '',
     model: '',
     size: 'small' as const,
@@ -23,15 +38,29 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'year' ? parseInt(value) : value,
+      [name]: name === 'year' ? parseInt(value) || 0 : value,
     }));
+  };
+
+  const handleMakeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === OTHER_MAKE_VALUE) {
+      // Switch to "Other" mode. Clear make + model so freeform inputs start empty.
+      setUseOtherMake(true);
+      setFormData((prev) => ({ ...prev, make: '', model: '' }));
+    } else {
+      // Real make picked (or empty placeholder). Reset model so a stale
+      // selection from a different make doesn't carry over.
+      setUseOtherMake(false);
+      setFormData((prev) => ({ ...prev, make: value, model: '' }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.make || !formData.model || !formData.color) {
+    if (!formData.year || !formData.make || !formData.model || !formData.color) {
       setError('Please fill in the year, make, model, and color.');
       return;
     }
@@ -43,6 +72,12 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
       onClose();
     }
   };
+
+  // Dropdown shows the sentinel when useOtherMake is true; otherwise mirrors formData.make.
+  const makeSelectValue = useOtherMake ? OTHER_MAKE_VALUE : formData.make;
+  // Model options for the cascading dropdown. Empty when "Other" or no make.
+  const modelOptions =
+    !useOtherMake && formData.make ? VEHICLE_MAKES[formData.make] ?? [] : [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
@@ -75,17 +110,20 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
               <label htmlFor="vehicle-year" className="block text-base font-semibold text-white mb-2">
                 Year <span className="text-red-500">*</span>
               </label>
-              <input
+              <select
                 id="vehicle-year"
-                type="number"
                 name="year"
-                value={formData.year}
+                value={formData.year ? String(formData.year) : ''}
                 onChange={handleChange}
-                min="1990"
-                max={new Date().getFullYear() + 1}
-                inputMode="numeric"
-                className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none"
-              />
+                className={FIELD_CLASSES}
+              >
+                <option value="">Select year</option>
+                {VEHICLE_YEARS.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label htmlFor="vehicle-size" className="block text-base font-semibold text-white mb-2">
@@ -96,7 +134,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
                 name="size"
                 value={formData.size}
                 onChange={handleChange}
-                className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none"
+                className={FIELD_CLASSES}
               >
                 <option value="small">Small Sedan / Coupe</option>
                 <option value="suv">SUV</option>
@@ -109,32 +147,75 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
             <label htmlFor="vehicle-make" className="block text-base font-semibold text-white mb-2">
               Make <span className="text-red-500">*</span>
             </label>
-            <input
+            <select
               id="vehicle-make"
-              type="text"
               name="make"
-              value={formData.make}
-              onChange={handleChange}
-              placeholder="Toyota"
-              autoComplete="off"
-              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
-            />
+              value={makeSelectValue}
+              onChange={handleMakeChange}
+              className={FIELD_CLASSES}
+            >
+              <option value="">Select make</option>
+              {ALL_MAKES.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+              <option value={OTHER_MAKE_VALUE}>Other / Not Listed</option>
+            </select>
           </div>
+
+          {useOtherMake && (
+            <div>
+              <label htmlFor="vehicle-make-other" className="block text-base font-semibold text-white mb-2">
+                Make name <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="vehicle-make-other"
+                type="text"
+                name="make"
+                value={formData.make}
+                onChange={handleChange}
+                placeholder="Type the make"
+                autoComplete="off"
+                className={FIELD_CLASSES_PLACEHOLDER}
+              />
+            </div>
+          )}
 
           <div>
             <label htmlFor="vehicle-model" className="block text-base font-semibold text-white mb-2">
               Model <span className="text-red-500">*</span>
             </label>
-            <input
-              id="vehicle-model"
-              type="text"
-              name="model"
-              value={formData.model}
-              onChange={handleChange}
-              placeholder="Camry"
-              autoComplete="off"
-              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
-            />
+            {useOtherMake ? (
+              <input
+                id="vehicle-model"
+                type="text"
+                name="model"
+                value={formData.model}
+                onChange={handleChange}
+                placeholder="Type the model"
+                autoComplete="off"
+                className={FIELD_CLASSES_PLACEHOLDER}
+              />
+            ) : (
+              <select
+                id="vehicle-model"
+                name="model"
+                value={formData.model}
+                onChange={handleChange}
+                disabled={!formData.make}
+                className={FIELD_CLASSES_DISABLED}
+              >
+                <option value="">
+                  {formData.make ? 'Select model' : 'Pick a make first'}
+                </option>
+                {modelOptions.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div>
@@ -149,7 +230,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
               onChange={handleChange}
               placeholder="Silver"
               autoComplete="off"
-              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              className={FIELD_CLASSES_PLACEHOLDER}
             />
           </div>
 
@@ -165,7 +246,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
               onChange={handleChange}
               placeholder="Daily driver"
               autoComplete="off"
-              className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              className={FIELD_CLASSES_PLACEHOLDER}
             />
           </div>
 
