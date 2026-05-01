@@ -7,10 +7,14 @@ export default function GalleryStrip() {
     <section className="space-y-3">
       <div className="flex items-baseline justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-red-500">
-          Our Work
+          Detailing We Love
         </h2>
         <span className="text-xs text-gray-500">Scroll →</span>
       </div>
+      <p className="max-w-2xl text-sm text-gray-300">
+        A handpicked look at the finishes that set the bar. The kind of work
+        that motivates every detail on our calendar.
+      </p>
       <div className="-mx-6 overflow-x-auto px-6 pb-2">
         <div className="flex gap-3 snap-x snap-mandatory">
           {AAD_GALLERY.map((photo) => (
