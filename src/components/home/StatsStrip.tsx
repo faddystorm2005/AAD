@@ -24,16 +24,20 @@ export default function StatsStrip() {
       role="list"
       aria-label="Austin Auto Detail by the numbers"
     >
-      {STATS.map((s) => (
-        <StatTile key={s.label} stat={s} />
+      {STATS.map((s, i) => (
+        <StatTile key={s.label} stat={s} index={i} />
       ))}
     </div>
   );
 }
 
-function StatTile({ stat }: { stat: Stat }) {
+function StatTile({ stat, index }: { stat: Stat; index: number }) {
   return (
-    <div role="listitem" className="text-center">
+    <div
+      role="listitem"
+      className="text-center animate-fade-up"
+      style={{ animationDelay: `${index * 80}ms` }}
+    >
       <div className="text-3xl font-bold sm:text-4xl">
         <span className="text-gradient-hero">
           {stat.prefix ?? ''}
