@@ -91,12 +91,15 @@ export default function Home() {
               Quality Over Quantity
             </p>
             <h1
-              className="animate-fade-up text-gradient-hero mt-3 text-4xl font-bold uppercase tracking-[0.04em] sm:text-5xl md:text-6xl"
-              style={{ animationDelay: '80ms' }}
+              className="text-gradient-hero mt-3 text-4xl font-bold uppercase tracking-[0.04em] sm:text-5xl md:text-6xl"
             >
-              Mobile Detailing
+              <span className="hero-word-reveal" style={{ animationDelay: '0ms' }}>Mobile</span>
+              {' '}
+              <span className="hero-word-reveal" style={{ animationDelay: '120ms' }}>Detailing</span>
               <br />
-              in Austin
+              <span className="hero-word-reveal" style={{ animationDelay: '240ms' }}>in</span>
+              {' '}
+              <span className="hero-word-reveal" style={{ animationDelay: '360ms' }}>Austin</span>
             </h1>
             <p
               className="animate-fade-up mt-5 max-w-xl text-lg text-gray-100 sm:text-xl"
