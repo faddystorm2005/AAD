@@ -7,6 +7,7 @@ import StatsStrip from '@/components/home/StatsStrip';
 import StickyBookCta from '@/components/home/StickyBookCta';
 import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 import TiltCard from '@/components/home/TiltCard';
+import H2CinematicObserver from '@/components/home/H2CinematicObserver';
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -637,6 +638,7 @@ export default function Home() {
         </div>
       </footer>
 
+      <H2CinematicObserver />
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
       <StickyBookCta />
     </main>

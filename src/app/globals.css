@@ -301,23 +301,18 @@ h6 {
 /* ---------------------------------------------------------------
  * Cinematic H2 reveal.
  *
- * Section H2s get a left-to-right clip-path sweep tied directly
- * to scroll position -- forward on scroll down, back on scroll up.
- * Reuses the aad-hero-swipe keyframe from the hero H1.
- *
- * animation-range: entry 0% entry 100% spans exactly the phase
- * where the heading enters the viewport, so it works for every
- * section regardless of how much content is below it (including
- * the Contact section at the very bottom of the page).
- *
- * Older browsers skip the @supports block and show H2s statically.
+ * Headings start clipped on the right. An IntersectionObserver in
+ * H2CinematicObserver.tsx adds .is-revealed when the heading
+ * enters the viewport and removes it when it exits -- so the
+ * clip-path transition plays forward on scroll down and reverses
+ * on scroll up. Works on all modern browsers including iOS Safari.
  * --------------------------------------------------------------- */
-@supports (animation-timeline: view()) {
-  .h2-cinematic {
-    animation: aad-hero-swipe 1s cubic-bezier(0.65, 0, 0.35, 1) both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 100%;
-  }
+.h2-cinematic {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.h2-cinematic.is-revealed {
+  clip-path: inset(0 0% 0 0);
 }
 
 /* Skeleton shimmer - replaces the basic animate-pulse with a more refined
@@ -435,7 +430,7 @@ button:disabled {
   .animate-glow-pulse,
   .reveal-on-scroll,
   .hero-swipe-reveal,
-  .h2-cinematic,
+  .h2-cinematic.is-revealed,
   .shimmer::after,
   .lift-hover,
   .press,
@@ -453,5 +448,9 @@ button:disabled {
   .animate-marquee {
     animation: none !important;
     transform: none !important;
+  }
+  .h2-cinematic {
+    clip-path: none !important;
+    transition: none !important;
   }
 }

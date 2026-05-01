@@ -15,11 +15,12 @@ export default function H2CinematicObserver() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-revealed');
-            obs.unobserve(entry.target);
+          } else {
+            entry.target.classList.remove('is-revealed');
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.15 }
     );
 
     els.forEach((el) => obs.observe(el));
