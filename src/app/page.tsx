@@ -220,6 +220,45 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TikTok callout, sits between Recent Work and How It Works
+          to capture interest at peak gallery engagement. */}
+      <section
+        aria-label="TikTok content"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16"
+      >
+        <div className="reveal-on-scroll">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+            Behind the Scenes
+          </p>
+          <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
+            See Every Detail on TikTok
+          </h2>
+          <p className="mt-3 max-w-2xl text-base text-gray-200 sm:text-lg">
+            Real before-and-afters, detailing techniques, and the satisfying parts customers don&apos;t usually see.
+          </p>
+        </div>
+
+        <div className="reveal-on-scroll mt-8">
+          <a
+            href="https://www.tiktok.com/@austinautodetail"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="press inline-flex items-center gap-3 rounded-xl border border-white/20 bg-zinc-900 px-7 py-4 text-base font-semibold text-white hover:bg-zinc-800 sm:text-lg"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-6 w-6"
+              aria-hidden="true"
+            >
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
+            </svg>
+            Follow @austinautodetail
+          </a>
+        </div>
+      </section>
+
       {/* How it works */}
       <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
