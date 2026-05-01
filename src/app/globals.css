@@ -298,6 +298,24 @@ h6 {
   opacity: 1;
 }
 
+/* ---------------------------------------------------------------
+ * Cinematic H2 reveal.
+ *
+ * Section H2s get a left-to-right clip-path sweep as their
+ * section enters the viewport. Reuses the aad-hero-swipe
+ * keyframe defined for the hero H1.
+ *
+ * Wrapped in @supports (animation-timeline: view()) just like
+ * .reveal-on-scroll - older browsers just show H2s statically.
+ * --------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  .h2-cinematic {
+    animation: aad-hero-swipe 1s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}
+
 /* Skeleton shimmer - replaces the basic animate-pulse with a more refined
    left-to-right sheen. Use on a placeholder background. */
 .shimmer {
@@ -408,6 +426,7 @@ button:disabled {
   .animate-glow-pulse,
   .reveal-on-scroll,
   .hero-swipe-reveal,
+  .h2-cinematic,
   .shimmer::after,
   .lift-hover,
   .press,

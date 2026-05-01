@@ -146,7 +146,7 @@ export default function Home() {
       {/* Services */}
       <section id="services" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Our Mobile Detailing Services
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
