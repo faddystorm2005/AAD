@@ -6,7 +6,7 @@
  *
  * v1 → v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
  */
-const VERSION = "aad-v4";
+const VERSION = "aad-v5";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
