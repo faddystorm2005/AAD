@@ -164,7 +164,7 @@ export default function Home() {
           {SERVICES.map((s, i) => (
             <div
               key={s.title}
-              className="glass-card reveal-on-scroll lift-hover animate-fade-up rounded-2xl p-6"
+              className="glass-card lift-hover animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="text-3xl">{s.icon}</div>
@@ -205,7 +205,7 @@ export default function Home() {
           {GALLERY.map((p, i) => (
             <div
               key={p.src}
-              className="reveal-on-scroll lift-hover animate-fade-up relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
+              className="lift-hover animate-fade-up relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
               style={{ animationDelay: `${i * 50}ms` }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -273,7 +273,7 @@ export default function Home() {
           {STEPS.map((step, i) => (
             <li
               key={step.title}
-              className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6"
+              className="glass-card animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 80}ms` }}
             >
               <div className="text-3xl font-bold text-red-500">{String(i + 1).padStart(2, '0')}</div>
@@ -295,7 +295,7 @@ export default function Home() {
           {REASONS.map((r, i) => (
             <div
               key={r.title}
-              className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6"
+              className="glass-card animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 80}ms` }}
             >
               <p className="text-2xl font-bold text-red-400 sm:text-3xl">{r.headline}</p>
