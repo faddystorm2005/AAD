@@ -8,6 +8,7 @@ import {
   SERVICE_TYPES,
   ServiceType,
   SERVICE_TYPE_DEFAULT,
+  SERVICE_TYPE_NAMES,
 } from '@/lib/bookingPricing';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
@@ -209,6 +210,7 @@ export async function POST(req: NextRequest) {
     {
       vehicleId: body.vehicleId,
       serviceSize: body.serviceSize,
+      serviceType: serviceType,
       selectedAddOns: body.selectedAddOns ?? [],
       scheduledAt: body.scheduledAt ?? '',
       address: body.address,
@@ -249,7 +251,7 @@ export async function POST(req: NextRequest) {
       user_id: userId,
       vehicle_id: body.vehicleId,
       size: body.serviceSize,
-      service: SERVICES[body.serviceSize].name,
+      service: SERVICE_TYPE_NAMES[serviceType],
       service_type: serviceType,
       addons: body.selectedAddOns ?? [],
       scheduled_at: scheduledAt,
@@ -359,7 +361,7 @@ export async function POST(req: NextRequest) {
       bookingId: booking.id,
       customerName: customer?.full_name ?? null,
       customerPhone: customer?.phone ?? null,
-      service: SERVICES[body.serviceSize].name,
+      service: SERVICE_TYPE_NAMES[serviceType],
       scheduledAt,
       address: `${body.address}, ${body.city}, ${body.state} ${body.zip}`,
     });

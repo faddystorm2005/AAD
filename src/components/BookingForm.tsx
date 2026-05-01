@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useVehicles } from '@/contexts/VehicleContext';
 import {
-  SERVICES,
   ADD_ONS,
   BookingData,
   calculatePricing,
@@ -13,6 +12,7 @@ import {
   ServiceType,
   SERVICE_TYPE_NAMES,
   SERVICE_TYPE_DEFAULT,
+  SERVICE_PRICES,
 } from '@/lib/bookingPricing';
 import { supabase } from '@/lib/supabaseClient';
 import {
@@ -153,7 +153,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }, [ceramic, formData.slotTime]);
 
   const selectedVehicle = vehicles.find((v) => v.id === formData.vehicleId);
-  const pricing = calculatePricing(formData, {
+  const pricing = calculatePricing({ ...formData, serviceType }, {
     isReturning,
     promoDiscountRate: appliedPromo?.rate ?? 0,
   });
@@ -439,10 +439,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                     Base Detail Price
                   </p>
                   <p className="mt-2 text-base font-semibold text-white">
-                    {SERVICES[formData.serviceSize].name}
+                    {SERVICE_TYPE_NAMES[serviceType]}
                   </p>
                   <p className="mt-1 text-3xl font-bold text-red-400">
-                    ${SERVICES[formData.serviceSize].price}
+                    ${SERVICE_PRICES[serviceType][formData.serviceSize]}
                   </p>
                   <p className="mt-2 text-sm text-red-200/80">
                     Sized for your {selectedVehicle.year} {selectedVehicle.make}{' '}
@@ -729,7 +729,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
             <div className="space-y-6">
               <div className="rounded-2xl bg-gray-900 border border-gray-700 p-5 space-y-5">
                 <ReviewLine label="Car" value={`${selectedVehicle?.year ?? ''} ${selectedVehicle?.make ?? ''} ${selectedVehicle?.model ?? ''}`.trim()} />
-                <ReviewLine label="Service" value={SERVICES[formData.serviceSize].name} />
+                <ReviewLine label="Service" value={SERVICE_TYPE_NAMES[serviceType]} />
 
                 {formData.selectedAddOns.length > 0 && (
                   <div>

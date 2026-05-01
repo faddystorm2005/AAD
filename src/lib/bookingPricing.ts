@@ -83,6 +83,7 @@ export const RETURNING_CUSTOMER_DISCOUNT_RATE = 0.10;
 export interface BookingData {
   vehicleId: string;
   serviceSize: 'small' | 'suv' | 'truck';
+  serviceType?: ServiceType;
   selectedAddOns: string[];
   scheduledAt: string;
   address: string;
@@ -109,13 +110,14 @@ export function calculatePricing(
     promoDiscountRate?: number;
   } = {}
 ): PricingBreakdown {
-  const service = SERVICES[data.serviceSize];
+  const serviceType = data.serviceType ?? SERVICE_TYPE_DEFAULT;
+  const basePrice = SERVICE_PRICES[serviceType][data.serviceSize];
   const addOnsTotal = data.selectedAddOns.reduce((total, addonId) => {
     const addon = ADD_ONS.find((a) => a.id === addonId);
     return total + (addon?.price || 0);
   }, 0);
 
-  const subtotal = service.price + addOnsTotal;
+  const subtotal = basePrice + addOnsTotal;
   const isReturning = opts.isReturning ?? false;
 
   // Use the highest of (returning, per-user, promo code). Discounts don't
@@ -133,7 +135,7 @@ export function calculatePricing(
   const total = Math.round((subtotal - discount) * 100) / 100;
 
   return {
-    service: service.price,
+    service: basePrice,
     addOns: addOnsTotal,
     subtotal,
     discount,
