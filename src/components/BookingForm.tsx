@@ -308,7 +308,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
