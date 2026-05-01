@@ -92,6 +92,14 @@ h6 {
   from { transform: translateY(14px); }
   to   { transform: translateY(0); }
 }
+@keyframes aad-hero-swipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+.hero-swipe-reveal {
+  animation: aad-hero-swipe 1s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
 @keyframes aad-fade-in {
   from { transform: translateY(4px); }
   to   { transform: translateY(0); }
@@ -344,6 +352,7 @@ button:disabled {
   .animate-check-draw,
   .animate-glow-pulse,
   .reveal-on-scroll,
+  .hero-swipe-reveal,
   .shimmer::after,
   .lift-hover,
   .press,
@@ -352,6 +361,7 @@ button:disabled {
     animation: none !important;
     transition: none !important;
     transform: none !important;
+    opacity: 1 !important;
   }
   .h-accent::after {
     animation: none !important;

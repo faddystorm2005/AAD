@@ -91,7 +91,7 @@ export default function Home() {
               Quality Over Quantity
             </p>
             <h1
-              className="animate-fade-up text-gradient-hero mt-3 text-4xl font-bold uppercase tracking-[0.04em] sm:text-5xl md:text-6xl"
+              className="hero-swipe-reveal text-gradient-hero mt-3 text-4xl font-bold uppercase tracking-[0.04em] sm:text-5xl md:text-6xl"
               style={{ animationDelay: '80ms' }}
             >
               Mobile Detailing
