@@ -53,6 +53,12 @@ export interface AddOn {
   /** Optional helper text shown beneath the name in the booking form. */
   description?: string;
   applicableServiceTypes: ServiceType[];
+  /**
+   * Optional per-size pricing. When present, overrides the flat
+   * price field. Use for add-ons whose cost varies by vehicle size
+   * (e.g., pet hair removal).
+   */
+  sizePrices?: { small: number; suv: number; truck: number };
 }
 
 export const ADD_ONS: AddOn[] = [
@@ -74,6 +80,21 @@ export const ADD_ONS: AddOn[] = [
     applicableServiceTypes: ['exterior', 'full_detail'],
   },
 ];
+
+/**
+ * Resolves the correct price for an add-on given a vehicle size.
+ * Add-ons with sizePrices use the per-size value; flat-priced
+ * add-ons return their price field.
+ */
+export function getAddOnPrice(
+  addon: AddOn,
+  serviceSize: 'small' | 'suv' | 'truck',
+): number {
+  if (addon.sizePrices) {
+    return addon.sizePrices[serviceSize];
+  }
+  return addon.price;
+}
 
 export function isCeramicSelected(addOnIds: string[] | null | undefined): boolean {
   return Boolean(addOnIds?.includes(CERAMIC_ADDON_ID));
@@ -116,7 +137,8 @@ export function calculatePricing(
   const basePrice = SERVICE_PRICES[serviceType][data.serviceSize];
   const addOnsTotal = data.selectedAddOns.reduce((total, addonId) => {
     const addon = ADD_ONS.find((a) => a.id === addonId);
-    return total + (addon?.price || 0);
+    if (!addon) return total;
+    return total + getAddOnPrice(addon, data.serviceSize);
   }, 0);
 
   const subtotal = basePrice + addOnsTotal;

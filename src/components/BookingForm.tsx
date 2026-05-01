@@ -13,6 +13,7 @@ import {
   SERVICE_TYPE_NAMES,
   SERVICE_TYPE_DEFAULT,
   SERVICE_PRICES,
+  getAddOnPrice,
 } from '@/lib/bookingPricing';
 import { supabase } from '@/lib/supabaseClient';
 import {
@@ -499,7 +500,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                               {addon.name}
                             </span>
                             <span className="text-base font-semibold text-red-300">
-                              +${addon.price}
+                              +${getAddOnPrice(addon, formData.serviceSize)}
                             </span>
                           </div>
                           {addon.description && (
