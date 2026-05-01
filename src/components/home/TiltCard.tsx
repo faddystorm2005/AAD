@@ -15,9 +15,7 @@ export default function TiltCard({ children, className = '', style }: TiltCardPr
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const hasHover = window.matchMedia('(hover: hover)').matches;
-    const wideEnough = window.innerWidth >= 1024;
-    if (reducedMotion || !hasHover || !wideEnough) return;
+    if (reducedMotion) return;
     setEnabled(true);
   }, []);
 

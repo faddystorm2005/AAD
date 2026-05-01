@@ -301,14 +301,22 @@ h6 {
 /* ---------------------------------------------------------------
  * Cinematic H2 reveal.
  *
- * Headings are always visible by default (no initial clip-path).
- * When the IntersectionObserver in H2CinematicObserver.tsx adds
- * .is-revealed, the wipe animation fires from clipped to visible.
- * Removing the class resets to visible naturally -- no broken
- * headings if JS is slow or the observer never fires.
+ * Headings are always visible by default. When the observer in
+ * H2CinematicObserver.tsx adds .is-revealed, a slide-from-left +
+ * fade plays. No clip-path, no invisible initial state, no flash.
  * --------------------------------------------------------------- */
+@keyframes aad-h2-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 .h2-cinematic.is-revealed {
-  animation: aad-hero-swipe 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: aad-h2-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Skeleton shimmer - replaces the basic animate-pulse with a more refined
@@ -426,7 +434,7 @@ button:disabled {
   .animate-glow-pulse,
   .reveal-on-scroll,
   .hero-swipe-reveal,
-  .h2-cinematic.is-revealed,
+  .h2-cinematic,
   .shimmer::after,
   .lift-hover,
   .press,
