@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SERVICE_TYPES, SERVICE_TYPE_NAMES, SERVICE_PRICES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE, DEPOSIT_AMOUNT } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
@@ -38,6 +39,7 @@ export default function Home() {
           </Link>
           <div className="hidden items-center gap-6 text-base font-medium text-gray-100 sm:flex">
             <a href="#services" className="hover:text-red-300">Services</a>
+            <a href="#pricing" className="hover:text-red-300">Pricing</a>
             <a href="#recent-work" className="hover:text-red-300">Work</a>
             <a href="#how-it-works" className="hover:text-red-300">How It Works</a>
             <a href="#faq" className="hover:text-red-300">FAQ</a>
@@ -184,6 +186,81 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Pricing - dedicated tier visibility for customers comparing
+          detailers. Pulls live from bookingPricing.ts. */}
+      <section id="pricing" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
+        <div className="reveal-on-scroll">
+          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Pricing
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Flat rates by vehicle size. Travel included, no surprise fees. A ${DEPOSIT_AMOUNT} deposit holds your slot, the rest is paid on-site.
+          </p>
+        </div>
+
+        {/* Three service tier cards */}
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {SERVICE_TYPES.map((type, i) => (
+            <div
+              key={type}
+              className="glass-card lift-hover animate-fade-up rounded-2xl p-6"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <h3 className="text-xl font-bold text-white">
+                {SERVICE_TYPE_NAMES[type]}
+              </h3>
+              <div className="mt-5 space-y-3 border-t border-white/10 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-gray-200">Coupe / Sedan</span>
+                  <span className="text-xl font-bold text-red-300">${SERVICE_PRICES[type].small}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-gray-200">SUV</span>
+                  <span className="text-xl font-bold text-red-300">${SERVICE_PRICES[type].suv}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-gray-200">Truck / 3-Row</span>
+                  <span className="text-xl font-bold text-red-300">${SERVICE_PRICES[type].truck}</span>
+                </div>
+              </div>
+              <Link
+                href="/auth"
+                className="mt-5 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200"
+              >
+                Book {SERVICE_TYPE_NAMES[type]} →
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        {/* Add-ons section */}
+        <div className="reveal-on-scroll mt-12">
+          <h3 className="text-base font-semibold uppercase tracking-[0.25em] text-red-400">
+            Add-On Services
+          </h3>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {ADD_ONS.map((addon) => {
+              const priceLabel = addon.sizePrices
+                ? `from $${addon.sizePrices.small}`
+                : `$${addon.price}`;
+              return (
+                <div
+                  key={addon.id}
+                  className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
+                  <span className="text-base text-gray-100">{addon.name}</span>
+                  <span className="text-base font-semibold text-red-300">{priceLabel}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <p className="reveal-on-scroll mt-8 text-sm text-gray-400">
+          Returning customers receive {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% off every visit. Final quote may adjust based on vehicle condition.
+        </p>
       </section>
 
       {/* Recent Work, real photos placed right after services so the
@@ -536,6 +613,7 @@ export default function Home() {
             </p>
             <ul className="mt-3 space-y-2 text-base text-gray-200">
               <li><a href="#main-content" className="hover:text-white">Home</a></li>
+              <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
               <li><a href="#recent-work" className="hover:text-white">Recent Work</a></li>
               <li><a href="#how-it-works" className="hover:text-white">How It Works</a></li>
               <li><a href="#faq" className="hover:text-white">FAQ</a></li>
