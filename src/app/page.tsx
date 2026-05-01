@@ -6,7 +6,7 @@ import HeroSpotlight from '@/components/home/HeroSpotlight';
 import StatsStrip from '@/components/home/StatsStrip';
 import StickyBookCta from '@/components/home/StickyBookCta';
 import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
-import H2CinematicObserver from '@/components/home/H2CinematicObserver';
+import TiltCard from '@/components/home/TiltCard';
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -165,7 +165,7 @@ export default function Home() {
 
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s, i) => (
-            <div
+            <TiltCard
               key={s.title}
               className="glass-card lift-hover animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 60}ms` }}
@@ -184,7 +184,7 @@ export default function Home() {
               >
                 Book this service →
               </Link>
-            </div>
+            </TiltCard>
           ))}
         </div>
       </section>
@@ -193,7 +193,7 @@ export default function Home() {
           detailers. Pulls live from bookingPricing.ts. */}
       <section id="pricing" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Pricing
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -271,7 +271,7 @@ export default function Home() {
         className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
       >
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Recent Work
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -340,7 +340,7 @@ export default function Home() {
       {/* How it works */}
       <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             How It Works
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -365,7 +365,7 @@ export default function Home() {
       {/* Why us */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Why Austin Auto Detail
           </h2>
         </div>
@@ -469,7 +469,7 @@ export default function Home() {
       {/* FAQ - adds keyword-rich content + answers common pre-booking questions */}
       <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Frequently Asked Questions
           </h2>
         </div>
@@ -549,7 +549,7 @@ export default function Home() {
       {/* Contact */}
       <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 scroll-mt-20">
         <div className="reveal-on-scroll">
-          <h2 className="h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Contact Austin Auto Detail
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
@@ -637,7 +637,6 @@ export default function Home() {
         </div>
       </footer>
 
-      <H2CinematicObserver />
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
       <StickyBookCta />
     </main>
