@@ -16,6 +16,12 @@ import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 export default function Home() {
   return (
     <main role="main" className="relative min-h-screen overflow-hidden bg-black text-white">
+      <link
+        rel="preload"
+        as="image"
+        fetchPriority="high"
+        href="/images/aad/hero-s-class.jpg"
+      />
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
@@ -74,6 +80,7 @@ export default function Home() {
           <img
             src={DASHBOARD_BANNER.src}
             alt="Mobile detailing in Austin - professional auto detailing at your location"
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
