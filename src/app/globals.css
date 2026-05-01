@@ -341,6 +341,43 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* ---------------------------------------------------------------
+ * Section edge gradient blends (homepage only).
+ *
+ * Each <section> inside .homepage-cinematic gets a 100px
+ * black-to-transparent gradient at its top and bottom via
+ * pseudo-elements. The result is that boundaries between
+ * adjacent sections feather into each other instead of cutting
+ * hard. Subtle by design.
+ *
+ * Scoped to .homepage-cinematic so dashboards, modals, admin
+ * pages, etc. are unaffected.
+ * --------------------------------------------------------------- */
+.homepage-cinematic section {
+  position: relative;
+}
+
+.homepage-cinematic section::before,
+.homepage-cinematic section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.homepage-cinematic section::before {
+  top: 0;
+  background: linear-gradient(to bottom, #000000 0%, transparent 100%);
+}
+
+.homepage-cinematic section::after {
+  bottom: 0;
+  background: linear-gradient(to top, #000000 0%, transparent 100%);
+}
+
 /* Respect users who prefer reduced motion - disable all decorative animations. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,

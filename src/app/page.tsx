@@ -16,7 +16,7 @@ import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
  */
 export default function Home() {
   return (
-    <main role="main" className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main role="main" className="homepage-cinematic relative min-h-screen overflow-hidden bg-black text-white">
       <link
         rel="preload"
         as="image"
