@@ -5,6 +5,9 @@ import {
   SERVICES,
   BookingData,
   isCeramicSelected,
+  SERVICE_TYPES,
+  ServiceType,
+  SERVICE_TYPE_DEFAULT,
 } from '@/lib/bookingPricing';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
@@ -21,6 +24,7 @@ interface CreateBookingPayload extends BookingData {
   promoCode?: string | null;
   notes?: string | null;
   unit?: string | null;
+  serviceType?: ServiceType;
 }
 
 export async function POST(req: NextRequest) {
@@ -54,6 +58,7 @@ export async function POST(req: NextRequest) {
     !body.vehicleId ||
     !body.serviceSize ||
     !SERVICES[body.serviceSize] ||
+    (body.serviceType !== undefined && !SERVICE_TYPES.includes(body.serviceType)) ||
     !body.address ||
     !body.city ||
     !body.zip ||
@@ -65,6 +70,10 @@ export async function POST(req: NextRequest) {
   ) {
     return NextResponse.json({ error: 'Missing or invalid booking fields' }, { status: 400 });
   }
+
+  // Default service type for callers that do not supply one yet
+  // (e.g., the existing BookingForm before Phase 3 ships).
+  const serviceType: ServiceType = body.serviceType ?? SERVICE_TYPE_DEFAULT;
 
   const isCeramic = isCeramicSelected(body.selectedAddOns);
 
@@ -241,6 +250,7 @@ export async function POST(req: NextRequest) {
       vehicle_id: body.vehicleId,
       size: body.serviceSize,
       service: SERVICES[body.serviceSize].name,
+      service_type: serviceType,
       addons: body.selectedAddOns ?? [],
       scheduled_at: scheduledAt,
       slot_date: body.slotDate,
