@@ -92,22 +92,6 @@ h6 {
   from { transform: translateY(14px); }
   to   { transform: translateY(0); }
 }
-@keyframes aad-hero-word-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-word-reveal {
-  display: inline-block;
-  opacity: 0;
-  animation: aad-hero-word-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
 @keyframes aad-fade-in {
   from { transform: translateY(4px); }
   to   { transform: translateY(0); }
@@ -360,7 +344,6 @@ button:disabled {
   .animate-check-draw,
   .animate-glow-pulse,
   .reveal-on-scroll,
-  .hero-word-reveal,
   .shimmer::after,
   .lift-hover,
   .press,
@@ -369,7 +352,6 @@ button:disabled {
     animation: none !important;
     transition: none !important;
     transform: none !important;
-    opacity: 1 !important;
   }
   .h-accent::after {
     animation: none !important;
