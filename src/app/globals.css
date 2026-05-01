@@ -301,18 +301,14 @@ h6 {
 /* ---------------------------------------------------------------
  * Cinematic H2 reveal.
  *
- * Headings start clipped on the right. An IntersectionObserver in
- * H2CinematicObserver.tsx adds .is-revealed when the heading
- * enters the viewport and removes it when it exits -- so the
- * clip-path transition plays forward on scroll down and reverses
- * on scroll up. Works on all modern browsers including iOS Safari.
+ * Headings are always visible by default (no initial clip-path).
+ * When the IntersectionObserver in H2CinematicObserver.tsx adds
+ * .is-revealed, the wipe animation fires from clipped to visible.
+ * Removing the class resets to visible naturally -- no broken
+ * headings if JS is slow or the observer never fires.
  * --------------------------------------------------------------- */
-.h2-cinematic {
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1);
-}
 .h2-cinematic.is-revealed {
-  clip-path: inset(0 0% 0 0);
+  animation: aad-hero-swipe 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
 /* Skeleton shimmer - replaces the basic animate-pulse with a more refined
@@ -448,9 +444,5 @@ button:disabled {
   .animate-marquee {
     animation: none !important;
     transform: none !important;
-  }
-  .h2-cinematic {
-    clip-path: none !important;
-    transition: none !important;
   }
 }

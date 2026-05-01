@@ -168,7 +168,7 @@ export default function Home() {
           {SERVICES.map((s, i) => (
             <TiltCard
               key={s.title}
-              className="glass-card lift-hover animate-fade-up rounded-2xl p-6"
+              className="glass-card animate-fade-up rounded-2xl p-6"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="text-3xl">{s.icon}</div>
