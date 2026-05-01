@@ -24,9 +24,9 @@ export const SERVICE_TYPE_DEFAULT: ServiceType = 'full_detail';
 // Authoritative price matrix: service type x vehicle size.
 // Final launch prices, set via business decision.
 export const SERVICE_PRICES: Record<ServiceType, { small: number; suv: number; truck: number }> = {
-  exterior:    { small: 120, suv: 150, truck: 170 },
-  interior:    { small: 180, suv: 210, truck: 230 },
-  full_detail: { small: 249, suv: 299, truck: 329 },
+  exterior:    { small: 79,  suv: 89,  truck: 99  },
+  interior:    { small: 129, suv: 149, truck: 169 },
+  full_detail: { small: 199, suv: 229, truck: 249 },
 };
 
 export const SERVICES = {
@@ -66,6 +66,13 @@ export const ADD_ONS: AddOn[] = [
   { id: 'engine', name: 'Engine Bay', price: 25, applicableServiceTypes: ['exterior', 'full_detail'] },
   { id: 'stain', name: 'Stain Removal', price: 30, applicableServiceTypes: ['interior', 'full_detail'] },
   { id: 'leather', name: 'Leather Conditioner', price: 10, applicableServiceTypes: ['interior', 'full_detail'] },
+  {
+    id: 'pethair',
+    name: 'Pet Hair Removal',
+    price: 0,
+    applicableServiceTypes: ['interior', 'full_detail'],
+    sizePrices: { small: 25, suv: 40, truck: 40 },
+  },
   { id: 'windshield', name: 'Windshield Coating', price: 40, applicableServiceTypes: ['exterior', 'full_detail'] },
   { id: 'headlight', name: 'Headlight Restoration', price: 80, applicableServiceTypes: ['exterior', 'full_detail'] },
   { id: 'paint1', name: '1-Step Paint Correction', price: 95, applicableServiceTypes: ['exterior', 'full_detail'] },
