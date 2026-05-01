@@ -93,6 +93,12 @@ Currently appended to address string client-side before submission.
 Works for now but a dedicated `unit` text column on bookings would be
 cleaner long-term. Migration + API + admin display, all small but real.
 
+### Round-two compression on hero-s-class.jpg
+Hero LCP at 2.6s on production, 0.1s over green threshold. Round two
+compression on public/images/aad/hero-s-class.jpg (target ~60-80 KB
+via quality 65 or AVIF) would likely push LCP to ~2.2s and Performance
+score from 96 to 97-98. Deferred as not user-perceptible.
+
 ---
 
 ## Strategic / longer-horizon
@@ -149,3 +155,41 @@ or blur VINs before posting.
 After meaningful deploys, bump the `VERSION` constant in `public/sw.js` to
 flush stale clients. Easy to forget. Could be automated as part of
 deployment pipeline eventually.
+
+---
+
+## Competitor research notes (autodetailingtx.com)
+
+Reviewed Auto Detailing Austin LLC (autodetailingtx.com), a brick-and-mortar
+competitor in Austin since 2012. Different business model than AAD (fixed
+location vs mobile), but has several SEO foundations AAD lacks. Three
+takeaways worth pursuing in future sessions, in priority order:
+
+### Per-service landing pages (biggest SEO win)
+They have dedicated pages for each service: /interior-detailing,
+/exterior-detailing, /ceramic-coating, /paint-correction, /headlight-restoration.
+Each page can rank independently in Google for its own keywords ("ceramic
+coating Austin", "paint correction Austin", etc). AAD currently has all
+services on one homepage, which forces them to compete with each other for
+the same page ranking. Multi-hour project per page if done right (unique
+content, FAQs, photos, structured data). Each completed page is a permanent
+rankings asset.
+
+### Start a blog for long-tail SEO
+Posts like "How long does ceramic coating last in Texas heat?", "Best time
+of year to detail in Austin", "DIY vs professional headlight restoration"
+drive organic search traffic over time. Multi-week effort to launch one
+with real content. Slow burn but compounds.
+
+### Specific product/brand mentions
+They name-drop Gtechniq ceramic coatings with specific term lengths
+("two, five, and nine year coatings"). Specifics build credibility better
+than generic claims. Find out what brands Alex actually uses (Chemical Guys,
+Adam's Polishes, Gtechniq, Meguiar's, Rupes polishers, etc.) and name them
+where appropriate on service descriptions. Quick edit once we have the list.
+
+### Things worth NOT copying from them
+- Visual design (theirs looks like a dated WordPress template, AAD's is better)
+- Phone-only "call you back" form (AAD's real-time online booking is a real
+  product advantage worth keeping)
+- Window tinting and dealership services unless Alex actually offers them
