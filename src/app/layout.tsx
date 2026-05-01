@@ -57,7 +57,9 @@ const STRUCTURED_DATA = {
     "@type": "OfferCatalog",
     name: "Detailing Services",
     itemListElement: [
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full Detail (Interior + Exterior)" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Exterior Detail" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Interior Detail" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full Detail" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Ceramic Coating" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Paint Correction" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Headlight Restoration" } },
