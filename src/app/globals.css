@@ -28,6 +28,8 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent gray flash on tap in iOS Safari */
+  -webkit-tap-highlight-color: transparent;
   /* iOS safe areas - padding so content doesn't slip under the notch /
      dynamic island / status bar / home indicator. Pairs with
      viewport-fit=cover in viewport meta. Left/right are 0 on most
@@ -36,6 +38,35 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+/* iOS Safari zooms in when a focused input has font-size < 16px.
+   max(1rem, 1em) keeps Tailwind text-lg+ unchanged but floors text-sm to 16px. */
+input,
+select,
+textarea {
+  font-size: max(1rem, 1em);
+}
+
+/* Remove 300ms tap delay on interactive elements. */
+button,
+a,
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
+}
+
+/* Fixed elements that must clear the iPhone home indicator and notch.
+   Use these classes instead of bottom-5/left-5/right-5 on fixed elements. */
+.fixed-safe-bottom-right {
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  right: max(1.25rem, calc(env(safe-area-inset-right, 0px) + 1.25rem));
+}
+.fixed-safe-bottom-left {
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  left: max(1.25rem, calc(env(safe-area-inset-left, 0px) + 1.25rem));
 }
 
 h1,
@@ -49,13 +80,13 @@ h6 {
 }
 
 /* Branded focus ring - replaces the browser default. Only shown on
-   keyboard focus thanks to :focus-visible. */
+   keyboard focus thanks to :focus-visible. 3px ensures WCAG AA visibility. */
 *:focus {
   outline: none;
 }
 *:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
   border-radius: 6px;
 }
 

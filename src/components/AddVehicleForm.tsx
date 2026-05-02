@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVehicles } from '@/contexts/VehicleContext';
 import {
   VEHICLE_MAKES,
@@ -21,6 +21,19 @@ const FIELD_CLASSES_DISABLED = `${FIELD_CLASSES} disabled:cursor-not-allowed dis
 export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
   const { addVehicle, loading } = useVehicles();
   const [error, setError] = useState('');
+
+  // Android back button: push a history entry on mount so the back button
+  // dismisses the modal instead of navigating away from the page.
+  useEffect(() => {
+    history.pushState({ modal: 'add-vehicle' }, '');
+    const onPop = () => onClose();
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      // Clean up the history entry if the modal was closed programmatically.
+      if (history.state?.modal === 'add-vehicle') history.back();
+    };
+  }, [onClose]);
   const [formData, setFormData] = useState({
     year: 0, // 0 = nothing chosen yet; validates as falsy in handleSubmit
     make: '',

@@ -43,14 +43,14 @@ export default function Home() {
           >
             Austin Auto Detail
           </Link>
-          <div className="hidden items-center gap-6 text-base font-medium text-gray-100 sm:flex">
-            <a href="#services" className="hover:text-red-300">Services</a>
-            <a href="#pricing" className="hover:text-red-300">Pricing</a>
-            <a href="#recent-work" className="hover:text-red-300">Work</a>
-            <a href="#how-it-works" className="hover:text-red-300">How It Works</a>
-            <a href="#faq" className="hover:text-red-300">FAQ</a>
-            <a href="#contact" className="hover:text-red-300">Contact</a>
-          </div>
+          <ul className="hidden list-none items-center gap-6 p-0 text-base font-medium text-gray-100 sm:flex">
+            <li><a href="#services" className="hover:text-red-300">Services</a></li>
+            <li><a href="#pricing" className="hover:text-red-300">Pricing</a></li>
+            <li><a href="#recent-work" className="hover:text-red-300">Work</a></li>
+            <li><a href="#how-it-works" className="hover:text-red-300">How It Works</a></li>
+            <li><a href="#faq" className="hover:text-red-300">FAQ</a></li>
+            <li><a href="#contact" className="hover:text-red-300">Contact</a></li>
+          </ul>
           <div className="flex items-center gap-3 sm:gap-4">
             <HomeNavAccountLink />
             <Link

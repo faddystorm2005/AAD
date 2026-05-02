@@ -57,6 +57,17 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const { user, session } = useAuth();
   const { vehicles, loading: vehiclesLoading } = useVehicles();
   const [step, setStep] = useState(1);
+
+  // Android back button: intercept so it closes the modal instead of leaving the page.
+  useEffect(() => {
+    history.pushState({ modal: 'booking' }, '');
+    const onPop = () => onClose();
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      if (history.state?.modal === 'booking') history.back();
+    };
+  }, [onClose]);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isReturning, setIsReturning] = useState(false);

@@ -22,7 +22,7 @@ export default function StickyBookCta() {
     <Link
       href="/auth"
       aria-label="Book mobile detailing"
-      className={`btn-primary press fixed bottom-5 right-5 z-40 rounded-full px-6 py-4 text-base font-semibold shadow-2xl shadow-red-900/40 transition-all duration-300 sm:bottom-8 sm:right-8 sm:text-lg ${
+      className={`btn-primary press fixed fixed-safe-bottom-right z-40 rounded-full px-6 py-4 text-base font-semibold shadow-2xl shadow-red-900/40 transition-all duration-300 sm:text-lg ${
         visible
           ? 'translate-y-0 opacity-100'
           : 'pointer-events-none translate-y-4 opacity-0'

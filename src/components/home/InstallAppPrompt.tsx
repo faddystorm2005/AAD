@@ -125,7 +125,7 @@ export default function InstallAppPrompt() {
   return (
     <>
       <div
-        className={`fixed bottom-5 left-5 z-40 sm:bottom-8 sm:left-8 transition-all duration-300 ${
+        className={`fixed fixed-safe-bottom-left z-40 transition-all duration-300 ${
           visible
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-4 opacity-0'

@@ -283,12 +283,32 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           <div className="rounded-3xl border border-red-700 bg-red-900/20 p-8 text-center">
             <h1 className="mb-3 text-2xl font-bold text-red-400">Booking Error</h1>
             <p className="mb-6 text-red-200">{error || 'Booking not found.'}</p>
-            <Link
-              href="/dashboard"
-              className="inline-block rounded-lg bg-red-600 px-6 py-2 text-white hover:bg-red-700"
-            >
-              Back to Dashboard
-            </Link>
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setError('');
+                  setLoading(true);
+                  getBooking(bookingId).then((result) => {
+                    if (result.success && result.booking) {
+                      setBooking(result.booking as ConfirmationBooking);
+                    } else {
+                      setError('Still unable to load booking.');
+                    }
+                    setLoading(false);
+                  });
+                }}
+                className="inline-block rounded-lg bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700"
+              >
+                Try again
+              </button>
+              <Link
+                href="/dashboard"
+                className="inline-block rounded-lg border border-white/20 px-6 py-3 text-gray-300 hover:text-white"
+              >
+                Back to Dashboard
+              </Link>
+            </div>
           </div>
         </div>
       </main>

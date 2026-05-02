@@ -4,6 +4,8 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { VehicleProvider } from "@/contexts/VehicleContext";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import HapticProvider from "@/components/HapticProvider";
+import OfflineBanner from "@/components/OfflineBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -162,6 +164,8 @@ export default function RootLayout({
           </VehicleProvider>
         </AuthProvider>
         <ServiceWorkerRegister />
+        <HapticProvider />
+        <OfflineBanner />
       </body>
     </html>
   );
