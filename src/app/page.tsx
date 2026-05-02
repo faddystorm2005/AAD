@@ -289,22 +289,27 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {GALLERY.map((p, i) => (
-            <div
-              key={p.src}
-              className="gallery-item lift-hover scroll-card relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
-              data-stagger-i={i}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.src}
-                alt={p.alt}
-                loading="lazy"
-                className="cinematic-img absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-          ))}
+        <div className="group relative mt-10 overflow-hidden">
+          {/* Edge fades for a seamless feel */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent sm:w-24" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent sm:w-24" />
+          {/* Duplicated items for seamless loop — pauses on hover */}
+          <div className="animate-marquee-gallery flex gap-4 group-hover:[animation-play-state:paused]">
+            {[...GALLERY, ...GALLERY].map((p, i) => (
+              <div
+                key={`${p.src}-${i}`}
+                className="gallery-item relative h-64 w-44 shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:h-80 sm:w-56"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.src}
+                  alt={p.alt}
+                  loading="lazy"
+                  className="cinematic-img absolute inset-0 h-full w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
