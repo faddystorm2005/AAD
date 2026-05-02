@@ -419,21 +419,48 @@ button:disabled {
 }
 
 /* ---------------------------------------------------------------
- * Recent Work photo color-grading on hover.
+ * Hero parallax wrapper.
  *
- * Photos default to natural color. On hover, saturation and
- * contrast subtly boost so the photo feels "lit up" under the
- * cursor. Scoped to #recent-work images on the homepage only.
- *
- * Mobile / touch devices see only the default (no hover state).
+ * Sits 20% above the overflow-hidden hero container so JS can
+ * translate it downward on scroll at 0.38x speed (slower than
+ * page = classic depth effect). 140% height keeps the image
+ * fully covering the container across all shift values.
+ * JS in HeroParallax.tsx skips this on prefers-reduced-motion.
  * --------------------------------------------------------------- */
-.homepage-cinematic #recent-work img {
-  filter: saturate(1) contrast(1);
-  transition: filter 400ms ease;
+.hero-parallax-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -20%;
+  height: 140%;
+  will-change: transform;
 }
 
-.homepage-cinematic #recent-work img:hover {
-  filter: saturate(1.15) contrast(1.05);
+/* ---------------------------------------------------------------
+ * Gallery cinematic image treatment.
+ *
+ * .cinematic-img: smooth zoom + color-grade on hover.
+ * .gallery-item:hover zooms the photo and lifts saturation so it
+ * feels "lit up" under the cursor. Requires the parent wrapper to
+ * have overflow:hidden (already true from Tailwind classes).
+ * --------------------------------------------------------------- */
+.cinematic-img {
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+              filter 400ms ease;
+  will-change: transform;
+}
+
+.gallery-item:hover .cinematic-img,
+.gallery-item:focus-within .cinematic-img {
+  transform: scale(1.07);
+  filter: saturate(1.22) contrast(1.05) brightness(1.04);
+}
+
+/* TikTok card ambient background - red glow from the left, dark gradient base. */
+.tiktok-card-bg {
+  background:
+    radial-gradient(ellipse 70% 80% at 10% 50%, rgba(214,32,48,0.13), transparent 65%),
+    linear-gradient(135deg, #111 0%, #000 55%, #140505 100%);
 }
 
 /* Respect users who prefer reduced motion - disable all decorative animations. */
@@ -442,6 +469,11 @@ button:disabled {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  .cinematic-img {
+    transition: none !important;
+    transform: none !important;
+    will-change: auto !important;
   }
   .animate-fade-up,
   .animate-fade-in,

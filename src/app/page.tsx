@@ -11,6 +11,7 @@ import TiltCard from '@/components/home/TiltCard';
 import H2CinematicObserver from '@/components/home/H2CinematicObserver';
 import ScrollCardObserver from '@/components/ScrollCardObserver';
 import HeroStatCounter from '@/components/HeroStatCounter';
+import HeroParallax from '@/components/home/HeroParallax';
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -83,13 +84,18 @@ export default function Home() {
       {/* Hero */}
       <section className="relative" id="main-content" tabIndex={-1}>
         <div className="relative h-[60vh] min-h-[480px] w-full overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={DASHBOARD_BANNER.src}
-            alt="Mobile detailing in Austin - professional auto detailing at your location"
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
-          />
+          {/* Parallax wrapper: JS moves this div at 0.38x scroll speed.
+              The img inside keeps animate-banner-pan on a separate element
+              so the two transforms never conflict. */}
+          <div className="hero-parallax-wrap">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={DASHBOARD_BANNER.src}
+              alt="Mobile detailing in Austin - professional auto detailing at your location"
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
+            />
+          </div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
           {/* Soft red glow that follows the cursor for premium polish. */}
           <HeroSpotlight />
@@ -287,7 +293,7 @@ export default function Home() {
           {GALLERY.map((p, i) => (
             <div
               key={p.src}
-              className="lift-hover scroll-card relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
+              className="gallery-item lift-hover scroll-card relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
               data-stagger-i={i}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -295,48 +301,72 @@ export default function Home() {
                 src={p.src}
                 alt={p.alt}
                 loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="cinematic-img absolute inset-0 h-full w-full object-cover"
               />
             </div>
           ))}
         </div>
       </section>
 
-      {/* TikTok callout, sits between Recent Work and How It Works
-          to capture interest at peak gallery engagement. */}
+      {/* TikTok callout - full card that demands attention, not just a link. */}
       <section
         aria-label="TikTok content"
-        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-8"
       >
         <div className="reveal-on-scroll">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
-            Behind the Scenes
-          </p>
-          <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
-            See Every Detail on TikTok
-          </h2>
-          <p className="mt-3 max-w-2xl text-base text-gray-200 sm:text-lg">
-            Real before-and-afters, detailing techniques, and the satisfying parts customers don&apos;t usually see.
-          </p>
-        </div>
-
-        <div className="reveal-on-scroll mt-8">
           <a
             href="https://www.tiktok.com/@austinautodetail"
             target="_blank"
             rel="noopener noreferrer"
-            className="press inline-flex items-center gap-3 rounded-xl border border-white/20 bg-zinc-900 px-7 py-4 text-base font-semibold text-white hover:bg-zinc-800 sm:text-lg"
+            className="lift-hover group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 sm:flex-row"
+            aria-label="Follow Austin Auto Detail on TikTok - watch before and afters"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="h-6 w-6"
-              aria-hidden="true"
-            >
-              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
-            </svg>
-            Follow @austinautodetail
+            {/* Ambient glow + base background */}
+            <div aria-hidden className="tiktok-card-bg pointer-events-none absolute inset-0" />
+            {/* TikTok icon panel */}
+            <div className="relative flex shrink-0 items-center justify-center border-b border-white/5 bg-black/40 px-10 py-8 sm:border-b-0 sm:border-r sm:border-white/5 sm:px-14 sm:py-10">
+              <div className="flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-zinc-900 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-red-500/60 group-hover:shadow-[0_0_28px_rgba(214,32,48,0.4)]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="h-9 w-9 text-white"
+                  aria-hidden="true"
+                >
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
+                </svg>
+              </div>
+            </div>
+            {/* Content panel */}
+            <div className="relative flex flex-1 flex-col justify-center p-8 sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+                Behind the Scenes
+              </p>
+              <h2 className="mt-2 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
+                Watch Every Detail Live
+              </h2>
+              <p className="mt-3 max-w-lg text-base leading-relaxed text-gray-300">
+                Before &amp; afters. Deep-clean transformations. The
+                satisfying moments most customers never see. Real cars,
+                real Austin drivers &mdash; follow along and see what
+                yours could look like.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 group-hover:bg-red-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="h-4 w-4 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
+                  </svg>
+                  Follow @austinautodetail →
+                </span>
+                <span className="text-sm text-gray-500">Free to watch &amp; follow</span>
+              </div>
+            </div>
           </a>
         </div>
       </section>
@@ -643,6 +673,7 @@ export default function Home() {
 
       <H2CinematicObserver />
       <ScrollCardObserver />
+      <HeroParallax />
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
       <StickyBookCta />
       <InstallAppPrompt />
