@@ -97,6 +97,7 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "AAD",
   },
+  manifest: "/manifest.json",
   formatDetection: {
     telephone: false,
   },

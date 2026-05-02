@@ -1,12 +1,13 @@
-/* AAD Detailing service worker - minimal offline support, no push notifications.
+/* AAD Detailing service worker - offline support + web push notifications.
  *
  * BUMP THE VERSION every time you ship code that needs all clients to refresh.
  * The activate handler purges any cache that doesn't match the new version
  * names, so every visitor gets a clean slate on their next page load.
  *
  * v1 → v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
+ * v5 → v6: add push notification handlers for admin + customer alerts.
  */
-const VERSION = "aad-v5";
+const VERSION = "aad-v6";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
@@ -120,3 +121,41 @@ async function networkFirstPage(req) {
     return offline || Response.error();
   }
 }
+
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { title: "Austin Auto Detail", body: event.data ? event.data.text() : "" };
+  }
+
+  const title = data.title || "Austin Auto Detail";
+  const options = {
+    body: data.body || "",
+    icon: "/apple-touch-icon.png",
+    badge: "/apple-touch-icon.png",
+    data: { url: data.url || "/" },
+    tag: data.tag || "aad-notification",
+    requireInteraction: false,
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url === url && "focus" in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    })
+  );
+});

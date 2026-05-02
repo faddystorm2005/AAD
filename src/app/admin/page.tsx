@@ -112,6 +112,9 @@ export default function AdminPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [cancelCreditDraft, setCancelCreditDraft] = useState<Record<string, string>>({});
   const [cancelDenyNoteDraft, setCancelDenyNoteDraft] = useState<Record<string, string>>({});
+  const [pushState, setPushState] = useState<'checking' | 'unsupported' | 'denied' | 'disabled' | 'enabled'>('checking');
+  const [pushWorking, setPushWorking] = useState(false);
+  const pushSubRef = useRef<PushSubscription | null>(null);
 
   // Auto-clear success banner after 2.5s.
   useEffect(() => {
@@ -209,6 +212,90 @@ export default function AdminPage() {
 
     return () => { cancelled = true; };
   }, [expandedId, session?.access_token]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      setPushState('unsupported');
+      return;
+    }
+    if (Notification.permission === 'denied') {
+      setPushState('denied');
+      return;
+    }
+    navigator.serviceWorker.ready.then((reg) => {
+      reg.pushManager.getSubscription().then((sub) => {
+        if (sub) {
+          pushSubRef.current = sub;
+          setPushState('enabled');
+        } else {
+          setPushState('disabled');
+        }
+      });
+    });
+  }, [isAdmin]);
+
+  const urlBase64ToUint8Array = (base64String: string) => {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+  };
+
+  const handleEnablePush = async () => {
+    if (!session?.access_token) return;
+    setPushWorking(true);
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setPushState(permission === 'denied' ? 'denied' : 'disabled');
+        return;
+      }
+      const reg = await navigator.serviceWorker.ready;
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
+      });
+      pushSubRef.current = sub;
+      await fetch('/api/push-subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ subscription: sub.toJSON(), userAgent: navigator.userAgent }),
+      });
+      setPushState('enabled');
+    } catch (err: any) {
+      setActionError('Could not enable push notifications: ' + err.message);
+    } finally {
+      setPushWorking(false);
+    }
+  };
+
+  const handleDisablePush = async () => {
+    if (!session?.access_token || !pushSubRef.current) return;
+    setPushWorking(true);
+    try {
+      const endpoint = pushSubRef.current.endpoint;
+      await pushSubRef.current.unsubscribe();
+      pushSubRef.current = null;
+      await fetch('/api/push-subscribe', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ endpoint }),
+      });
+      setPushState('disabled');
+    } catch (err: any) {
+      setActionError('Could not disable push notifications: ' + err.message);
+    } finally {
+      setPushWorking(false);
+    }
+  };
 
   const handleStageChange = async (bookingId: string, stage: Stage) => {
     if (!session?.access_token) return;
@@ -636,6 +723,50 @@ export default function AdminPage() {
         )}
 
         <ManagePromoCodes accessToken={session?.access_token ?? null} />
+
+        {/* Booking Alerts - web push for new bookings */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-300">Booking Alerts</h2>
+          <p className="mb-4 text-xs text-gray-500">
+            Get a push notification on this device when a new booking comes in.
+            {pushState === 'unsupported' || pushState === 'denied' ? '' : ' iOS users: install the app to Home Screen first.'}
+          </p>
+          {pushState === 'checking' && (
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+          )}
+          {pushState === 'unsupported' && (
+            <p className="text-sm text-gray-500">Push notifications are not supported on this browser.</p>
+          )}
+          {pushState === 'denied' && (
+            <p className="text-sm text-yellow-400">Notifications are blocked. Allow them in your browser settings, then reload.</p>
+          )}
+          {pushState === 'disabled' && (
+            <button
+              type="button"
+              onClick={handleEnablePush}
+              disabled={pushWorking}
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              {pushWorking ? 'Enabling...' : 'Enable booking alerts on this device'}
+            </button>
+          )}
+          {pushState === 'enabled' && (
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-2 text-sm text-green-400">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
+                Alerts enabled on this device
+              </span>
+              <button
+                type="button"
+                onClick={handleDisablePush}
+                disabled={pushWorking}
+                className="rounded-lg border border-gray-600 px-3 py-1.5 text-xs text-gray-400 hover:bg-gray-800 disabled:opacity-50"
+              >
+                {pushWorking ? 'Disabling...' : 'Disable'}
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-2">
           <button

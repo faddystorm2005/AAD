@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { pushBookingToGoogle } from '@/lib/googleCalendar';
 import { notifyCustomerCarReady } from '@/lib/notify';
+import { sendPushToCustomer } from '@/lib/pushNotifications';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -91,7 +92,7 @@ export async function POST(req: NextRequest) {
   // Sync the updated booking to Google Calendar (best-effort).
   await pushBookingToGoogle(userData.user.id, bookingId);
 
-  // When marked DONE, notify the customer (SMS + email). Best-effort.
+  // When marked DONE, notify the customer (SMS + email + push). Best-effort.
   if (stage === 'done') {
     try {
       const { data: b } = await supabaseAdmin
@@ -112,9 +113,29 @@ export async function POST(req: NextRequest) {
           service: (b as any).service,
           bookingId,
         });
+        await sendPushToCustomer(bookingId, {
+          title: 'Your car is ready',
+          body: `Your ${(b as any).service} is complete. Thanks for choosing Austin Auto Detail!`,
+          url: `/booking-confirmation/${bookingId}`,
+          tag: `booking-done-${bookingId}`,
+        });
       }
     } catch (err) {
       console.error('[notify] car-ready notification failed', err);
+    }
+  }
+
+  // When service starts (first advance past 'requested'), push a heads-up. Best-effort.
+  if (stage !== 'requested' && !current.started_at) {
+    try {
+      await sendPushToCustomer(bookingId, {
+        title: 'Service in progress',
+        body: 'Austin Auto Detail has started working on your car.',
+        url: `/booking-confirmation/${bookingId}`,
+        tag: `booking-inprogress-${bookingId}`,
+      });
+    } catch (err) {
+      console.error('[push] in-progress notification failed', err);
     }
   }
 

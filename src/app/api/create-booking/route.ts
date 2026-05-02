@@ -14,6 +14,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
 import { austinOffsetFor } from '@/lib/austinTime';
 import { notifyAdminNewBooking } from '@/lib/notify';
+import { sendPushToAllAdmins } from '@/lib/pushNotifications';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -347,9 +348,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Fire-and-forget: SMS the admin so they know to approve. Doesn't block
-  // the response - even if Twilio is unreachable the customer's booking
-  // still saves and they see the confirmation page.
+  // Fire-and-forget: notify admin via SMS + push. Doesn't block the response.
   try {
     const { data: customer } = await supabaseAdmin
       .from('profiles')
@@ -357,16 +356,25 @@ export async function POST(req: NextRequest) {
       .eq('id', userId)
       .maybeSingle();
 
+    const customerName = customer?.full_name ?? null;
+
     await notifyAdminNewBooking({
       bookingId: booking.id,
-      customerName: customer?.full_name ?? null,
+      customerName,
       customerPhone: customer?.phone ?? null,
       service: SERVICE_TYPE_NAMES[serviceType],
       scheduledAt,
       address: `${body.address}, ${body.city}, ${body.state} ${body.zip}`,
     });
+
+    await sendPushToAllAdmins({
+      title: 'New booking request',
+      body: `${customerName ?? 'A customer'} booked ${SERVICE_TYPE_NAMES[serviceType]} for ${body.slotDate} at ${body.slotTime}`,
+      url: `/booking-confirmation/${booking.id}`,
+      tag: `booking-new-${booking.id}`,
+    });
   } catch (err) {
-    console.error('[notify] admin booking SMS failed', err);
+    console.error('[notify] admin notification failed', err);
   }
 
   // No Square call here. The customer is now in 'pending' awaiting admin

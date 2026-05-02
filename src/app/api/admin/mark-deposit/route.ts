@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { pushBookingToGoogle } from '@/lib/googleCalendar';
+import { sendPushToCustomer } from '@/lib/pushNotifications';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -86,6 +87,20 @@ export async function POST(req: NextRequest) {
 
   // Sync to Google Calendar (best-effort).
   await pushBookingToGoogle(userData.user.id, bookingId);
+
+  // Notify customer when deposit is confirmed (best-effort).
+  if (paid && (current.status === 'approved' || current.status === 'pending')) {
+    try {
+      await sendPushToCustomer(bookingId, {
+        title: 'Deposit received - you\'re confirmed!',
+        body: 'Your deposit was received. Your detailing appointment is locked in.',
+        url: `/booking-confirmation/${bookingId}`,
+        tag: `booking-confirmed-${bookingId}`,
+      });
+    } catch (err) {
+      console.error('[push] deposit confirmed notification failed', err);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

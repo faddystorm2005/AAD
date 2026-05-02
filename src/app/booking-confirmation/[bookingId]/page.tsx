@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getBooking } from '@/lib/bookingService';
@@ -97,11 +97,20 @@ const TONE_CLASSES: Record<'yellow' | 'green' | 'red' | 'blue', { border: string
   },
 };
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+}
+
 export default function BookingConfirmationPage({ params }: BookingConfirmationPageProps) {
   const { bookingId } = use(params);
   const [booking, setBooking] = useState<ConfirmationBooking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [pushState, setPushState] = useState<'hidden' | 'prompt' | 'working' | 'enabled' | 'denied'>('hidden');
+  const pushSubRef = useRef<PushSubscription | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -185,6 +194,60 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
       clearInterval(interval);
     };
   }, [booking, bookingId]);
+
+  // Check if push is available and not yet subscribed for this booking.
+  // Show the prompt only once the booking has loaded and isn't declined.
+  useEffect(() => {
+    if (!booking) return;
+    if (booking.status === 'declined' || booking.status === 'completed') return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    if (Notification.permission === 'denied') return;
+
+    navigator.serviceWorker.ready.then((reg) => {
+      reg.pushManager.getSubscription().then((existing) => {
+        if (existing) {
+          pushSubRef.current = existing;
+          setPushState('enabled');
+        } else {
+          setPushState('prompt');
+        }
+      });
+    });
+  }, [booking?.id, booking?.status]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleEnablePush = async () => {
+    setPushState('working');
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (!token) { setPushState('prompt'); return; }
+
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setPushState(permission === 'denied' ? 'denied' : 'prompt');
+        return;
+      }
+      const reg = await navigator.serviceWorker.ready;
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
+      });
+      pushSubRef.current = sub;
+      await fetch('/api/push-subscribe/customer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          bookingId,
+          subscription: sub.toJSON(),
+          userAgent: navigator.userAgent,
+        }),
+      });
+      setPushState('enabled');
+    } catch {
+      setPushState('prompt');
+    }
+  };
 
   const handleManualRefresh = async () => {
     // Customer clicked "I paid - check now". First ask PayPal directly,
@@ -301,6 +364,32 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
             </p>
           )}
         </div>
+
+        {(pushState === 'prompt' || pushState === 'working' || pushState === 'enabled') && (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            {pushState === 'enabled' ? (
+              <div className="flex items-center gap-2 text-sm text-green-400">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
+                Notifications enabled - we&apos;ll alert you when your booking status changes.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-white">Get notified about your booking</p>
+                  <p className="mt-0.5 text-xs text-gray-400">We&apos;ll push an alert when approved, deposit confirmed, or service complete.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEnablePush}
+                  disabled={pushState === 'working'}
+                  className="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                >
+                  {pushState === 'working' ? 'Enabling...' : 'Allow notifications'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="glass-card space-y-5 rounded-3xl p-6 sm:p-8">
           <div>

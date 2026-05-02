@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { createPaymentLink as createSquarePaymentLink } from '@/lib/squarePayment';
 import { createPaymentLink as createPayPalPaymentLink } from '@/lib/paypalPayment';
 import { pushBookingToGoogle } from '@/lib/googleCalendar';
+import { sendPushToCustomer } from '@/lib/pushNotifications';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -110,6 +111,18 @@ export async function POST(req: NextRequest) {
 
   // Push to Google Calendar (best-effort, non-blocking).
   await pushBookingToGoogle(userData.user.id, body.bookingId);
+
+  // Notify customer via push (best-effort).
+  try {
+    await sendPushToCustomer(body.bookingId, {
+      title: 'Booking approved',
+      body: 'Your detailing appointment has been approved. Tap to pay your deposit and lock in your slot.',
+      url: `/booking-confirmation/${body.bookingId}`,
+      tag: `booking-approved-${body.bookingId}`,
+    });
+  } catch (err) {
+    console.error('[push] customer approve notification failed', err);
+  }
 
   return NextResponse.json({ ok: true, paymentUrl });
 }
