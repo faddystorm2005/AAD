@@ -131,23 +131,13 @@ export default function InstallAppPrompt() {
             : 'pointer-events-none translate-y-4 opacity-0'
         }`}
       >
-        <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-3 backdrop-blur-md ring-1 ring-white/20 shadow-2xl">
-          <button
-            type="button"
-            onClick={handleInstall}
-            className="text-sm font-semibold uppercase tracking-wider text-white hover:text-red-300 transition"
-          >
-            Install app
-          </button>
-          <button
-            type="button"
-            onClick={handleDismiss}
-            aria-label="Dismiss install prompt"
-            className="text-gray-400 hover:text-white text-lg leading-none"
-          >
-            ×
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleInstall}
+          className="rounded-full bg-white/10 px-5 py-3 backdrop-blur-md ring-1 ring-white/20 shadow-2xl text-sm font-semibold uppercase tracking-wider text-white hover:bg-white/15 hover:text-red-300 transition"
+        >
+          Install app
+        </button>
       </div>
 
       {/* iOS install modal */}
@@ -226,13 +216,25 @@ export default function InstallAppPrompt() {
               </li>
             </ol>
 
-            <button
-              type="button"
-              onClick={() => setShowIOSModal(false)}
-              className="mt-6 w-full rounded-full bg-white/10 px-4 py-3 text-sm font-semibold uppercase tracking-wider text-white hover:bg-white/15 transition"
-            >
-              Got it
-            </button>
+            <div className="mt-6 space-y-2">
+              <button
+                type="button"
+                onClick={() => setShowIOSModal(false)}
+                className="w-full rounded-full bg-red-600 px-4 py-3 text-sm font-semibold uppercase tracking-wider text-white hover:bg-red-500 transition"
+              >
+                Got it, I will install
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowIOSModal(false);
+                  handleDismiss();
+                }}
+                className="w-full rounded-full bg-white/5 px-4 py-3 text-sm font-medium text-gray-400 hover:text-white transition"
+              >
+                Maybe later
+              </button>
+            </div>
           </div>
         </div>
       )}
