@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { SERVICE_TYPES, SERVICE_TYPE_NAMES, SERVICE_PRICES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE, DEPOSIT_AMOUNT } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
@@ -6,7 +7,6 @@ import HeroSpotlight from '@/components/home/HeroSpotlight';
 import StatsStrip from '@/components/home/StatsStrip';
 import StickyBookCta from '@/components/home/StickyBookCta';
 import InstallAppPrompt from '@/components/home/InstallAppPrompt';
-import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 import TiltCard from '@/components/home/TiltCard';
 import H2CinematicObserver from '@/components/home/H2CinematicObserver';
 import ScrollCardObserver from '@/components/ScrollCardObserver';
@@ -377,44 +377,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Recent Work, real photos placed right after services so the
-          work itself sells what the cards described. */}
-      <section
-        id="recent-work"
-        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
-      >
-        <div className="reveal-on-scroll">
-          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Recent Work
-          </h2>
-          <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Real cars, real drivers. A look at recent details from across Austin.
-          </p>
-        </div>
-
-        <div className="group relative mt-10 overflow-hidden">
-          {/* Edge fades for a seamless feel */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent sm:w-24" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent sm:w-24" />
-          {/* Duplicated items for seamless loop — pauses on hover */}
-          <div className="animate-marquee-gallery flex gap-4 group-hover:[animation-play-state:paused]">
-            {[...GALLERY, ...GALLERY].map((p, i) => (
-              <div
-                key={`${p.src}-${i}`}
-                className="gallery-item relative h-64 w-44 shrink-0 overflow-hidden rounded-2xl border border-white/10 sm:h-80 sm:w-56"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={p.src}
-                  alt={p.alt}
-                  loading="lazy"
-                  className="cinematic-img absolute inset-0 h-full w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* TikTok callout - full card that demands attention, not just a link. */}
       <section
@@ -650,17 +612,38 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Testimonials marquee - auto-scrolling social proof, pauses on hover. */}
+      {/* Recent Work - real photos from the field */}
       <section
-        aria-label="What customers say"
-        className="relative z-10 border-y border-white/5 py-12"
+        id="recent-work"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
       >
-        <div className="mx-auto mb-6 w-full max-w-5xl px-6">
-          <h2 className="h-accent text-xl font-bold uppercase tracking-wider sm:text-2xl">
-            What Austin drivers say
+        <div className="reveal-on-scroll">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Recent Work
           </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            A few of the vehicles we&apos;ve detailed
+          </p>
         </div>
-        <MarqueeTestimonials />
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {RECENT_WORK.map((p, i) => (
+            <div
+              key={p.src}
+              className="group overflow-hidden rounded-2xl border border-white/10 bg-gray-900"
+              data-stagger-i={i}
+            >
+              <Image
+                src={p.src}
+                alt={p.alt}
+                width={1200}
+                height={900}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Final CTA */}
@@ -962,13 +945,11 @@ const FAQS = [
   },
 ];
 
-const GALLERY = [
-  { src: '/images/aad/gallery-audi-s4-red-leather.jpg', alt: 'Audi S4 with red diamond-stitched leather, detailed by Austin Auto Detail' },
-  { src: '/images/aad/gallery-mercedes-gle-interior.jpg', alt: 'Mercedes GLE interior with brown leather, detailed by Austin Auto Detail' },
-  { src: '/images/aad/gallery-bmw-engine-bay.jpg', alt: 'BMW engine bay deep cleaned by Austin Auto Detail' },
-  { src: '/images/aad/gallery-ford-super-duty.jpg', alt: 'Ford Super Duty interior detailed by Austin Auto Detail' },
-  { src: '/images/aad/gallery-toyota-tundra-console.jpg', alt: 'Toyota Tundra console area detailed by Austin Auto Detail' },
-  { src: '/images/aad/gallery-nissan-rogue-interior.jpg', alt: 'Nissan Rogue interior detailed by Austin Auto Detail' },
-  { src: '/images/aad/gallery-ford-king-ranch.jpg', alt: 'Ford F-150 King Ranch interior detailed by Austin Auto Detail' },
-  { src: '/images/aad/gallery-suv-cargo-area.jpg', alt: 'SUV cargo area cleaned by Austin Auto Detail' },
+const RECENT_WORK: { src: string; alt: string }[] = [
+  { src: '/gallery/hummer-h2-black.jpeg', alt: 'Black Hummer H2 after full exterior detail' },
+  { src: '/gallery/bentley-continental-rear.jpeg', alt: 'Bentley Continental GTC after detail service' },
+  { src: '/gallery/bentley-continental-foam-wash.jpeg', alt: 'Bentley Continental during foam pre-wash' },
+  { src: '/gallery/mercedes-gle-amg-black.jpeg', alt: 'Mercedes-AMG GLE Coupe after full detail' },
+  { src: '/gallery/audi-black-wheel-detail.jpeg', alt: 'Black Audi after exterior detail with wheel cleaning' },
+  { src: '/gallery/toyota-4runner-army-green.jpeg', alt: 'Toyota 4Runner Army Green after exterior detail' },
 ];

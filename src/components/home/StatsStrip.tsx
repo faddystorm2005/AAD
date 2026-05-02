@@ -11,16 +11,14 @@ interface Stat {
 // and quality. Real numbers, no animation, so SSR and slow phones never show
 // placeholder zeros to users or search crawlers.
 const STATS: Stat[] = [
-  { value: 100, suffix: '+', label: 'Trusted Austin Customers' },
   { value: 3, suffix: '/day', label: 'Cars Max - No Rush Jobs' },
-  { value: '5.0', suffix: '★', label: 'Average Customer Rating' },
   { value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
 ];
 
 export default function StatsStrip() {
   return (
     <div
-      className="grid grid-cols-2 gap-6 sm:grid-cols-4"
+      className="grid grid-cols-2 gap-6"
       role="list"
       aria-label="Austin Auto Detail by the numbers"
     >
