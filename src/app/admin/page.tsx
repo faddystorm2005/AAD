@@ -112,7 +112,7 @@ export default function AdminPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [cancelCreditDraft, setCancelCreditDraft] = useState<Record<string, string>>({});
   const [cancelDenyNoteDraft, setCancelDenyNoteDraft] = useState<Record<string, string>>({});
-  const [pushState, setPushState] = useState<'checking' | 'unsupported' | 'denied' | 'disabled' | 'enabled'>('checking');
+  const [pushState, setPushState] = useState<'checking' | 'unsupported' | 'needs-install' | 'denied' | 'disabled' | 'enabled'>('checking');
   const [pushWorking, setPushWorking] = useState(false);
   const pushSubRef = useRef<PushSubscription | null>(null);
 
@@ -216,7 +216,14 @@ export default function AdminPage() {
   useEffect(() => {
     if (!isAdmin) return;
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      setPushState('unsupported');
+      // On iOS Safari, Push is only available when installed as a PWA.
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isStandalone = (navigator as { standalone?: boolean }).standalone === true;
+      if (isIOS && !isStandalone) {
+        setPushState('needs-install');
+      } else {
+        setPushState('unsupported');
+      }
       return;
     }
     if (Notification.permission === 'denied') {
@@ -733,6 +740,25 @@ export default function AdminPage() {
           </p>
           {pushState === 'checking' && (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+          )}
+          {pushState === 'needs-install' && (
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-yellow-400">Install the app first to enable alerts on iPhone.</p>
+              <ol className="space-y-2 text-sm text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">1</span>
+                  Tap the <strong>Share</strong> button at the bottom of Safari
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">2</span>
+                  Tap <strong>Add to Home Screen</strong>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">3</span>
+                  Open the app from your Home Screen, then come back here
+                </li>
+              </ol>
+            </div>
           )}
           {pushState === 'unsupported' && (
             <p className="text-sm text-gray-500">Push notifications are not supported on this browser.</p>
