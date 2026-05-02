@@ -86,13 +86,16 @@ export default function Home() {
               </svg>
               <span className="hidden text-sm sm:inline">(480) 793-3782</span>
             </a>
-            <HomeNavAccountLink />
-            <Link
-              href="/auth"
-              className="btn-primary press shrink-0 rounded-lg px-4 py-2.5 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-base"
-            >
-              Book Now
-            </Link>
+            {/* Hidden on mobile — accessible via hamburger menu instead */}
+            <div className="hidden sm:flex sm:items-center sm:gap-4">
+              <HomeNavAccountLink />
+              <Link
+                href="/auth"
+                className="btn-primary press shrink-0 rounded-lg px-5 py-2.5 text-base font-semibold"
+              >
+                Book Now
+              </Link>
+            </div>
             <MobileNav />
           </div>
         </nav>
@@ -486,19 +489,26 @@ export default function Home() {
             Booking mobile detailing in Austin takes about a minute. Here&apos;s how it goes:
           </p>
         </div>
-        <ol className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-stretch sm:gap-0">
           {STEPS.map((step, i) => (
-            <li
-              key={step.title}
-              className="glass-card scroll-card rounded-2xl p-6"
-              data-stagger-i={i}
-            >
-              <div className="text-3xl font-bold text-red-500">{String(i + 1).padStart(2, '0')}</div>
-              <h3 className="mt-2 text-lg font-bold text-white">{step.title}</h3>
-              <p className="mt-2 text-base text-gray-200">{step.description}</p>
-            </li>
+            <div key={step.title} className="flex flex-1 items-stretch">
+              <div className="glass-card scroll-card min-w-0 flex-1 rounded-2xl p-6" data-stagger-i={i}>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
+                  {i + 1}
+                </div>
+                <h3 className="mt-4 text-lg font-bold text-white">{step.title}</h3>
+                <p className="mt-2 text-base text-gray-200">{step.description}</p>
+              </div>
+              {i < STEPS.length - 1 && (
+                <div className="hidden shrink-0 items-center justify-center px-2 sm:flex" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400/50">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </div>
+              )}
+            </div>
           ))}
-        </ol>
+        </div>
       </section>
 
       {/* Why us */}

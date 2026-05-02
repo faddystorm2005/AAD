@@ -115,6 +115,7 @@ export default function AdminPage() {
   const [pushState, setPushState] = useState<'checking' | 'unsupported' | 'needs-install' | 'denied' | 'disabled' | 'enabled'>('checking');
   const [pushWorking, setPushWorking] = useState(false);
   const pushSubRef = useRef<PushSubscription | null>(null);
+  const [search, setSearch] = useState('');
 
   // Auto-clear success banner after 2.5s.
   useEffect(() => {
@@ -671,13 +672,35 @@ export default function AdminPage() {
   const pendingCount = bookings.filter((b) => b.status === 'pending').length;
   const cancelRequestCount = bookings.filter((b) => b.cancel_requested_at).length;
 
-  const visible = bookings.filter((b) => {
-    const status: Status = b.status ?? 'pending';
-    if (filter === 'pending') return status === 'pending';
-    if (filter === 'cancel_requests') return Boolean(b.cancel_requested_at);
-    if (filter === 'active') return status !== 'declined' && status !== 'completed';
-    return true;
-  });
+  const searchLower = search.trim().toLowerCase();
+  const matchesSearch = (b: AdminBooking) => {
+    if (!searchLower) return true;
+    return (
+      b.customer?.full_name?.toLowerCase().includes(searchLower) ||
+      b.customer?.phone?.toLowerCase().includes(searchLower) ||
+      b.customer?.email?.toLowerCase().includes(searchLower) ||
+      b.address?.toLowerCase().includes(searchLower) ||
+      b.city?.toLowerCase().includes(searchLower) ||
+      false
+    );
+  };
+
+  const visible = bookings
+    .filter((b) => {
+      const status: Status = b.status ?? 'pending';
+      if (filter === 'pending') return status === 'pending';
+      if (filter === 'cancel_requests') return Boolean(b.cancel_requested_at);
+      if (filter === 'active') return status !== 'declined' && status !== 'completed';
+      return true;
+    })
+    .filter(matchesSearch)
+    // Pending bookings newest first so the latest request is always at the top.
+    .sort((a, b) => {
+      if (filter === 'pending') {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+      return 0;
+    });
 
   return (
     <main className="min-h-screen bg-black px-6 py-12 text-white">
@@ -794,6 +817,20 @@ export default function AdminPage() {
           )}
         </div>
 
+        {/* Search - find a customer by name, phone, email, or address */}
+        <div className="relative">
+          <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search by name, phone, email, or address…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-2.5 pl-9 pr-4 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+          />
+        </div>
+
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter('pending')}
@@ -871,50 +908,74 @@ export default function AdminPage() {
                   key={b.id}
                   className="rounded-lg border border-gray-700 bg-gray-900"
                 >
-                  <button
-                    type="button"
-                    onClick={() => setExpandedId(isExpanded ? null : b.id)}
-                    className="flex w-full flex-wrap items-start justify-between gap-3 p-5 text-left hover:bg-gray-800/40"
-                  >
-                    <div>
-                      <p className="font-semibold text-white">
-                        {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
-                        {b.customer?.full_name && (
-                          <span className="ml-2 text-sm font-normal text-gray-400">
-                            · {b.customer.full_name}
+                  <div className="flex items-stretch">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedId(isExpanded ? null : b.id)}
+                      className="flex flex-1 flex-wrap items-start justify-between gap-3 p-5 text-left hover:bg-gray-800/40"
+                    >
+                      <div>
+                        <p className="font-semibold text-white">
+                          {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
+                          {b.customer?.full_name && (
+                            <span className="ml-2 text-sm font-normal text-gray-400">
+                              · {b.customer.full_name}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-xs text-gray-500">{b.service}</p>
+                        <p className="text-sm text-gray-400">
+                          {new Date(b.scheduled_at).toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 text-right text-xs">
+                        <span
+                          className={`rounded-full border px-2 py-0.5 font-medium ${
+                            STATUS_BADGES[(b.status ?? 'pending') as Status].className
+                          }`}
+                        >
+                          {STATUS_BADGES[(b.status ?? 'pending') as Status].label}
+                          {b.is_ceramic && ' · ceramic'}
+                        </span>
+                        <span className="text-gray-400">
+                          ${Number(b.deposit_amount).toFixed(2)} of ${Number(b.total).toFixed(2)}
+                        </span>
+                        {b.status !== 'pending' && b.status !== 'declined' && (
+                          <span className="text-red-400">
+                            Stage: {STAGE_LABELS[normalizeStage(b.booking_stage)]}
                           </span>
                         )}
-                      </p>
-                      <p className="text-xs text-gray-500">{b.service}</p>
-                      <p className="text-sm text-gray-400">
-                        {new Date(b.scheduled_at).toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end gap-1 text-right text-xs">
-                      <span
-                        className={`rounded-full border px-2 py-0.5 font-medium ${
-                          STATUS_BADGES[(b.status ?? 'pending') as Status].className
-                        }`}
-                      >
-                        {STATUS_BADGES[(b.status ?? 'pending') as Status].label}
-                        {b.is_ceramic && ' · ceramic'}
-                      </span>
-                      <span className="text-gray-400">
-                        ${Number(b.deposit_amount).toFixed(2)} of ${Number(b.total).toFixed(2)}
-                      </span>
-                      {b.status !== 'pending' && b.status !== 'declined' && (
-                        <span className="text-red-400">
-                          Stage: {STAGE_LABELS[normalizeStage(b.booking_stage)]}
+                        <span className="text-gray-500">
+                          {isExpanded ? '▲ Hide' : '▼ Details'}
                         </span>
-                      )}
-                      <span className="text-gray-500">
-                        {isExpanded ? '▲ Hide details' : '▼ Show details'}
-                      </span>
-                    </div>
-                  </button>
+                      </div>
+                    </button>
+
+                    {/* Quick-action panel — approve/decline without expanding */}
+                    {b.status === 'pending' && (
+                      <div className="flex shrink-0 flex-col justify-center gap-2 border-l border-gray-700 px-3 py-3">
+                        <button
+                          type="button"
+                          disabled={updatingId === b.id}
+                          onClick={(e) => { e.stopPropagation(); handleApprove(b.id); }}
+                          className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                        >
+                          {updatingId === b.id ? '…' : '✓ Approve'}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={updatingId === b.id}
+                          onClick={(e) => { e.stopPropagation(); setExpandedId(b.id); }}
+                          className="rounded-lg border border-gray-600 px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                        >
+                          Decline…
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   {isExpanded && (
                     <div className="border-t border-gray-700 px-5 py-5">
@@ -1226,7 +1287,7 @@ export default function AdminPage() {
                               Approval
                             </h3>
                             <p className="mt-2 text-sm text-gray-300">
-                              Approving creates a Square deposit link for the customer.
+                              Approving sends the customer a deposit payment link.
                               Declining frees the slot.
                             </p>
                             <textarea

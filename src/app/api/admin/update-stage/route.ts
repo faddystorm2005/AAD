@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { pushBookingToGoogle } from '@/lib/googleCalendar';
 import { notifyCustomerCarReady } from '@/lib/notify';
-import { sendPushToCustomer } from '@/lib/pushNotifications';
+import { sendPushToCustomer, sendPushToAllAdmins } from '@/lib/pushNotifications';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { ALL_STAGES } from '@/lib/bookingStages';
+import { ALL_STAGES, STAGE_LABELS } from '@/lib/bookingStages';
 const ALLOWED_STAGES = ALL_STAGES;
 type Stage = (typeof ALLOWED_STAGES)[number];
 
@@ -92,7 +92,31 @@ export async function POST(req: NextRequest) {
   // Sync the updated booking to Google Calendar (best-effort).
   await pushBookingToGoogle(userData.user.id, bookingId);
 
-  // When marked DONE, notify the customer (SMS + email + push). Best-effort.
+  // Per-stage customer push messages.
+  const CUSTOMER_STAGE_PUSH: Partial<Record<string, { title: string; body: string }>> = {
+    exterior: {
+      title: 'Exterior detail started',
+      body: 'Austin Auto Detail is working on your car\'s exterior right now.',
+    },
+    paint_correction: {
+      title: 'Paint correction underway',
+      body: 'Paint correction is in progress on your car.',
+    },
+    interior: {
+      title: 'Interior detail started',
+      body: 'Now working on your car\'s interior — almost done!',
+    },
+    coatings: {
+      title: 'Protective coating being applied',
+      body: 'Final protective coating is going on your car.',
+    },
+    done: {
+      title: 'Your car is ready!',
+      body: 'Your detail is complete. Come see the results!',
+    },
+  };
+
+  // When marked DONE, send SMS + email via notifyCustomerCarReady. Best-effort.
   if (stage === 'done') {
     try {
       const { data: b } = await supabaseAdmin
@@ -113,30 +137,36 @@ export async function POST(req: NextRequest) {
           service: (b as any).service,
           bookingId,
         });
-        await sendPushToCustomer(bookingId, {
-          title: 'Your car is ready',
-          body: `Your ${(b as any).service} is complete. Thanks for choosing Austin Auto Detail!`,
-          url: `/booking-confirmation/${bookingId}`,
-          tag: `booking-done-${bookingId}`,
-        });
       }
     } catch (err) {
       console.error('[notify] car-ready notification failed', err);
     }
   }
 
-  // When service starts (first advance past 'requested'), push a heads-up. Best-effort.
-  if (stage !== 'requested' && !current.started_at) {
+  // Push to customer for every stage except 'requested'. Best-effort.
+  const customerMsg = CUSTOMER_STAGE_PUSH[stage];
+  if (customerMsg) {
     try {
       await sendPushToCustomer(bookingId, {
-        title: 'Service in progress',
-        body: 'Austin Auto Detail has started working on your car.',
+        ...customerMsg,
         url: `/booking-confirmation/${bookingId}`,
-        tag: `booking-inprogress-${bookingId}`,
+        tag: `booking-stage-${stage}-${bookingId}`,
       });
     } catch (err) {
-      console.error('[push] in-progress notification failed', err);
+      console.error('[push] customer stage notification failed', err);
     }
+  }
+
+  // Push to all admins so the whole team sees every stage update. Best-effort.
+  try {
+    await sendPushToAllAdmins({
+      title: `Stage: ${STAGE_LABELS[stage as Stage] || stage}`,
+      body: `Booking ${bookingId.slice(0, 8)} moved to ${STAGE_LABELS[stage as Stage] || stage}.`,
+      url: `/admin`,
+      tag: `admin-stage-${stage}-${bookingId}`,
+    });
+  } catch (err) {
+    console.error('[push] admin stage notification failed', err);
   }
 
   return NextResponse.json({ ok: true });
