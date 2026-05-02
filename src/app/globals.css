@@ -209,6 +209,57 @@ h6 {
   will-change: transform;
 }
 
+/* Floating Book Now CTA — all animations are transform/opacity only (GPU composited). */
+@keyframes aad-cta-bounce {
+  0%, 100% { transform: translateY(0) translateZ(0); }
+  50%       { transform: translateY(-5px) translateZ(0); }
+}
+@keyframes aad-cta-ring {
+  0%, 100% { transform: scale(1) translateZ(0); opacity: 0.65; }
+  50%       { transform: scale(1.35) translateZ(0); opacity: 0; }
+}
+@keyframes aad-cta-shine {
+  0%   { transform: translateX(-180%) skewX(-20deg) translateZ(0); }
+  100% { transform: translateX(320%) skewX(-20deg) translateZ(0); }
+}
+
+.book-cta-pill {
+  position: relative;
+  overflow: hidden;
+  animation: aad-cta-bounce 3s ease-in-out infinite;
+  will-change: transform;
+}
+.book-cta-pill:hover {
+  animation: none;
+  transform: scale(1.07) translateY(-2px) translateZ(0);
+}
+.book-cta-pill:active {
+  transform: scale(0.96) translateZ(0);
+}
+
+/* Shimmer sweep — child span, slides via transform (composited) */
+.book-cta-shine {
+  position: absolute;
+  inset-y: 0;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+  animation: aad-cta-shine 3.2s ease-in-out infinite 0.8s;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* Pulse ring — sibling div, scale+opacity (composited) */
+.book-cta-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(214, 32, 48, 0.55);
+  animation: aad-cta-ring 2.2s ease-in-out infinite;
+  will-change: transform, opacity;
+  z-index: -1;
+}
+
 /* Tap feedback used on CTA buttons. */
 .press {
   transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1),
