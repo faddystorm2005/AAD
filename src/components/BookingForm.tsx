@@ -26,6 +26,37 @@ import {
 import { todayAustinDateString, austinOffsetFor } from '@/lib/austinTime';
 import BookingWeather from '@/components/BookingWeather';
 
+type PhotoSlot = {
+  key: string;
+  label: string;
+  required: boolean;
+};
+
+const PHOTO_SLOTS: Record<'exterior' | 'interior' | 'full_detail', PhotoSlot[]> = {
+  exterior: [
+    { key: 'walkaround', label: 'Vehicle walkaround', required: false },
+    { key: 'wheels', label: 'Wheels close-up', required: false },
+  ],
+  interior: [
+    { key: 'driver_seat', label: 'Driver seat', required: true },
+    { key: 'passenger_seat', label: 'Passenger seat', required: true },
+    { key: 'back_seats', label: 'Back seat(s)', required: true },
+    { key: 'trunk', label: 'Trunk / cargo area', required: true },
+    { key: 'dashboard', label: 'Dashboard', required: true },
+    { key: 'floor_mats', label: 'Floor mats', required: true },
+  ],
+  full_detail: [
+    { key: 'exterior_front', label: 'Exterior - front', required: true },
+    { key: 'exterior_back', label: 'Exterior - back', required: true },
+    { key: 'exterior_driver_side', label: 'Exterior - driver side', required: true },
+    { key: 'exterior_passenger_side', label: 'Exterior - passenger side', required: true },
+    { key: 'interior_front', label: 'Interior - front', required: true },
+    { key: 'interior_back', label: 'Interior - back', required: true },
+    { key: 'trunk', label: 'Trunk / cargo', required: true },
+    { key: 'condition_closeup', label: 'Condition close-up (any concerns)', required: true },
+  ],
+};
+
 interface BookingFormProps {
   onClose: () => void;
 }
@@ -70,6 +101,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; rate: number } | null>(null);
   const [promoBusy, setPromoBusy] = useState(false);
   const [promoError, setPromoError] = useState<string | null>(null);
+  const [selectedPhotos, setSelectedPhotos] = useState<Record<string, File | null>>({});
+  const [photoPreviewUrls, setPhotoPreviewUrls] = useState<Record<string, string>>({});
 
   const applyPromo = async () => {
     const code = promoInput.trim();
@@ -102,6 +135,29 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     setAppliedPromo(null);
     setPromoInput('');
     setPromoError(null);
+  };
+
+  const handlePhotoSelect = (slotKey: string, file: File | null) => {
+    setPhotoPreviewUrls((prev) => {
+      if (prev[slotKey]) URL.revokeObjectURL(prev[slotKey]);
+      const next = { ...prev };
+      if (file) {
+        next[slotKey] = URL.createObjectURL(file);
+      } else {
+        delete next[slotKey];
+      }
+      return next;
+    });
+
+    setSelectedPhotos((prev) => {
+      const next = { ...prev };
+      if (file) {
+        next[slotKey] = file;
+      } else {
+        delete next[slotKey];
+      }
+      return next;
+    });
   };
 
   // Returning-customer preview (server still re-checks authoritatively).
@@ -169,6 +225,16 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     });
   }, [serviceType]);
 
+  // Clean up object URLs to prevent memory leaks. Runs once on unmount.
+  useEffect(() => {
+    return () => {
+      Object.values(photoPreviewUrls).forEach((url) => {
+        if (url) URL.revokeObjectURL(url);
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const selectedVehicle = vehicles.find((v) => v.id === formData.vehicleId);
   const pricing = calculatePricing({ ...formData, serviceType }, {
     isReturning,
@@ -232,6 +298,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const handleNext = () => {
     if (step === 1 && validateStep1()) setStep(2);
     else if (step === 2 && validateStep2()) setStep(3);
+    else if (step === 3) setStep(4); // No validation gate yet (added in 2c)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -325,6 +392,11 @@ export default function BookingForm({ onClose }: BookingFormProps) {
         "Pick a day, choose a time that works, and tell us where to come.",
     },
     3: {
+      title: 'Vehicle photos',
+      caption:
+        "Help our team see what they are working with.",
+    },
+    4: {
       title: 'Review and submit',
       caption:
         "Look it over. We'll text you to confirm before charging anything.",
@@ -337,7 +409,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
-              Step {step} of 3
+              Step {step} of 4
             </p>
             <h2 className="mt-1 text-2xl sm:text-3xl font-bold text-white">
               {stepHeadings[step].title}
@@ -357,7 +429,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
         </p>
 
         <div className="flex gap-2 mb-8">
-          {[1, 2, 3].map((s) => (
+          {[1, 2, 3, 4].map((s) => (
             <div
               key={s}
               className={`h-2 flex-1 rounded-full ${s <= step ? 'bg-red-600' : 'bg-gray-700'}`}
@@ -741,8 +813,73 @@ export default function BookingForm({ onClose }: BookingFormProps) {
             </div>
           )}
 
-          {/* Step 3: Review */}
+          {/* Step 3: Photos */}
           {step === 3 && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h3 className="text-lg font-bold text-white">Photos of your vehicle</h3>
+                <p className="mt-2 text-sm text-gray-300">
+                  {serviceType === 'exterior'
+                    ? 'Optional - photos help our team understand the condition of your vehicle. You can skip if you prefer.'
+                    : 'Required - our team needs to see your vehicle before approving the booking. Please add a photo for each slot below.'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {PHOTO_SLOTS[serviceType].map((slot) => {
+                  const previewUrl = photoPreviewUrls[slot.key];
+                  const hasPhoto = !!previewUrl;
+                  return (
+                    <label
+                      key={slot.key}
+                      htmlFor={`photo-${slot.key}`}
+                      className={`relative aspect-square cursor-pointer overflow-hidden rounded-2xl border ${
+                        hasPhoto
+                          ? 'border-white/20'
+                          : 'border-dashed border-white/20 hover:border-red-400/50'
+                      } bg-white/5 transition`}
+                    >
+                      <input
+                        id={`photo-${slot.key}`}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        className="sr-only"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] ?? null;
+                          handlePhotoSelect(slot.key, file);
+                        }}
+                      />
+                      {hasPhoto ? (
+                        <>
+                          <img
+                            src={previewUrl}
+                            alt={slot.label}
+                            className="absolute inset-0 h-full w-full object-cover"
+                          />
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                            <p className="text-xs font-semibold text-white">{slot.label}</p>
+                            <p className="text-[10px] text-gray-300">Tap to replace</p>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
+                          <span className="text-2xl text-gray-500">+</span>
+                          <p className="mt-1 text-xs font-semibold text-white">{slot.label}</p>
+                          <p className="text-[10px] text-gray-400">
+                            {slot.required ? 'Required' : 'Optional'}
+                          </p>
+                        </div>
+                      )}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Review */}
+          {step === 4 && (
             <div className="space-y-6">
               <div className="rounded-2xl bg-gray-900 border border-gray-700 p-5 space-y-5">
                 <ReviewLine label="Car" value={`${selectedVehicle?.year ?? ''} ${selectedVehicle?.make ?? ''} ${selectedVehicle?.model ?? ''}`.trim()} />
@@ -918,7 +1055,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 ← Back
               </button>
             )}
-            {step < 3 && (
+            {step < 4 && (
               <button
                 type="button"
                 onClick={handleNext}
@@ -928,7 +1065,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 Next →
               </button>
             )}
-            {step === 3 && (
+            {step === 4 && (
               <button
                 type="submit"
                 disabled={isProcessing}
