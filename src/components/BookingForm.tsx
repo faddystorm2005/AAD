@@ -57,6 +57,11 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const { user, session } = useAuth();
   const { vehicles, loading: vehiclesLoading } = useVehicles();
   const [step, setStep] = useState(1);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    modalRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
 
   // Android back button: intercept so it closes the modal instead of leaving the page.
   useEffect(() => {
@@ -447,7 +452,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
+    <div ref={modalRef} className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
