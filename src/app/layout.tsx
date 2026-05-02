@@ -6,6 +6,7 @@ import { VehicleProvider } from "@/contexts/VehicleContext";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import HapticProvider from "@/components/HapticProvider";
 import OfflineBanner from "@/components/OfflineBanner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -166,6 +167,7 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <HapticProvider />
         <OfflineBanner />
+        <SpeedInsights />
       </body>
     </html>
   );
