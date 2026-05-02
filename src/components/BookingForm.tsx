@@ -295,10 +295,21 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     return true;
   };
 
+  const validateStep3 = () => {
+    const required = PHOTO_SLOTS[serviceType].filter((s) => s.required);
+    const missing = required.filter((s) => !selectedPhotos[s.key]);
+    if (missing.length > 0) {
+      setError(`Please add photos for: ${missing.map((s) => s.label).join(', ')}`);
+      return false;
+    }
+    setError('');
+    return true;
+  };
+
   const handleNext = () => {
     if (step === 1 && validateStep1()) setStep(2);
     else if (step === 2 && validateStep2()) setStep(3);
-    else if (step === 3) setStep(4); // No validation gate yet (added in 2c)
+    else if (step === 3 && validateStep3()) setStep(4);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -354,6 +365,40 @@ export default function BookingForm({ onClose }: BookingFormProps) {
       }
       if (!data.bookingId) {
         throw new Error('Booking submitted but no ID was returned');
+      }
+
+      // Upload photos if any were selected. Skipped optional slots are filtered out.
+      const photosToUpload = Object.entries(selectedPhotos).filter(
+        ([, file]) => file !== null
+      ) as [string, File][];
+
+      if (photosToUpload.length > 0) {
+        const timestamp = Date.now();
+        const uploads = photosToUpload.map(async ([slotKey, file]) => {
+          const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
+          const path = `${user.id}/${data.bookingId}/${slotKey}-${timestamp}.${ext}`;
+          const { error: uploadError } = await supabase.storage
+            .from('booking-photos')
+            .upload(path, file, { upsert: false });
+          if (uploadError) {
+            throw new Error(`Photo upload failed for ${slotKey}: ${uploadError.message}`);
+          }
+          return { path, slotKey };
+        });
+
+        const uploaded = await Promise.all(uploads);
+
+        const { error: insertError } = await supabase
+          .from('booking_photos')
+          .insert(
+            uploaded.map(({ path }) => ({
+              booking_id: data.bookingId,
+              storage_path: path,
+            }))
+          );
+        if (insertError) {
+          throw new Error(`Failed to record photo metadata: ${insertError.message}`);
+        }
       }
 
       // Booking is now 'pending' awaiting admin approval. No payment yet -
