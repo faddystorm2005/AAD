@@ -381,3 +381,100 @@ export async function notifyCustomerCancellationDenied(opts: {
   }
   await Promise.allSettled(promises);
 }
+
+/**
+ * Tell the customer their booking was approved and they need to pay the deposit.
+ * Sends SMS + email so customers without push notifications still get notified.
+ */
+export async function notifyCustomerBookingApproved(opts: {
+  customerName: string | null;
+  customerPhone: string | null;
+  customerEmail: string | null;
+  service: string;
+  depositAmount: number;
+  paymentUrl: string;
+}): Promise<void> {
+  const name = opts.customerName?.split(' ')[0] || 'there';
+  const deposit = opts.depositAmount.toFixed(2);
+
+  const smsBody =
+    `Hi ${name}! Your ${opts.service} booking with Austin Auto Detail has been approved. ` +
+    `Pay your $${deposit} deposit to lock in your slot: ${opts.paymentUrl}`;
+
+  const emailHtml = `
+    <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
+      <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+      </div>
+      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Booking approved!</h1>
+      <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> booking has been approved. Pay the $${deposit} deposit to lock in your slot.</p>
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${opts.paymentUrl}" style="background: #d62030; color: #fff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 16px;">Pay $${deposit} deposit</a>
+      </div>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+    </div>
+  `;
+
+  const promises: Promise<unknown>[] = [];
+  if (opts.customerPhone) promises.push(sendSms(opts.customerPhone, smsBody));
+  if (opts.customerEmail) {
+    promises.push(
+      sendEmail({
+        to: opts.customerEmail,
+        subject: 'Booking approved - pay deposit to confirm',
+        html: emailHtml,
+        text: smsBody,
+      })
+    );
+  }
+  await Promise.allSettled(promises);
+}
+
+/**
+ * Tell the customer their booking was declined. Includes optional reason.
+ */
+export async function notifyCustomerBookingDeclined(opts: {
+  customerName: string | null;
+  customerPhone: string | null;
+  customerEmail: string | null;
+  service: string;
+  reason: string | null;
+}): Promise<void> {
+  const name = opts.customerName?.split(' ')[0] || 'there';
+
+  const smsBody =
+    `Hi ${name}, unfortunately we couldn't accommodate your ${opts.service} booking with Austin Auto Detail.` +
+    (opts.reason ? ` Reason: ${opts.reason}` : '') +
+    ` Feel free to book another slot anytime at austinautodetail.vercel.app`;
+
+  const emailHtml = `
+    <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
+      <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+      </div>
+      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Booking update</h1>
+      <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Unfortunately we couldn't accommodate your <strong style="color: #fff;">${opts.service}</strong> booking at this time.</p>
+      ${opts.reason ? `<p style="color: #c8c8c8; line-height: 1.6;"><strong style="color: #fff;">Reason:</strong> ${opts.reason}</p>` : ''}
+      <p style="color: #c8c8c8; line-height: 1.6;">We'd love to help on another day - feel free to book a new slot anytime.</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+    </div>
+  `;
+
+  const promises: Promise<unknown>[] = [];
+  if (opts.customerPhone) promises.push(sendSms(opts.customerPhone, smsBody));
+  if (opts.customerEmail) {
+    promises.push(
+      sendEmail({
+        to: opts.customerEmail,
+        subject: 'Booking update from Austin Auto Detail',
+        html: emailHtml,
+        text: smsBody,
+      })
+    );
+  }
+  await Promise.allSettled(promises);
+}

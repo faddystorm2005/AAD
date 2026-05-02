@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { deleteBookingFromGoogle } from '@/lib/googleCalendar';
+import { notifyCustomerBookingDeclined } from '@/lib/notify';
+import { sendPushToCustomer } from '@/lib/pushNotifications';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -52,7 +54,8 @@ export async function POST(req: NextRequest) {
 
   const { data: booking, error: getErr } = await supabaseAdmin
     .from('bookings')
-    .select('id, status')
+    .select(`id, status, service,
+             customer:profiles!user_id(full_name, phone, email)`)
     .eq('id', body.bookingId)
     .single();
 
@@ -85,6 +88,32 @@ export async function POST(req: NextRequest) {
 
   // Remove from Google Calendar (best-effort).
   await deleteBookingFromGoogle(userData.user.id, body.bookingId);
+
+  // Push notification to customer (best-effort).
+  try {
+    await sendPushToCustomer(body.bookingId, {
+      title: 'Booking update',
+      body: 'Your booking could not be accommodated. Tap to view details.',
+      url: `/booking-confirmation/${body.bookingId}`,
+      tag: `booking-declined-${body.bookingId}`,
+    });
+  } catch (err) {
+    console.error('[push] customer decline notification failed', err);
+  }
+
+  // SMS + email so customers without push still get notified (best-effort).
+  try {
+    const customer = (booking as any).customer;
+    await notifyCustomerBookingDeclined({
+      customerName: customer?.full_name ?? null,
+      customerPhone: customer?.phone ?? null,
+      customerEmail: customer?.email ?? null,
+      service: (booking as any).service,
+      reason: reason || null,
+    });
+  } catch (err) {
+    console.error('[notify] customer decline sms/email failed', err);
+  }
 
   return NextResponse.json({ ok: true });
 }

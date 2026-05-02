@@ -5,6 +5,7 @@ import { createPaymentLink as createSquarePaymentLink } from '@/lib/squarePaymen
 import { createPaymentLink as createPayPalPaymentLink } from '@/lib/paypalPayment';
 import { pushBookingToGoogle } from '@/lib/googleCalendar';
 import { sendPushToCustomer } from '@/lib/pushNotifications';
+import { notifyCustomerBookingApproved } from '@/lib/notify';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -55,7 +56,8 @@ export async function POST(req: NextRequest) {
 
   const { data: booking, error: getErr } = await supabaseAdmin
     .from('bookings')
-    .select('id, status, deposit_amount, service, deposit_paid')
+    .select(`id, status, deposit_amount, service, deposit_paid,
+             customer:profiles!user_id(full_name, phone, email)`)
     .eq('id', body.bookingId)
     .single();
 
@@ -120,6 +122,21 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error('[push] customer approve notification failed', err);
+  }
+
+  // SMS + email fallback so customers without push still get notified (best-effort).
+  try {
+    const customer = (booking as any).customer;
+    await notifyCustomerBookingApproved({
+      customerName: customer?.full_name ?? null,
+      customerPhone: customer?.phone ?? null,
+      customerEmail: customer?.email ?? null,
+      service: booking.service,
+      depositAmount: Number(booking.deposit_amount),
+      paymentUrl,
+    });
+  } catch (err) {
+    console.error('[notify] customer approve sms/email failed', err);
   }
 
   return NextResponse.json({ ok: true, paymentUrl });
