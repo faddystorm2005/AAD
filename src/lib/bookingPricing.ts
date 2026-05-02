@@ -8,7 +8,7 @@
 // becomes the source of truth.
 // ---------------------------------------------------------------
 
-export const SERVICE_TYPES = ['exterior', 'interior', 'full_detail'] as const;
+export const SERVICE_TYPES = ['full_detail', 'interior', 'exterior'] as const;
 export type ServiceType = typeof SERVICE_TYPES[number];
 
 export const SERVICE_TYPE_NAMES: Record<ServiceType, string> = {

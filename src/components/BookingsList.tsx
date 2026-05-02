@@ -53,12 +53,12 @@ export interface BookingRow {
 }
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
-  pending: { label: 'Pending approval', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
-  approved: { label: 'Approved · pay deposit', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
+  pending: { label: 'Pending approval', className: 'animate-pulse-soft bg-yellow-900/40 text-yellow-300 border-yellow-800' },
+  approved: { label: 'Approved · pay deposit', className: 'animate-pulse-soft bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
   cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-400 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
-  in_progress: { label: 'In progress', className: 'bg-green-900/40 text-green-300 border-green-800' },
+  in_progress: { label: 'In progress', className: 'animate-pulse-soft bg-green-900/40 text-green-300 border-green-800' },
   completed: { label: 'Completed', className: 'bg-gray-800 text-gray-300 border-gray-700' },
 };
 
@@ -83,7 +83,7 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
   );
 }
 
-const CUSTOMER_DELETABLE: Status[] = ['pending', 'declined', 'cancelled', 'completed'];
+const CUSTOMER_DELETABLE: Status[] = ['declined', 'cancelled', 'completed'];
 
 export default function BookingsList() {
   const { user, session, loading: authLoading } = useAuth();

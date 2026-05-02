@@ -9,6 +9,8 @@ import InstallAppPrompt from '@/components/home/InstallAppPrompt';
 import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 import TiltCard from '@/components/home/TiltCard';
 import H2CinematicObserver from '@/components/home/H2CinematicObserver';
+import ScrollCardObserver from '@/components/ScrollCardObserver';
+import HeroStatCounter from '@/components/HeroStatCounter';
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -167,10 +169,9 @@ export default function Home() {
 
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s, i) => (
+            <div key={s.title} className="scroll-card" data-stagger-i={i}>
             <TiltCard
-              key={s.title}
-              className="glass-card animate-fade-up rounded-2xl p-6"
-              style={{ animationDelay: `${i * 60}ms` }}
+              className="glass-card rounded-2xl p-6"
             >
               <div className="text-3xl">{s.icon}</div>
               <h3 className="mt-4 text-lg font-bold text-white">{s.title}</h3>
@@ -187,6 +188,7 @@ export default function Home() {
                 Book this service →
               </Link>
             </TiltCard>
+            </div>
           ))}
         </div>
       </section>
@@ -208,8 +210,8 @@ export default function Home() {
           {SERVICE_TYPES.map((type, i) => (
             <div
               key={type}
-              className="glass-card lift-hover animate-fade-up rounded-2xl p-6"
-              style={{ animationDelay: `${i * 60}ms` }}
+              className="glass-card lift-hover scroll-card rounded-2xl p-6"
+              data-stagger-i={i}
             >
               <h3 className="text-xl font-bold text-white">
                 {SERVICE_TYPE_NAMES[type]}
@@ -285,8 +287,8 @@ export default function Home() {
           {GALLERY.map((p, i) => (
             <div
               key={p.src}
-              className="lift-hover animate-fade-up relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
-              style={{ animationDelay: `${i * 50}ms` }}
+              className="lift-hover scroll-card relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10"
+              data-stagger-i={i}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -353,8 +355,8 @@ export default function Home() {
           {STEPS.map((step, i) => (
             <li
               key={step.title}
-              className="glass-card animate-fade-up rounded-2xl p-6"
-              style={{ animationDelay: `${i * 80}ms` }}
+              className="glass-card scroll-card rounded-2xl p-6"
+              data-stagger-i={i}
             >
               <div className="text-3xl font-bold text-red-500">{String(i + 1).padStart(2, '0')}</div>
               <h3 className="mt-2 text-lg font-bold text-white">{step.title}</h3>
@@ -375,8 +377,8 @@ export default function Home() {
           {REASONS.map((r, i) => (
             <div
               key={r.title}
-              className="glass-card animate-fade-up rounded-2xl p-6"
-              style={{ animationDelay: `${i * 80}ms` }}
+              className="glass-card scroll-card rounded-2xl p-6"
+              data-stagger-i={i}
             >
               <p className="text-2xl font-bold text-red-400 sm:text-3xl">{r.headline}</p>
               <h3 className="mt-3 text-lg font-bold text-white">{r.title}</h3>
@@ -406,7 +408,7 @@ export default function Home() {
         {/* Hero stat */}
         <div className="reveal-on-scroll mt-10 flex flex-col items-center text-center">
           <p className="text-6xl font-bold sm:text-7xl">
-            <span className="text-gradient-hero">4+ hrs</span>
+            <HeroStatCounter />
           </p>
           <p className="mt-2 text-sm uppercase tracking-[0.25em] text-gray-400">
             saved per detail
@@ -422,8 +424,8 @@ export default function Home() {
           {TRUST_PILLARS.map((p, i) => (
             <div
               key={p.title}
-              className="glass-card reveal-on-scroll animate-fade-up rounded-2xl p-6 text-center"
-              style={{ animationDelay: `${i * 80}ms` }}
+              className="glass-card scroll-card rounded-2xl p-6 text-center"
+              data-stagger-i={i}
             >
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-2xl">
                 {p.icon}
@@ -479,8 +481,8 @@ export default function Home() {
           {FAQS.map((q, i) => (
             <details
               key={q.question}
-              className="glass-card reveal-on-scroll animate-fade-up group rounded-2xl p-5"
-              style={{ animationDelay: `${i * 50}ms` }}
+              className="glass-card scroll-card group rounded-2xl p-5"
+              data-stagger-i={i}
             >
               <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-lg font-semibold text-white">
                 <span>{q.question}</span>
@@ -640,6 +642,7 @@ export default function Home() {
       </footer>
 
       <H2CinematicObserver />
+      <ScrollCardObserver />
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
       <StickyBookCta />
       <InstallAppPrompt />
@@ -691,7 +694,7 @@ const SERVICES = [
     priceLabel: 'Add-on, from $25',
   },
   {
-    icon: '🧴',
+    icon: '🫧',
     title: 'Stain Removal',
     description: 'Targeted treatment for stubborn upholstery, carpet, and seat stains. Coffee, ink, pet, you name it.',
     priceLabel: 'Add-on, from $30',

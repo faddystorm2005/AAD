@@ -33,27 +33,14 @@ type PhotoSlot = {
 };
 
 const PHOTO_SLOTS: Record<'exterior' | 'interior' | 'full_detail', PhotoSlot[]> = {
-  exterior: [
-    { key: 'walkaround', label: 'Vehicle walkaround', required: false },
-    { key: 'wheels', label: 'Wheels close-up', required: false },
-  ],
+  exterior: [],
   interior: [
-    { key: 'driver_seat', label: 'Driver seat', required: true },
-    { key: 'passenger_seat', label: 'Passenger seat', required: true },
+    { key: 'front_seats', label: 'Front seats', required: true },
     { key: 'back_seats', label: 'Back seat(s)', required: true },
-    { key: 'trunk', label: 'Trunk / cargo area', required: true },
-    { key: 'dashboard', label: 'Dashboard', required: true },
-    { key: 'floor_mats', label: 'Floor mats', required: true },
   ],
   full_detail: [
-    { key: 'exterior_front', label: 'Exterior - front', required: true },
-    { key: 'exterior_back', label: 'Exterior - back', required: true },
-    { key: 'exterior_driver_side', label: 'Exterior - driver side', required: true },
-    { key: 'exterior_passenger_side', label: 'Exterior - passenger side', required: true },
-    { key: 'interior_front', label: 'Interior - front', required: true },
-    { key: 'interior_back', label: 'Interior - back', required: true },
-    { key: 'trunk', label: 'Trunk / cargo', required: true },
-    { key: 'condition_closeup', label: 'Condition close-up (any concerns)', required: true },
+    { key: 'front_seats', label: 'Front seats', required: true },
+    { key: 'back_seats', label: 'Back seat(s)', required: true },
   ],
 };
 

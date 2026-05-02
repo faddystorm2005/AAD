@@ -298,6 +298,20 @@ h6 {
   opacity: 1;
 }
 
+/* Scroll-triggered card entrance. ScrollCardObserver adds .is-revealed
+   when the card enters the viewport, then removes both classes so
+   glass-card / lift-hover transitions take over cleanly afterward. */
+.scroll-card {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ---------------------------------------------------------------
  * Cinematic H2 reveal.
  *
@@ -424,6 +438,11 @@ button:disabled {
 
 /* Respect users who prefer reduced motion - disable all decorative animations. */
 @media (prefers-reduced-motion: reduce) {
+  .scroll-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
   .animate-fade-up,
   .animate-fade-in,
   .animate-scale-in,

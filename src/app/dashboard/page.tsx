@@ -163,7 +163,7 @@ export default function Dashboard() {
       />
 
       {/* Header banner */}
-      <div className="relative h-56 w-full overflow-hidden sm:h-64">
+      <div className="relative h-[280px] w-full overflow-hidden sm:h-64">
         <img
           src={DASHBOARD_BANNER.src}
           alt={DASHBOARD_BANNER.alt}
