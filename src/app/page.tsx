@@ -5,6 +5,7 @@ import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
 import StatsStrip from '@/components/home/StatsStrip';
 import StickyBookCta from '@/components/home/StickyBookCta';
+import InstallAppPrompt from '@/components/home/InstallAppPrompt';
 import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 import TiltCard from '@/components/home/TiltCard';
 import H2CinematicObserver from '@/components/home/H2CinematicObserver';
@@ -641,6 +642,7 @@ export default function Home() {
       <H2CinematicObserver />
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
       <StickyBookCta />
+      <InstallAppPrompt />
     </main>
   );
 }
