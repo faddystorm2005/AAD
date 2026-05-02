@@ -86,14 +86,12 @@ export async function POST(req: NextRequest) {
     );
     paymentUrl = result.url;
   } catch (err: any) {
-    return NextResponse.json(
-      {
-        error:
-          err?.message ||
-          `Failed to create ${processor === 'paypal' ? 'PayPal' : 'Square'} payment link`,
-      },
-      { status: 500 }
-    );
+    const raw = err?.message || '';
+    const hint =
+      raw.toLowerCase().includes('unauthorized') || raw.toLowerCase().includes('401')
+        ? `${processor === 'paypal' ? 'PayPal' : 'Square'} credentials rejected -- check ${processor === 'paypal' ? 'PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET / PAYPAL_ENVIRONMENT' : 'SQUARE_ACCESS_TOKEN / SQUARE_ENVIRONMENT'} in Vercel. Also confirm PAYMENT_PROCESSOR=${processor} is set. Original: ${raw}`
+        : raw || `Failed to create ${processor === 'paypal' ? 'PayPal' : 'Square'} payment link`;
+    return NextResponse.json({ error: hint }, { status: 500 });
   }
 
   const { error: updateErr } = await supabaseAdmin

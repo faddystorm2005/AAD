@@ -12,6 +12,30 @@ import H2CinematicObserver from '@/components/home/H2CinematicObserver';
 import ScrollCardObserver from '@/components/ScrollCardObserver';
 import HeroStatCounter from '@/components/HeroStatCounter';
 import HeroParallax from '@/components/home/HeroParallax';
+import MobileNav from '@/components/home/MobileNav';
+
+const SERVICE_INCLUDES: Record<string, string[]> = {
+  exterior: [
+    'Hand wash & dry',
+    'Clay bar treatment',
+    'Wheel & tire cleaning',
+    'Exterior windows',
+    'Tire dressing & shine',
+  ],
+  interior: [
+    'Full vacuum — seats, floor, trunk',
+    'Dashboard & console detail',
+    'Door panels & pockets',
+    'Interior windows',
+    'Floor mat cleaning',
+  ],
+  full_detail: [
+    'Complete exterior detail',
+    'Complete interior detail',
+    'Door jamb cleaning',
+    'Biggest transformation — best value',
+  ],
+};
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -31,7 +55,7 @@ export default function Home() {
       />
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
+      <header className="relative sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
         <nav
           className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 px-4 py-4 sm:gap-4 sm:px-6"
           aria-label="Primary"
@@ -52,6 +76,16 @@ export default function Home() {
             <li><a href="#contact" className="hover:text-red-300">Contact</a></li>
           </ul>
           <div className="flex items-center gap-3 sm:gap-4">
+            <a
+              href="tel:+14807933782"
+              className="flex items-center gap-1.5 font-semibold text-red-300 hover:text-red-200"
+              aria-label="Call us at (480) 793-3782"
+            >
+              <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z" />
+              </svg>
+              <span className="hidden text-sm sm:inline">(480) 793-3782</span>
+            </a>
             <HomeNavAccountLink />
             <Link
               href="/auth"
@@ -59,6 +93,7 @@ export default function Home() {
             >
               Book Now
             </Link>
+            <MobileNav />
           </div>
         </nav>
       </header>
@@ -216,12 +251,25 @@ export default function Home() {
           {SERVICE_TYPES.map((type, i) => (
             <div
               key={type}
-              className="glass-card lift-hover scroll-card rounded-2xl p-6"
+              className={`glass-card lift-hover scroll-card relative rounded-2xl p-6${type === 'full_detail' ? ' ring-1 ring-red-500/40' : ''}`}
               data-stagger-i={i}
             >
+              {type === 'full_detail' && (
+                <span className="absolute right-4 top-4 rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
+                  Most Popular
+                </span>
+              )}
               <h3 className="text-xl font-bold text-white">
                 {SERVICE_TYPE_NAMES[type]}
               </h3>
+              <ul className="mt-3 space-y-1.5">
+                {SERVICE_INCLUDES[type].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
+                    <svg className="h-3.5 w-3.5 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
               <div className="mt-5 space-y-3 border-t border-white/10 pt-4">
                 <div className="flex items-center justify-between">
                   <span className="text-base text-gray-200">Coupe / Sedan</span>
@@ -269,9 +317,61 @@ export default function Home() {
           </div>
         </div>
 
-        <p className="reveal-on-scroll mt-8 text-sm text-gray-400">
-          Returning customers receive {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% off every visit. Final quote may adjust based on vehicle condition.
-        </p>
+        <div className="reveal-on-scroll mt-8 flex items-start gap-4 rounded-2xl border border-amber-500/30 bg-amber-950/40 px-5 py-4 sm:items-center">
+          <span className="mt-0.5 shrink-0 text-2xl sm:mt-0" aria-hidden>🔁</span>
+          <div>
+            <p className="font-semibold text-amber-100">
+              Come back, save {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}%
+            </p>
+            <p className="mt-0.5 text-sm text-amber-200/80">
+              Every returning customer gets {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% off their next detail — automatically applied. No codes, no hoops. Final quote may adjust for vehicle condition.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Results showcase — specific vehicles + service labels so visitors
+          can see exactly what level of finish they're paying for. Swap in
+          real before/after pairs as they come in. */}
+      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
+        <div className="reveal-on-scroll">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            The Results
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Real vehicles, real finishes. This is the standard every detail is held to.
+          </p>
+        </div>
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {[
+            { src: '/images/aad/gallery-ford-super-duty.jpg', vehicle: 'Ford Super Duty', service: 'Full Interior Detail' },
+            { src: '/images/aad/gallery-mercedes-gle-interior.jpg', vehicle: 'Mercedes GLE', service: 'Interior Deep Clean' },
+            { src: '/images/aad/gallery-audi-s4-red-leather.jpg', vehicle: 'Audi S4', service: 'Leather Conditioning' },
+            { src: '/images/aad/gallery-toyota-tundra-console.jpg', vehicle: 'Toyota Tundra', service: 'Interior Detail' },
+            { src: '/images/aad/gallery-nissan-rogue-interior.jpg', vehicle: 'Nissan Rogue', service: 'Interior Detail' },
+            { src: '/images/aad/gallery-bmw-engine-bay.jpg', vehicle: 'BMW', service: 'Engine Bay Detail' },
+            { src: '/images/aad/gallery-suv-cargo-area.jpg', vehicle: 'SUV', service: 'Cargo Area Clean' },
+            { src: '/images/aad/gallery-ford-king-ranch.jpg', vehicle: 'Ford King Ranch', service: 'Full Detail' },
+          ].map(({ src, vehicle, service }, i) => (
+            <div
+              key={src}
+              className="reveal-on-scroll group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900"
+              data-stagger-i={i}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={`${vehicle} — ${service} by Austin Auto Detail`}
+                loading="lazy"
+                className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3">
+                <p className="text-xs font-semibold text-white">{vehicle}</p>
+                <p className="text-xs text-red-300">{service}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Recent Work, real photos placed right after services so the
@@ -512,7 +612,7 @@ export default function Home() {
             Frequently Asked Questions
           </h2>
         </div>
-        <dl className="mt-10 space-y-4">
+        <div className="mt-10 space-y-4">
           {FAQS.map((q, i) => (
             <details
               key={q.question}
@@ -523,10 +623,10 @@ export default function Home() {
                 <span>{q.question}</span>
                 <span className="text-2xl text-red-400 transition-transform group-open:rotate-45">+</span>
               </summary>
-              <dd className="mt-3 text-base leading-relaxed text-gray-200">{q.answer}</dd>
+              <p className="mt-3 text-base leading-relaxed text-gray-200">{q.answer}</p>
             </details>
           ))}
-        </dl>
+        </div>
         <p className="mt-8 text-center text-base text-gray-200">
           Still have questions?{' '}
           <a href="#contact" className="text-red-300 underline-offset-4 hover:underline">
@@ -609,6 +709,25 @@ export default function Home() {
           <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-red-300">
             Available 7 days a week, by appointment.
           </p>
+          <div className="mt-6">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
+              Areas we cover
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                'Downtown Austin', 'South Austin', 'East Austin', 'North Austin',
+                'The Domain', 'Round Rock', 'Cedar Park', 'Georgetown',
+                'Pflugerville', 'Buda / Kyle', 'Lakeway / Westlake', 'Dripping Springs',
+              ].map((area) => (
+                <span
+                  key={area}
+                  className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm text-gray-300"
+                >
+                  {area}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

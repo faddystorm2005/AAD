@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import AddVehicleForm from '@/components/AddVehicleForm';
 import VehicleList from '@/components/VehicleList';
@@ -31,6 +31,9 @@ export default function Dashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [fullName, setFullName] = useState('');
   const [justSignedIn, setJustSignedIn] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(true);
+  const [forceExpandPhonePrompt, setForceExpandPhonePrompt] = useState(false);
+  const phonePromptRef = useRef<HTMLDivElement>(null);
 
   // Auth guard. If the user lands here logged out (stale bookmark, email
   // link clicked after sign-out, etc.) bounce them to /auth so they don't
@@ -46,11 +49,14 @@ export default function Dashboard() {
     (async () => {
       const { data } = await supabase
         .from('profiles')
-        .select('is_admin, full_name')
+        .select('is_admin, full_name, phone')
         .eq('id', user.id)
         .maybeSingle();
       setIsAdmin(Boolean(data?.is_admin));
       setFullName(data?.full_name?.trim() ?? '');
+      setProfileComplete(
+        Boolean(data?.full_name?.trim()) && Boolean(data?.phone?.trim())
+      );
     })();
   }, [user]);
 
@@ -80,6 +86,15 @@ export default function Dashboard() {
     const t = setTimeout(() => setJustSignedIn(false), 4500);
     return () => clearTimeout(t);
   }, [justSignedIn]);
+
+  const handleBookClick = () => {
+    if (!profileComplete) {
+      setForceExpandPhonePrompt(true);
+      phonePromptRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    setShowBooking(true);
+  };
 
   const handleSignOut = async () => {
     const ok = window.confirm('Sign out of your account?');
@@ -218,7 +233,15 @@ export default function Dashboard() {
 
         {/* Nag for phone number - persistent banner that nukes itself once
             saved. Phone is required for booking confirmations + day-of texts. */}
-        <PhonePrompt />
+        <div ref={phonePromptRef}>
+          <PhonePrompt
+            forceExpanded={forceExpandPhonePrompt}
+            onComplete={() => {
+              setProfileComplete(true);
+              setForceExpandPhonePrompt(false);
+            }}
+          />
+        </div>
 
         {/* Personal stats strip - animated counters with the user's own data. */}
         <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '60ms' }}>
@@ -229,7 +252,7 @@ export default function Dashboard() {
         <div className="reveal-on-scroll animate-fade-up" style={{ animationDelay: '120ms' }}>
           <h2 className="h-accent mb-4 text-xl font-bold text-white">Quick Actions</h2>
           <QuickActions
-            onBook={() => setShowBooking(true)}
+            onBook={handleBookClick}
             onAddVehicle={() => setShowAddVehicle(true)}
           />
         </div>
@@ -258,7 +281,7 @@ export default function Dashboard() {
               </p>
             </div>
             <button
-              onClick={() => setShowBooking(true)}
+              onClick={handleBookClick}
               className="btn-primary press shrink-0 rounded-lg px-5 py-3 text-sm font-semibold"
             >
               Book a Detail →
@@ -283,7 +306,7 @@ export default function Dashboard() {
         {/* Bookings */}
         <div className="reveal-on-scroll space-y-4 animate-fade-up" style={{ animationDelay: '300ms' }}>
           <h2 className="h-accent text-xl font-bold text-white">Your Bookings</h2>
-          <BookingsList />
+          <BookingsList onBook={handleBookClick} />
         </div>
 
         {/* Gallery */}

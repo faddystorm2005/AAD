@@ -16,7 +16,12 @@ import { supabase } from '@/lib/supabaseClient';
  *  - Once both are saved, the banner unmounts immediately.
  *  - Reappears on every visit until both fields are filled in.
  */
-export default function PhonePrompt() {
+interface PhonePromptProps {
+  forceExpanded?: boolean;
+  onComplete?: () => void;
+}
+
+export default function PhonePrompt({ forceExpanded, onComplete }: PhonePromptProps) {
   const { user } = useAuth();
   const [needsInfo, setNeedsInfo] = useState<boolean | null>(null);
   const [needsPhone, setNeedsPhone] = useState(false);
@@ -84,7 +89,13 @@ export default function PhonePrompt() {
       return;
     }
     setNeedsInfo(false);
+    onComplete?.();
   };
+
+  // Auto-expand when the parent wants to force the form open (e.g. booking gated on profile).
+  useEffect(() => {
+    if (forceExpanded && needsInfo) setExpanded(true);
+  }, [forceExpanded, needsInfo]);
 
   if (!needsInfo) return null;
 

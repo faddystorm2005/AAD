@@ -85,7 +85,11 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
 
 const CUSTOMER_DELETABLE: Status[] = ['declined', 'cancelled', 'completed'];
 
-export default function BookingsList() {
+interface BookingsListProps {
+  onBook?: () => void;
+}
+
+export default function BookingsList({ onBook }: BookingsListProps) {
   const { user, session, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -230,7 +234,26 @@ export default function BookingsList() {
   }
 
   if (bookings.length === 0) {
-    return <p className="text-base text-gray-300">No bookings yet.</p>;
+    return (
+      <div className="flex flex-col items-center gap-5 py-10 text-center animate-fade-up">
+        <div className="animate-bounce text-6xl">🚗</div>
+        <div>
+          <p className="text-xl font-bold text-white">No bookings yet</p>
+          <p className="mt-1 text-sm text-gray-400">
+            Your first detail is one tap away. We come to you.
+          </p>
+        </div>
+        {onBook && (
+          <button
+            type="button"
+            onClick={onBook}
+            className="btn-primary press rounded-full px-8 py-3 text-base font-semibold shadow-lg shadow-red-900/40"
+          >
+            Book Your First Detail →
+          </button>
+        )}
+      </div>
+    );
   }
 
   return (
