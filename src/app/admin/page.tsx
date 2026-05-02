@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -121,6 +121,9 @@ export default function AdminPage() {
   }, [actionSuccess]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [declineReasonDraft, setDeclineReasonDraft] = useState<Record<string, string>>({});
+  const [photosByBooking, setPhotosByBooking] = useState<Record<string, { id: string; slotKey: string; signedUrl: string | null }[]>>({});
+  const [photosLoadingId, setPhotosLoadingId] = useState<string | null>(null);
+  const loadedPhotoIds = useRef(new Set<string>());
 
   useEffect(() => {
     if (authLoading) return;
@@ -179,6 +182,33 @@ export default function AdminPage() {
       supabase.removeChannel(channel);
     };
   }, [isAdmin]);
+
+  useEffect(() => {
+    if (!expandedId || !session?.access_token) return;
+    if (loadedPhotoIds.current.has(expandedId)) return;
+    loadedPhotoIds.current.add(expandedId);
+
+    let cancelled = false;
+    setPhotosLoadingId(expandedId);
+
+    fetch(`/api/admin/booking-photos?bookingId=${expandedId}`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        setPhotosByBooking((prev) => ({ ...prev, [expandedId]: data.photos ?? [] }));
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPhotosByBooking((prev) => ({ ...prev, [expandedId]: [] }));
+      })
+      .finally(() => {
+        if (!cancelled) setPhotosLoadingId(null);
+      });
+
+    return () => { cancelled = true; };
+  }, [expandedId, session?.access_token]);
 
   const handleStageChange = async (bookingId: string, stage: Stage) => {
     if (!session?.access_token) return;
@@ -742,6 +772,50 @@ export default function AdminPage() {
                             </p>
                           </div>
                         )}
+                        {photosLoadingId === b.id ? (
+                          <div className="md:col-span-2">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                              Customer Photos
+                            </h3>
+                            <div className="mt-2 h-4 w-28 animate-pulse rounded bg-gray-700" />
+                          </div>
+                        ) : (photosByBooking[b.id] ?? []).length > 0 ? (
+                          <div className="md:col-span-2">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                              Customer Photos ({photosByBooking[b.id].length})
+                            </h3>
+                            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+                              {photosByBooking[b.id].map((p) => (
+                                <a
+                                  key={p.id}
+                                  href={p.signedUrl ?? '#'}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="group relative aspect-square overflow-hidden rounded-lg border border-gray-700 bg-gray-800"
+                                >
+                                  {p.signedUrl ? (
+                                    <img
+                                      src={p.signedUrl}
+                                      alt={slotKeyToLabel(p.slotKey)}
+                                      className="h-full w-full object-cover transition group-hover:scale-105"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full items-center justify-center text-xs text-gray-500">
+                                      Failed
+                                    </div>
+                                  )}
+                                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-1.5">
+                                    <p className="text-[10px] font-medium leading-tight text-white">
+                                      {slotKeyToLabel(p.slotKey)}
+                                    </p>
+                                  </div>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+
                         <div>
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                             Customer
@@ -1135,4 +1209,8 @@ export default function AdminPage() {
       </div>
     </main>
   );
+}
+
+function slotKeyToLabel(key: string): string {
+  return key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
