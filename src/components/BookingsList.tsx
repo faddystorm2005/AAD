@@ -69,18 +69,46 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
   const order = getStagesForBooking(addons);
   const normalized = normalizeStage(stage);
   const currentIndex = order.indexOf(normalized);
+  const stepNumber = Math.max(0, currentIndex + 1);
+
   return (
-    <div className="flex gap-1">
-      {order.map((s, i) => (
-        <div
-          key={s}
-          title={STAGE_LABELS[s]}
-          className={`h-1.5 flex-1 rounded-full ${
-            i <= currentIndex ? 'bg-red-600' : 'bg-gray-700'
-          }`}
-        />
-      ))}
-    </div>
+    <ol
+      className="flex items-start gap-1.5"
+      aria-label={`Stage ${stepNumber} of ${order.length}: ${STAGE_LABELS[normalized]}`}
+    >
+      {order.map((s, i) => {
+        const status =
+          i < currentIndex ? 'done' : i === currentIndex ? 'current' : 'upcoming';
+        return (
+          <li
+            key={s}
+            className="flex min-w-0 flex-1 flex-col items-center gap-1.5"
+          >
+            <div
+              className={`h-1.5 w-full rounded-full ${
+                status === 'done'
+                  ? 'bg-red-600'
+                  : status === 'current'
+                    ? 'animate-pulse-soft bg-red-600'
+                    : 'bg-gray-700'
+              }`}
+              aria-hidden="true"
+            />
+            <span
+              className={`w-full break-words text-center text-[10px] leading-tight ${
+                status === 'done'
+                  ? 'text-gray-300'
+                  : status === 'current'
+                    ? 'font-semibold text-red-300'
+                    : 'text-gray-500'
+              }`}
+            >
+              {STAGE_LABELS[s]}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
