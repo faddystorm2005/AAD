@@ -172,32 +172,27 @@ export async function POST(req: NextRequest) {
     discountSingleUse = false;
   }
 
-  // Promo code (optional). Re-validate server-side to avoid race conditions
-  // where the code was used up between the form's preview and submission.
+  // Promo code (optional). use_promo_code atomically validates and claims one
+  // use in a single UPDATE so two concurrent bookings cannot both consume the
+  // last available use of a code (P0-2 fix). If the booking insert later fails
+  // we call release_promo_code to restore the use.
   let promoDiscountRate = 0;
-  let promoCodeId: string | null = null;
   let promoCodeUsed: string | null = null;
+  let promoCodeId: string | null = null;
   const promoCodeRaw: string | null | undefined = body.promoCode;
   if (promoCodeRaw && promoCodeRaw.trim()) {
     const code = promoCodeRaw.trim().toUpperCase();
     try {
-      const { data: promo } = await supabaseAdmin
-        .from('promo_codes')
-        .select('id, code, discount_rate, max_uses, uses_count, expires_at, active')
-        .eq('code', code)
-        .maybeSingle();
-      const valid =
-        promo &&
-        promo.active &&
-        (!promo.expires_at || new Date(promo.expires_at) >= new Date()) &&
-        (promo.max_uses == null || promo.uses_count < promo.max_uses);
-      if (valid) {
-        promoDiscountRate = Number(promo.discount_rate) || 0;
-        promoCodeId = promo.id;
-        promoCodeUsed = promo.code;
+      const { data: claimed } = await supabaseAdmin
+        .rpc('claim_promo_use', { p_code: code });
+      const row = Array.isArray(claimed) && claimed.length > 0 ? claimed[0] : null;
+      if (row) {
+        promoDiscountRate = Number(row.discount_rate) || 0;
+        promoCodeUsed = row.promo_code as string;
+        promoCodeId = row.promo_id as string;
       }
     } catch {
-      // promo_codes table doesn't exist yet - silently skip.
+      // RPC not deployed yet - silently skip.
     }
   }
 
@@ -278,13 +273,21 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (insertError || !booking) {
-    // Booking insert failed - refund any credit we already debited so the
-    // customer's balance is restored. Best-effort; log if it fails.
+    // Booking insert failed - undo any side-effects that already ran.
+    // Refund credit debited before the insert.
     if (creditApplied > 0) {
       try {
         await supabaseAdmin.rpc('issue_credit', { p_user_id: userId, p_amount: creditApplied });
       } catch (err) {
         console.error('[create-booking] credit refund after insert failure', { userId, creditApplied, err });
+      }
+    }
+    // Release the promo use we already claimed.
+    if (promoCodeId) {
+      try {
+        await supabaseAdmin.rpc('release_promo_use', { p_promo_id: promoCodeId });
+      } catch (err) {
+        console.error('[create-booking] promo release after insert failure', { promoCodeId, err });
       }
     }
     return NextResponse.json(
@@ -311,30 +314,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Promo code accounting: increment uses_count and stamp the code on the
-  // booking row for record-keeping. Best-effort.
-  if (promoCodeId) {
-    try {
-      await supabaseAdmin.rpc('increment_promo_uses', { p_id: promoCodeId });
-    } catch {
-      // RPC missing - fall back to a read+write (small race risk but OK).
-      const { data: cur } = await supabaseAdmin
-        .from('promo_codes')
-        .select('uses_count')
-        .eq('id', promoCodeId)
-        .maybeSingle();
-      const newCount = (cur?.uses_count ?? 0) + 1;
-      await supabaseAdmin
-        .from('promo_codes')
-        .update({ uses_count: newCount })
-        .eq('id', promoCodeId);
-    }
-    if (promoCodeUsed) {
-      await supabaseAdmin
-        .from('bookings')
-        .update({ promo_code_used: promoCodeUsed })
-        .eq('id', booking.id);
-    }
+  // Stamp the promo code on the booking row for record-keeping. The use was
+  // already claimed atomically by use_promo_code before the insert.
+  if (promoCodeUsed) {
+    await supabaseAdmin
+      .from('bookings')
+      .update({ promo_code_used: promoCodeUsed })
+      .eq('id', booking.id);
   }
 
   // Fire-and-forget: notify admin via SMS + push. Doesn't block the response.
