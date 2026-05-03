@@ -68,6 +68,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: capErr.message }, { status: 500 });
   }
 
+  // P0-5: load default-help-available-by-DOW config. Used as the fallback
+  // for days beyond the admin panel's 14-day window (or any other day
+  // without an explicit daily_capacity row). Empty array preserves the
+  // legacy "solo by default" behavior.
+  const { data: cfgRow } = await supabaseAdmin
+    .from('app_config')
+    .select('value')
+    .eq('key', 'default_help_available_dow')
+    .maybeSingle();
+
+  let defaultHelpDow: number[] = [];
+  if (Array.isArray(cfgRow?.value)) {
+    defaultHelpDow = (cfgRow.value as unknown[]).filter(
+      (n): n is number => typeof n === 'number' && n >= 0 && n <= 6
+    );
+  }
+
   const helpByDay = new Map<string, boolean>();
   for (const row of capacity ?? []) {
     helpByDay.set(row.day, row.is_help_available);
@@ -89,9 +106,16 @@ export async function GET(req: NextRequest) {
     days.push(d.toISOString().slice(0, 10));
   }
 
-  const result = days.map((date) =>
-    computeAvailability(date, helpByDay.get(date) ?? false, bookingsByDay.get(date) ?? [])
-  );
+  const result = days.map((date) => {
+    // Explicit row from daily_capacity wins. Otherwise fall back to the
+    // day-of-week default from app_config. UTC midday avoids any DST/TZ
+    // weirdness when computing the day-of-week for a YYYY-MM-DD string.
+    const explicit = helpByDay.get(date);
+    const dow = new Date(date + 'T12:00:00Z').getUTCDay();
+    const helpAvailable =
+      explicit !== undefined ? explicit : defaultHelpDow.includes(dow);
+    return computeAvailability(date, helpAvailable, bookingsByDay.get(date) ?? []);
+  });
 
   return NextResponse.json({ days: result });
 }
