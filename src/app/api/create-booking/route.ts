@@ -27,6 +27,7 @@ interface CreateBookingPayload extends BookingData {
   notes?: string | null;
   unit?: string | null;
   serviceType?: ServiceType;
+  photoPermission?: boolean;
 }
 
 export async function POST(req: NextRequest) {
@@ -274,6 +275,7 @@ export async function POST(req: NextRequest) {
       booking_stage: 'requested',
       status: 'pending',
       notes: safeNotes,
+      photo_permission: body.photoPermission === true,
     })
     .select()
     .single();

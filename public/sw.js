@@ -7,7 +7,7 @@
  * v1 → v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
  * v5 → v6: add push notification handlers for admin + customer alerts.
  */
-const VERSION = "aad-v6";
+const VERSION = "aad-v7";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";

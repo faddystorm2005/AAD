@@ -106,6 +106,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [promoError, setPromoError] = useState<string | null>(null);
   const [selectedPhotos, setSelectedPhotos] = useState<Record<string, File | null>>({});
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<Record<string, string>>({});
+  const [photoPermission, setPhotoPermission] = useState(false);
 
   const applyPromo = async () => {
     const code = promoInput.trim();
@@ -358,6 +359,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           zip: formData.zip,
           notes: formData.notes.trim() || null,
           promoCode: appliedPromo?.code ?? null,
+          photoPermission,
           origin: window.location.origin,
         }),
       });
@@ -1062,6 +1064,30 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   <strong>${(pricing.total - pricing.deposit).toFixed(2)}</strong> is paid on-site after the work is done.
                 </p>
               </div>
+
+              <label className={`flex items-start gap-3 rounded-xl border-2 p-4 cursor-pointer transition-colors ${
+                photoPermission
+                  ? 'border-red-500 bg-red-950/30'
+                  : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
+              } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={photoPermission}
+                  onChange={(e) => setPhotoPermission(e.target.checked)}
+                  disabled={isProcessing}
+                  className="mt-1 w-5 h-5 accent-red-600 shrink-0"
+                />
+                <div>
+                  <p className="text-base font-semibold text-white">
+                    Photo permission{' '}
+                    <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                  </p>
+                  <p className="mt-1 text-sm text-gray-300">
+                    I allow Austin Auto Detail to use photos of my vehicle for marketing and social media.
+                    Your service is the same either way.
+                  </p>
+                </div>
+              </label>
             </div>
           )}
 

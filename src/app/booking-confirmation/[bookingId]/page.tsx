@@ -35,6 +35,7 @@ interface ConfirmationBooking {
   discount_amount: number;
   decline_reason: string | null;
   payment_url: string | null;
+  photo_permission?: boolean | null;
 }
 
 const STATUS_HEADER: Record<BookingStatus, { title: string; subtitle: string; tone: 'yellow' | 'green' | 'red' | 'blue' }> = {
@@ -475,6 +476,15 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
               <span className="font-bold text-white">
                 ${(Number(booking.total) - Number(booking.deposit_amount)).toFixed(2)}
               </span>
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm uppercase tracking-wider text-gray-300">Photo Permission</p>
+            <p className="mt-1 text-base text-white">
+              {booking.photo_permission
+                ? 'Granted - Austin Auto Detail may use photos for marketing'
+                : 'Not granted'}
             </p>
           </div>
         </div>

@@ -90,6 +90,7 @@ interface AdminBooking {
   completed_at: string | null;
   cancel_requested_at: string | null;
   cancel_request_reason: string | null;
+  photo_permission?: boolean | null;
   customer: Customer | null;
   vehicle: Vehicle | null;
 }
@@ -1177,6 +1178,15 @@ export default function AdminPage() {
                             {b.completed_at
                               ? new Date(b.completed_at).toLocaleString()
                               : <span className="text-gray-500">Not completed</span>}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Photo Permission
+                          </h3>
+                          <p className={`mt-2 text-sm font-semibold ${b.photo_permission ? 'text-green-400' : 'text-gray-400'}`}>
+                            {b.photo_permission ? 'Yes - may use for marketing' : 'No'}
                           </p>
                         </div>
 
