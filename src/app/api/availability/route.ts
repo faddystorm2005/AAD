@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   // is done, capacity should be available again.
   const { data: bookings, error: bookingsErr } = await supabaseAdmin
     .from('bookings')
-    .select('slot_date, slot_time, is_ceramic, status')
+    .select('slot_date, slot_time, is_ceramic, status, deposit_paid, expires_at')
     .gte('slot_date', fromStr)
     .lte('slot_date', toStr)
     .not('slot_date', 'is', null)
@@ -45,6 +45,18 @@ export async function GET(req: NextRequest) {
   if (bookingsErr) {
     return NextResponse.json({ error: bookingsErr.message }, { status: 500 });
   }
+
+  // P0-1: real-time slot release. An approved-but-unpaid booking past its
+  // expires_at no longer holds the slot, even if the cron hasn't flipped
+  // it to 'declined' yet. Legacy rows without expires_at still occupy
+  // the slot as before.
+  const nowMs = Date.now();
+  const liveBookings = (bookings ?? []).filter((b) => {
+    if (b.status === 'approved' && !b.deposit_paid && b.expires_at) {
+      if (new Date(b.expires_at).getTime() < nowMs) return false;
+    }
+    return true;
+  });
 
   const { data: capacity, error: capErr } = await supabaseAdmin
     .from('daily_capacity')
@@ -62,7 +74,7 @@ export async function GET(req: NextRequest) {
   }
 
   const bookingsByDay = new Map<string, { slot_time: SlotTime; is_ceramic: boolean }[]>();
-  for (const b of bookings ?? []) {
+  for (const b of liveBookings) {
     if (!b.slot_date || !b.slot_time) continue;
     const list = bookingsByDay.get(b.slot_date) ?? [];
     list.push({ slot_time: b.slot_time as SlotTime, is_ceramic: b.is_ceramic });

@@ -96,12 +96,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: hint }, { status: 500 });
   }
 
+  // P0-1: stamp expires_at so the slot frees automatically if the customer
+  // never pays the deposit. The availability route filters this in real
+  // time; a daily cron flips status to 'declined' for bookkeeping.
+  const approvedAt = new Date();
+  const expiresAt = new Date(approvedAt.getTime() + 24 * 60 * 60 * 1000);
+
   const { error: updateErr } = await supabaseAdmin
     .from('bookings')
     .update({
       status: 'approved',
       payment_url: paymentUrl,
-      approved_at: new Date().toISOString(),
+      approved_at: approvedAt.toISOString(),
+      expires_at: expiresAt.toISOString(),
     })
     .eq('id', body.bookingId);
 
