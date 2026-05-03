@@ -122,25 +122,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Issue account credit (atomic increment via a single update with the
-  // current value read in the same statement). Using maybeSingle + math here
-  // is fine because the customer can't update their own credit balance
-  // through any other path.
+  // Issue account credit atomically via the issue_credit RPC (P0-3 fix).
+  // credit_balance + amount in a single UPDATE is race-safe; the RPC keeps
+  // the call-site consistent with the debit side.
   if (creditAmount > 0) {
-    const { data: cust } = await supabaseAdmin
-      .from('profiles')
-      .select('credit_balance')
-      .eq('id', booking.user_id)
-      .maybeSingle();
-
-    const newBalance =
-      Number(cust?.credit_balance ?? 0) + creditAmount;
-
     const { error: creditErr } = await supabaseAdmin
-      .from('profiles')
-      .update({ credit_balance: newBalance })
-      .eq('id', booking.user_id);
-
+      .rpc('issue_credit', { p_user_id: booking.user_id, p_amount: creditAmount });
     if (creditErr) {
       // Log but don't reverse the cancellation - admin can manually adjust.
       console.error('[cancel-approve] credit increment failed', creditErr);

@@ -223,22 +223,19 @@ export async function POST(req: NextRequest) {
     { isReturning, customDiscountRate, promoDiscountRate }
   );
 
-  // Apply account credit toward the total (if any). We deduct up to the
-  // total, never more. Credit is removed from the customer's balance below
-  // after the booking is successfully inserted.
+  // Apply account credit toward the total (if any). debit_credit_max acquires
+  // a FOR UPDATE row lock so two concurrent bookings cannot both spend the
+  // same dollars (P0-3 fix). The debit happens before the insert so the
+  // booking row records the correct credit_applied and total values. If the
+  // insert fails we issue a refund via issue_credit.
   let creditApplied = 0;
-  let availableCredit = 0;
   try {
-    const { data: prof } = await supabaseAdmin
-      .from('profiles')
-      .select('credit_balance')
-      .eq('id', userId)
-      .maybeSingle();
-    availableCredit = Math.max(0, Number(prof?.credit_balance ?? 0));
-    creditApplied = Math.min(availableCredit, pricing.total);
-    creditApplied = Math.round(creditApplied * 100) / 100;
+    const { data: debited } = await supabaseAdmin
+      .rpc('debit_credit_max', { p_user_id: userId, p_max_amount: pricing.total });
+    creditApplied = Math.max(0, Number(debited ?? 0));
   } catch {
-    // credit_balance column missing - act as if zero. Migration not run yet.
+    // RPC not deployed yet - fall back to zero credit. Migration not run.
+    creditApplied = 0;
   }
   const totalAfterCredit = Math.max(0, pricing.total - creditApplied);
 
@@ -281,29 +278,19 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (insertError || !booking) {
+    // Booking insert failed - refund any credit we already debited so the
+    // customer's balance is restored. Best-effort; log if it fails.
+    if (creditApplied > 0) {
+      try {
+        await supabaseAdmin.rpc('issue_credit', { p_user_id: userId, p_amount: creditApplied });
+      } catch (err) {
+        console.error('[create-booking] credit refund after insert failure', { userId, creditApplied, err });
+      }
+    }
     return NextResponse.json(
       { error: insertError?.message || 'Failed to save booking' },
       { status: 500 }
     );
-  }
-
-  // Decrement the customer's credit balance by the amount applied. Best
-  // effort - if this fails the worst case is the customer used credit they
-  // shouldn't have, admin can manually reverse it in Manage Users. We
-  // never fail the booking on this.
-  if (creditApplied > 0) {
-    const newBalance = Math.max(0, availableCredit - creditApplied);
-    const { error: creditErr } = await supabaseAdmin
-      .from('profiles')
-      .update({ credit_balance: newBalance })
-      .eq('id', userId);
-    if (creditErr) {
-      console.error('[create-booking] credit decrement failed', {
-        userId,
-        bookingId: booking.id,
-        error: creditErr.message,
-      });
-    }
   }
 
   // Single-use discount: clear it immediately so the customer's NEXT
