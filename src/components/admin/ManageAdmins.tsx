@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useDialog } from '@/contexts/DialogContext';
 
 interface UserRow {
   id: string;
@@ -42,6 +43,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
   const [query, setQuery] = useState('');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const showDialog = useDialog();
   const [historyById, setHistoryById] = useState<Record<string, UserBooking[] | 'loading' | 'error'>>({});
   const [discountDraft, setDiscountDraft] = useState<Record<string, string>>({});
   const [singleUseDraft, setSingleUseDraft] = useState<Record<string, boolean>>({});
@@ -123,9 +125,20 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
     const isSelf = user.id === currentAdminId;
 
     if (!becomeAdmin && isSelf) {
-      if (!window.confirm("Demote yourself? You'll lose access to the admin tools immediately.")) return;
+      const ok = await showDialog({
+        title: 'Demote yourself?',
+        body: "You'll lose access to the admin tools immediately.",
+        confirmLabel: 'Demote',
+        danger: true,
+      });
+      if (!ok) return;
     } else if (!becomeAdmin) {
-      if (!window.confirm(`Remove admin access from ${user.full_name || user.email || 'this user'}?`)) return;
+      const ok = await showDialog({
+        title: `Remove admin access from ${user.full_name || user.email || 'this user'}?`,
+        confirmLabel: 'Remove access',
+        danger: true,
+      });
+      if (!ok) return;
     }
 
     setUpdatingId(user.id);
@@ -199,13 +212,27 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
   const deleteUser = async (user: UserRow, force = false) => {
     if (!accessToken) return;
     if (user.id === currentAdminId) {
-      window.alert("You can't delete your own account from here.");
+      await showDialog({
+        title: "Can't delete your own account",
+        body: "You can't delete your own account from here.",
+        alertOnly: true,
+      });
       return;
     }
-    const confirmText = force
-      ? `FORCE DELETE ${user.full_name || user.email}? They have active bookings that will be orphaned. This is permanent.`
-      : `Permanently delete ${user.full_name || user.email}? This removes their account, vehicles, and booking history. Cannot be undone.`;
-    if (!window.confirm(confirmText)) return;
+    const ok = force
+      ? await showDialog({
+          title: `FORCE DELETE ${user.full_name || user.email}?`,
+          body: 'They have active bookings that will be orphaned. This is permanent.',
+          confirmLabel: 'Force delete',
+          danger: true,
+        })
+      : await showDialog({
+          title: `Permanently delete ${user.full_name || user.email}?`,
+          body: 'This removes their account, vehicles, and booking history. Cannot be undone.',
+          confirmLabel: 'Delete',
+          danger: true,
+        });
+    if (!ok) return;
 
     setDeletingUserId(user.id);
     try {
@@ -218,11 +245,13 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
       if (!res.ok) {
         // The API returns requiresForce=true when there are active bookings.
         if (data?.requiresForce && !force) {
-          if (
-            window.confirm(
-              `${data.error}\n\nForce delete anyway? Their active bookings will be orphaned.`
-            )
-          ) {
+          const forceOk = await showDialog({
+            title: data.error || 'User has active bookings',
+            body: 'Force delete anyway? Their active bookings will be orphaned.',
+            confirmLabel: 'Force delete',
+            danger: true,
+          });
+          if (forceOk) {
             // Recurse with force=true.
             await deleteUser(user, true);
           }

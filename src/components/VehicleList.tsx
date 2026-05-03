@@ -1,6 +1,7 @@
 'use client';
 
 import { useVehicles } from '@/contexts/VehicleContext';
+import { useDialog } from '@/contexts/DialogContext';
 
 interface VehicleListProps {
   onSelectVehicle?: (vehicleId: string) => void;
@@ -8,6 +9,7 @@ interface VehicleListProps {
 
 export default function VehicleList({ onSelectVehicle }: VehicleListProps) {
   const { vehicles, loading, deleteVehicle } = useVehicles();
+  const showDialog = useDialog();
 
   if (loading) {
     return (
@@ -66,10 +68,13 @@ export default function VehicleList({ onSelectVehicle }: VehicleListProps) {
                 </button>
               )}
               <button
-                onClick={() => {
-                  if (window.confirm(`Remove your ${vehicle.year} ${vehicle.make} ${vehicle.model}?`)) {
-                    deleteVehicle(vehicle.id);
-                  }
+                onClick={async () => {
+                  const ok = await showDialog({
+                    title: `Remove your ${vehicle.year} ${vehicle.make} ${vehicle.model}?`,
+                    confirmLabel: 'Remove',
+                    danger: true,
+                  });
+                  if (ok) deleteVehicle(vehicle.id);
                 }}
                 className="press rounded-lg border-2 border-red-600/60 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-900/30"
               >

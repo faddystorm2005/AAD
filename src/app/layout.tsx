@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { VehicleProvider } from "@/contexts/VehicleContext";
+import { DialogProvider } from "@/contexts/DialogContext";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import HapticProvider from "@/components/HapticProvider";
 import OfflineBanner from "@/components/OfflineBanner";
@@ -160,7 +161,9 @@ export default function RootLayout({
         </a>
         <AuthProvider>
           <VehicleProvider>
-            {children}
+            <DialogProvider>
+              {children}
+            </DialogProvider>
           </VehicleProvider>
         </AuthProvider>
         <ServiceWorkerRegister />

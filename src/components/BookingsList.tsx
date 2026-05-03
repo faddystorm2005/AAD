@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDialog } from '@/contexts/DialogContext';
 import BookingWeather from '@/components/BookingWeather';
 
 import {
@@ -50,7 +51,6 @@ export interface BookingRow {
   slot_time?: string | null;
   cancel_requested_at?: string | null;
   cancel_request_reason?: string | null;
-  photo_permission?: boolean | null;
 }
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
@@ -92,6 +92,7 @@ interface BookingsListProps {
 
 export default function BookingsList({ onBook }: BookingsListProps) {
   const { user, session, loading: authLoading } = useAuth();
+  const showDialog = useDialog();
   const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -149,9 +150,13 @@ export default function BookingsList({ onBook }: BookingsListProps) {
 
   const handleDelete = async (bookingId: string) => {
     if (!session?.access_token) return;
-    if (!window.confirm('Remove this booking from your history? This cannot be undone.')) {
-      return;
-    }
+    const ok = await showDialog({
+      title: 'Remove this booking from your history?',
+      body: 'This cannot be undone.',
+      confirmLabel: 'Remove',
+      danger: true,
+    });
+    if (!ok) return;
     setDeletingId(bookingId);
     setDeleteError(null);
     try {
@@ -191,7 +196,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
       const { data } = await supabase
         .from('bookings')
         .select(
-          'id, service, service_type, scheduled_at, address, unit, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason, photo_permission'
+          'id, service, service_type, scheduled_at, address, unit, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason'
         )
         .eq('user_id', user.id)
         .order('scheduled_at', { ascending: true });
@@ -290,9 +295,6 @@ export default function BookingsList({ onBook }: BookingsListProps) {
                 </div>
                 <p className="mt-1 text-sm text-gray-300">
                   {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
-                </p>
-                <p className="mt-1 text-xs text-gray-500">
-                  Photo permission: {b.photo_permission ? 'Yes' : 'No'}
                 </p>
                 {status === 'declined' && b.decline_reason && (
                   <p className="mt-2 text-sm text-red-200">Reason: {b.decline_reason}</p>

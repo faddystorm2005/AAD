@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useDialog } from '@/contexts/DialogContext';
 
 interface PromoCode {
   id: string;
@@ -24,6 +25,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
   const [creating, setCreating] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [flash, setFlash] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const showDialog = useDialog();
 
   // Create form state
   const [code, setCode] = useState('');
@@ -94,7 +96,13 @@ export default function ManagePromoCodes({ accessToken }: Props) {
 
   const handleDelete = async (promo: PromoCode) => {
     if (!accessToken) return;
-    if (!window.confirm(`Delete code "${promo.code}"? This can't be undone.`)) return;
+    const ok = await showDialog({
+      title: `Delete code "${promo.code}"?`,
+      body: "This can't be undone.",
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
     setBusyId(promo.id);
     const prev = promos;
     setPromos((p) => p.filter((x) => x.id !== promo.id));

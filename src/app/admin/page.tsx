@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDialog } from '@/contexts/DialogContext';
 import { supabase } from '@/lib/supabaseClient';
 import { ADD_ONS, SERVICE_TYPE_NAMES, ServiceType } from '@/lib/bookingPricing';
 import {
@@ -90,7 +91,6 @@ interface AdminBooking {
   completed_at: string | null;
   cancel_requested_at: string | null;
   cancel_request_reason: string | null;
-  photo_permission?: boolean | null;
   customer: Customer | null;
   vehicle: Vehicle | null;
 }
@@ -102,6 +102,7 @@ function formatAddons(ids: string[] | null | undefined): string[] {
 
 export default function AdminPage() {
   const { user, session, loading: authLoading, signOut } = useAuth();
+  const showDialog = useDialog();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
@@ -351,8 +352,14 @@ export default function AdminPage() {
 
   const handleMarkDeposit = async (bookingId: string, paid: boolean) => {
     if (!session?.access_token) return;
-    if (!paid && !window.confirm('Mark this deposit as unpaid? The customer will see the booking as pending again.')) {
-      return;
+    if (!paid) {
+      const ok = await showDialog({
+        title: 'Mark this deposit as unpaid?',
+        body: 'The customer will see the booking as pending again.',
+        confirmLabel: 'Mark unpaid',
+        danger: true,
+      });
+      if (!ok) return;
     }
     setUpdatingId(bookingId);
     setActionError(null);
@@ -445,13 +452,13 @@ export default function AdminPage() {
 
   const handleDelete = async (bookingId: string) => {
     if (!session?.access_token) return;
-    if (
-      !window.confirm(
-        'Permanently delete this booking? This wipes the row from the database - there is no undo.'
-      )
-    ) {
-      return;
-    }
+    const ok = await showDialog({
+      title: 'Permanently delete this booking?',
+      body: 'This wipes the row from the database. There is no undo.',
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
     setUpdatingId(bookingId);
     setActionError(null);
     try {
@@ -485,15 +492,14 @@ export default function AdminPage() {
       setActionError('Credit amount must be a non-negative number.');
       return;
     }
-    if (
-      !window.confirm(
+    const ok = await showDialog({
+      title:
         creditAmount > 0
           ? `Approve cancellation and add $${creditAmount.toFixed(2)} account credit?`
-          : 'Approve cancellation with no credit issued?'
-      )
-    ) {
-      return;
-    }
+          : 'Approve cancellation with no credit issued?',
+      confirmLabel: 'Approve',
+    });
+    if (!ok) return;
     setUpdatingId(bookingId);
     setActionError(null);
 
@@ -549,9 +555,13 @@ export default function AdminPage() {
   const handleCancelDeny = async (bookingId: string) => {
     if (!session?.access_token) return;
     const note = (cancelDenyNoteDraft[bookingId] ?? '').trim();
-    if (!window.confirm('Deny this cancellation request? The booking will continue as scheduled.')) {
-      return;
-    }
+    const ok = await showDialog({
+      title: 'Deny this cancellation request?',
+      body: 'The booking will continue as scheduled.',
+      confirmLabel: 'Deny',
+      danger: true,
+    });
+    if (!ok) return;
     setUpdatingId(bookingId);
     setActionError(null);
 
@@ -594,9 +604,13 @@ export default function AdminPage() {
   const handleDecline = async (bookingId: string) => {
     if (!session?.access_token) return;
     const reason = (declineReasonDraft[bookingId] ?? '').trim();
-    if (!window.confirm('Decline this booking? The customer will be notified and the slot will reopen.')) {
-      return;
-    }
+    const ok = await showDialog({
+      title: 'Decline this booking?',
+      body: 'The customer will be notified and the slot will reopen.',
+      confirmLabel: 'Decline',
+      danger: true,
+    });
+    if (!ok) return;
     setUpdatingId(bookingId);
     setActionError(null);
 
@@ -1178,15 +1192,6 @@ export default function AdminPage() {
                             {b.completed_at
                               ? new Date(b.completed_at).toLocaleString()
                               : <span className="text-gray-500">Not completed</span>}
-                          </p>
-                        </div>
-
-                        <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Photo Permission
-                          </h3>
-                          <p className={`mt-2 text-sm font-semibold ${b.photo_permission ? 'text-green-400' : 'text-gray-400'}`}>
-                            {b.photo_permission ? 'Yes - may use for marketing' : 'No'}
                           </p>
                         </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useDialog } from '@/contexts/DialogContext';
 
 interface Props {
   /** The admin's Supabase user_id - used to build the ICS subscription URL. */
@@ -17,6 +18,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
   const [state, setState] = useState<ConnectionState>('loading');
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const showDialog = useDialog();
 
   // Build the ICS subscription URL - works on localhost AND production.
   const icsUrl =
@@ -82,9 +84,13 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
 
   const handleDisconnect = async () => {
     if (!accessToken) return;
-    if (!window.confirm('Disconnect Google Calendar? Future booking changes will no longer sync.')) {
-      return;
-    }
+    const ok = await showDialog({
+      title: 'Disconnect Google Calendar?',
+      body: 'Future booking changes will no longer sync.',
+      confirmLabel: 'Disconnect',
+      danger: true,
+    });
+    if (!ok) return;
     setBusy(true);
     try {
       const res = await fetch('/api/admin/google/disconnect', {

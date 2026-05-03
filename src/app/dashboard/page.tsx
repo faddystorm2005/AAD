@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useDialog } from '@/contexts/DialogContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -25,6 +26,7 @@ function getGreeting(): string {
 
 export default function Dashboard() {
   const { user, loading: authLoading, signOut } = useAuth();
+  const showDialog = useDialog();
   const router = useRouter();
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
@@ -97,7 +99,10 @@ export default function Dashboard() {
   };
 
   const handleSignOut = async () => {
-    const ok = window.confirm('Sign out of your account?');
+    const ok = await showDialog({
+      title: 'Sign out of your account?',
+      confirmLabel: 'Sign out',
+    });
     if (!ok) return;
     await signOut();
     router.push('/auth');
