@@ -219,6 +219,98 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, warning: 'no booking id' });
     }
 
+    // === Idempotency + amount check (P0-4 fix).
+    //
+    // Before flipping deposit_paid we now:
+    //   1. Require a paypal-transmission-id header (used as the idempotency
+    //      key so PayPal retries cannot double-process).
+    //   2. Load the booking and verify the captured amount matches the
+    //      booking's deposit_amount in cents. Currency must be USD.
+    //   3. Insert a row into payment_events keyed on transmission_id. If
+    //      the row exists, this is a replay and we exit cleanly.
+    //
+    // Only after all three pass do we mark deposit_paid + status=confirmed.
+    const transmissionId = req.headers.get('paypal-transmission-id');
+    if (!transmissionId) {
+      console.error('[paypal webhook] missing transmission_id header', { bookingId });
+      return NextResponse.json({ ok: true, warning: 'no transmission_id' });
+    }
+
+    const capturedAmountStr: string | undefined = event?.resource?.amount?.value;
+    const capturedCurrency: string | undefined = event?.resource?.amount?.currency_code;
+    if (!capturedAmountStr || !capturedCurrency) {
+      console.error('[paypal webhook] capture event missing amount/currency', {
+        bookingId,
+        transmissionId,
+      });
+      return NextResponse.json({ ok: true, warning: 'malformed amount' });
+    }
+
+    const { data: bookingRow, error: bookingErr } = await supabaseAdmin
+      .from('bookings')
+      .select('id, deposit_amount, deposit_paid, status')
+      .eq('id', bookingId)
+      .single();
+
+    if (bookingErr || !bookingRow) {
+      console.error('[paypal webhook] booking lookup failed', {
+        bookingId,
+        transmissionId,
+        bookingErr,
+      });
+      return NextResponse.json({ ok: true, warning: 'booking not found' });
+    }
+
+    const capturedCents = Math.round(parseFloat(capturedAmountStr) * 100);
+    const expectedCents = Math.round(Number(bookingRow.deposit_amount) * 100);
+    const amountOk =
+      Number.isFinite(capturedCents) &&
+      capturedCents === expectedCents &&
+      capturedCurrency === 'USD';
+
+    if (!amountOk) {
+      // Loud log so this shows up in Vercel even with info filtering. We
+      // return 200 so PayPal stops retrying. Alex / a follow-up admin
+      // notification needs to surface this somewhere visible.
+      // TODO: send admin SMS on amount mismatch.
+      console.error('[paypal webhook] AMOUNT MISMATCH - not marking paid', {
+        bookingId,
+        transmissionId,
+        expectedDeposit: bookingRow.deposit_amount,
+        capturedAmount: capturedAmountStr,
+        capturedCurrency,
+        expectedCents,
+        capturedCents,
+      });
+      return NextResponse.json({ ok: true, warning: 'amount mismatch' });
+    }
+
+    const { error: idempErr } = await supabaseAdmin
+      .from('payment_events')
+      .insert({
+        transmission_id: transmissionId,
+        booking_id: bookingId,
+        provider: 'paypal',
+        amount: capturedAmountStr,
+        currency_code: capturedCurrency,
+        event_type: eventType,
+      });
+
+    if (idempErr) {
+      // 23505 = unique_violation. Replay or duplicate delivery; we already
+      // processed this transmission_id. Return 200 so PayPal stops retrying.
+      if ((idempErr as { code?: string }).code === '23505') {
+        console.log('[paypal webhook] replay ignored', { bookingId, transmissionId });
+        return NextResponse.json({ ok: true, replay: true });
+      }
+      console.error('[paypal webhook] payment_events insert failed', {
+        bookingId,
+        transmissionId,
+        idempErr,
+      });
+      return NextResponse.json({ error: 'idempotency insert failed' }, { status: 500 });
+    }
+
     // Mirror the Square webhook: flip deposit_paid + advance status to
     // 'confirmed' if it's still 'approved' or 'pending'. Don't clobber
     // later admin moves like 'in_progress' or 'completed'.
