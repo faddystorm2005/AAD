@@ -981,8 +981,6 @@ const RECENT_WORK_PHOTOS: string[] = [
   '/images/aad/9.jpg',
   '/images/aad/10.jpg',
   '/images/aad/11.jpg',
-  '/images/aad/12.jpg',
-  '/images/aad/13.jpg',
   '/images/aad/gallery-ford-king-ranch.jpg',
   '/images/aad/gallery-bmw-engine-bay.jpg',
   '/images/aad/gallery-ford-super-duty.jpg',
