@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
     await Promise.all([
       supabaseAdmin
         .from('bookings')
-        .select('id, slot_time, is_ceramic, status')
+        .select('id, slot_time, is_ceramic, status, deposit_paid, expires_at')
         .eq('slot_date', slotDate)
         .not('slot_time', 'is', null)
         .neq('status', 'declined')
@@ -137,11 +137,23 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Match the availability route's expires_at filter so a slot held by an
+  // approved-but-unpaid booking past its 24h deadline doesn't block a
+  // reschedule into it.
+  const nowMs = Date.now();
+  type DayBooking = { slot_time: SlotTime | null; is_ceramic: boolean; status: string; deposit_paid?: boolean | null; expires_at?: string | null };
+  const liveBookings = ((dayBookings ?? []) as DayBooking[]).filter((b) => {
+    if (b.status === 'approved' && !b.deposit_paid && b.expires_at) {
+      if (new Date(b.expires_at).getTime() < nowMs) return false;
+    }
+    return true;
+  });
+
   const isHelpAvailable = capRow?.is_help_available ?? false;
   const availability = computeAvailability(
     slotDate,
     isHelpAvailable,
-    (dayBookings ?? []).map((b) => ({
+    liveBookings.map((b) => ({
       slot_time: b.slot_time as SlotTime,
       is_ceramic: b.is_ceramic,
     }))
