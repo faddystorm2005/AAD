@@ -726,8 +726,16 @@ export default function Home() {
               className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
-          {/* Three landscape clips stacked (right column on desktop) */}
+          {/* Landscape clips stacked (right column on desktop). Garage clip
+              leads since it's the real one; stock clips fill below. */}
           <div className="flex flex-1 flex-col gap-4">
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+              <LazyVideo
+                src="/images/aad/garage.mp4"
+                ariaLabel="Austin Auto Detail garage"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/6158071-hd_1920_1080_30fps.mp4"
