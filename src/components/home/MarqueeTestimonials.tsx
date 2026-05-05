@@ -91,7 +91,7 @@ export default function MarqueeTestimonials() {
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent" />
       <div
-        className={`animate-marquee flex gap-4 group-hover:[animation-play-state:paused] ${paused ? '[animation-play-state:paused]' : ''}`}
+        className={`marquee-track flex gap-4 group-hover:[animation-play-state:paused] ${paused ? '[animation-play-state:paused]' : ''}`}
       >
         {items.map((t, i) => (
           <div

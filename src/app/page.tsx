@@ -16,6 +16,8 @@ import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
 import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
 import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
+import MobileBottomBar from '@/components/home/MobileBottomBar';
+import PagePolish from '@/components/home/PagePolish';
 import ServiceMapLoader from '@/components/ServiceMapLoader';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
@@ -892,6 +894,8 @@ export default function Home() {
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
       <StickyBookCta />
       <InstallAppPrompt />
+      <MobileBottomBar />
+      <PagePolish />
     </main>
   );
 }
