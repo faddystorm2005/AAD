@@ -312,8 +312,11 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-touch-icon.png" }],
+    icon: [
+      { url: "/icon", sizes: "192x192", type: "image/png" },
+      { url: "/icon1", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     type: "website",
