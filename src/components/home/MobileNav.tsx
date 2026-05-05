@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 
@@ -15,10 +16,16 @@ const LINKS = [
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const close = useCallback(() => setOpen(false), []);
   const toggle = useCallback(() => setOpen((o) => !o), []);
+
+  // Portal target only exists after mount (SSR safety).
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // ESC key closes the drawer
   useEffect(() => {
@@ -71,80 +78,89 @@ export default function MobileNav() {
         </svg>
       </button>
 
-      {/* Backdrop */}
-      {open && (
-        <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm motion-reduce:transition-none"
-          aria-hidden="true"
-          onClick={close}
-        />
-      )}
+      {/* Drawer + backdrop rendered via portal to document.body so they
+          escape the parent <header>'s backdrop-filter, which would
+          otherwise contain `position: fixed` children to the header's
+          bounding box (a known browser quirk). */}
+      {mounted &&
+        createPortal(
+          <>
+            {/* Backdrop */}
+            {open && (
+              <div
+                className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm"
+                aria-hidden="true"
+                onClick={close}
+              />
+            )}
 
-      {/* Slide-in drawer */}
-      <div
-        id="mobile-drawer"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-        aria-hidden={open ? 'false' : 'true'}
-        className={`fixed right-0 top-0 z-50 flex h-full w-[min(360px,85vw)] flex-col bg-zinc-950 shadow-2xl transition-transform duration-300 motion-reduce:transition-none ${
-          open ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        {/* Drawer header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-300">
-            Menu
-          </span>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={close}
-            className="press flex h-9 w-9 items-center justify-center rounded-lg border border-white/20 bg-white/5 text-white hover:bg-white/10"
-            aria-label="Close menu"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Nav links */}
-        <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-4 py-6">
-          <ul className="flex flex-col gap-1">
-            {LINKS.map(({ href, label }) => (
-              <li key={href}>
-                <a
-                  href={href}
+            {/* Slide-in drawer */}
+            <div
+              id="mobile-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              className={`fixed right-0 top-0 z-[101] flex h-full w-[min(360px,90vw)] flex-col border-l-2 border-red-600/60 bg-zinc-900 shadow-[-8px_0_40px_rgba(0,0,0,0.8)] transition-transform duration-300 motion-reduce:transition-none ${
+                open ? 'translate-x-0' : 'translate-x-full'
+              }`}
+            >
+              {/* Drawer header */}
+              <div className="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-5 py-4">
+                <span className="text-sm font-semibold uppercase tracking-[0.2em] text-red-400">
+                  Menu
+                </span>
+                <button
+                  ref={closeRef}
+                  type="button"
                   onClick={close}
-                  className="block rounded-xl px-4 py-3.5 text-base font-medium text-gray-100 transition-colors hover:bg-white/5 hover:text-red-300 active:bg-white/10"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 bg-zinc-800 text-white hover:bg-zinc-700"
+                  aria-label="Close menu"
                 >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </button>
+              </div>
 
-          <div className="mt-6 space-y-3 border-t border-white/10 pt-6">
-            <div onClick={close}>
-              <HomeNavAccountLink />
+              {/* Nav links */}
+              <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-4 py-6">
+                <ul className="flex flex-col gap-1">
+                  {LINKS.map(({ href, label }) => (
+                    <li key={href}>
+                      <a
+                        href={href}
+                        onClick={close}
+                        className="block rounded-xl px-4 py-3.5 text-base font-medium text-gray-100 transition-colors hover:bg-white/10 hover:text-red-300 active:bg-white/15"
+                      >
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6 space-y-3 border-t border-white/10 pt-6">
+                  <div onClick={close}>
+                    <HomeNavAccountLink />
+                  </div>
+                  <Link
+                    href="/auth"
+                    onClick={close}
+                    className="btn-primary press block rounded-xl px-4 py-3.5 text-center text-base font-semibold"
+                  >
+                    Book Now →
+                  </Link>
+                  <a
+                    href="tel:+14807933782"
+                    className="block text-center text-sm text-gray-400 hover:text-red-300"
+                  >
+                    (480) 793-3782
+                  </a>
+                </div>
+              </nav>
             </div>
-            <Link
-              href="/auth"
-              onClick={close}
-              className="btn-primary press block rounded-xl px-4 py-3.5 text-center text-base font-semibold"
-            >
-              Book Now →
-            </Link>
-            <a
-              href="tel:+14807933782"
-              className="block text-center text-sm text-gray-400 hover:text-red-300"
-            >
-              (480) 793-3782
-            </a>
-          </div>
-        </nav>
-      </div>
+          </>,
+          document.body
+        )}
     </>
   );
 }

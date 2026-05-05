@@ -693,38 +693,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Watch Us Work - autoplay video reel. Videos play muted + looped so
-          they behave like animated photos. No controls = no distraction.
-          The two portrait clips get their own narrower column on desktop. */}
-      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
-        <div className="reveal-on-scroll">
-          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Watch Us Work
-          </h2>
-          <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Real jobs. Real results.
-          </p>
-        </div>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {[
-            '/images/aad/6158071-hd_1920_1080_30fps.mp4',
-            '/images/aad/6158118-hd_1920_1080_30fps.mp4',
-            '/images/aad/6159205-hd_1920_1080_30fps.mp4',
-          ].map((src) => (
-            <video
-              key={src}
-              src={src}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="aspect-video w-full rounded-2xl border border-white/10 object-cover"
-            />
-          ))}
-        </div>
-      </section>
-
       {/* Recent Work - 16-photo gallery from the field. */}
       <section
         id="recent-work"
@@ -1004,9 +972,6 @@ const RECENT_WORK_PHOTOS: string[] = [
   '/images/aad/9.jpg',
   '/images/aad/10.jpg',
   '/images/aad/11.jpg',
-  '/images/aad/14.jpg',
-  '/images/aad/15.jpg',
-  '/images/aad/16.jpg',
 ];
 
 // Three reasons mapped to the three things customers actually weigh:
