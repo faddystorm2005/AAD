@@ -682,12 +682,10 @@ export default function Home() {
             Real jobs. Real results.
           </p>
         </div>
-        {/* Landscape clips — 2-col grid */}
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             '/images/aad/6158071-hd_1920_1080_30fps.mp4',
             '/images/aad/6158118-hd_1920_1080_30fps.mp4',
-            '/images/aad/6158070-hd_1920_1080_30fps.mp4',
             '/images/aad/6159205-hd_1920_1080_30fps.mp4',
           ].map((src) => (
             <video
@@ -697,24 +695,8 @@ export default function Home() {
               muted
               loop
               playsInline
+              preload="metadata"
               className="aspect-video w-full rounded-2xl border border-white/10 object-cover"
-            />
-          ))}
-        </div>
-        {/* Portrait clips — narrower cards side by side */}
-        <div className="mt-4 grid grid-cols-2 gap-4 max-w-xl mx-auto">
-          {[
-            '/images/aad/13460847_2160_3840_60fps.mp4',
-            '/images/aad/13461023_2160_3840_60fps.mp4',
-          ].map((src) => (
-            <video
-              key={src}
-              src={src}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="aspect-[9/16] w-full rounded-2xl border border-white/10 object-cover"
             />
           ))}
         </div>
@@ -891,8 +873,11 @@ export default function Home() {
             </ul>
           </nav>
         </div>
-        <div className="mx-auto mt-8 flex w-full max-w-5xl items-center justify-between border-t border-white/10 pt-6 text-sm text-gray-300">
+        <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
           <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
+          <p className="text-xs text-gray-600 italic">
+            &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
+          </p>
         </div>
       </footer>
 
@@ -962,6 +947,18 @@ const SERVICES = [
     priceLabel: 'Standalone or add-on, $80',
   },
   {
+    icon: '🪟',
+    title: 'Windshield Coating',
+    description: 'Hydrophobic glass treatment that repels rain and improves visibility at highway speeds. Lasts months, not weeks.',
+    priceLabel: 'Add-on, from $40',
+  },
+  {
+    icon: '🧴',
+    title: 'Leather Conditioning',
+    description: 'Deep clean and condition for leather seats and surfaces. Prevents cracking and restores that new-car softness.',
+    priceLabel: 'Add-on, from $10',
+  },
+  {
     icon: '📍',
     title: 'Mobile - We Come To You',
     description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
@@ -984,8 +981,8 @@ const RECENT_WORK_PHOTOS: string[] = [
   '/images/aad/9.jpg',
   '/images/aad/10.jpg',
   '/images/aad/11.jpg',
-  '/images/aad/bee.webp',
-  '/images/aad/695e6e710ecdce2e4be550be_how-much-ceramic-coating-durability.webp',
+  '/images/aad/12.jpg',
+  '/images/aad/13.jpg',
   '/images/aad/gallery-ford-king-ranch.jpg',
   '/images/aad/gallery-bmw-engine-bay.jpg',
   '/images/aad/gallery-ford-super-duty.jpg',
