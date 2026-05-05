@@ -20,6 +20,7 @@ import MobileBottomBar from '@/components/home/MobileBottomBar';
 import PagePolish from '@/components/home/PagePolish';
 import ServiceMapLoader from '@/components/ServiceMapLoader';
 import ServiceCard from '@/components/home/ServiceCard';
+import LazyVideo from '@/components/home/LazyVideo';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
   exterior: [
@@ -690,6 +691,30 @@ export default function Home() {
             caption="Ceramic coating, water beading"
             afterSide="left"
           />
+        </div>
+      </section>
+
+      {/* Watch Us Work - single Bentley interior clip, lazy-loaded so the
+          4K vertical 60fps file doesn't stall first paint. The video element
+          stays src-less until the LazyVideo IntersectionObserver fires when
+          the section scrolls into view. */}
+      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
+        <div className="reveal-on-scroll text-center">
+          <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Watch Us Work
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Bentley interior detail in progress.
+          </p>
+        </div>
+        <div className="mt-10 flex justify-center">
+          <div className="relative aspect-[9/16] w-full max-w-xs overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+            <LazyVideo
+              src="/images/aad/13460847_2160_3840_60fps.mp4"
+              ariaLabel="Bentley interior detailing in progress"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
         </div>
       </section>
 
