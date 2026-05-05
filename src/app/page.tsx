@@ -122,6 +122,14 @@ export default function Home() {
       {/* Hero */}
       <section className="relative" id="main-content" tabIndex={-1}>
         <div className="relative h-[60vh] min-h-[480px] w-full overflow-hidden">
+          {/* Blurred backdrop layer. Same image, heavily blurred and darkened,
+              sits behind the sharp hero img to add depth and color halo
+              when the foreground pans. Aria-hidden because the foreground
+              img already has the alt text. */}
+          <div className="hero-bg-back" aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={DASHBOARD_BANNER.src} alt="" />
+          </div>
           {/* Parallax wrapper: JS moves this div at 0.38x scroll speed.
               The img inside keeps animate-banner-pan on a separate element
               so the two transforms never conflict. */}
@@ -132,9 +140,15 @@ export default function Home() {
               alt="Mobile detailing in Austin - professional auto detailing at your location"
               fetchPriority="high"
               className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
+              style={{ objectPosition: 'center 55%' }}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
+          {/* Veil: lighter at the eyebrow line, darker toward the bottom so
+              the text and CTAs always have enough contrast. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black" />
+          {/* Vignette: subtle ellipse darkening at the corners to focus the
+              eye on the headline. Sits above the veil but below the spotlight. */}
+          <div aria-hidden className="hero-vignette pointer-events-none absolute inset-0" />
           {/* Soft red glow that follows the cursor for premium polish. */}
           <HeroSpotlight />
           <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end px-6 pb-12">
@@ -153,7 +167,7 @@ export default function Home() {
               className="animate-fade-up mt-5 max-w-xl text-lg text-gray-100 sm:text-xl"
               style={{ animationDelay: '160ms' }}
             >
-              Professional detailing brought right to your driveway, office, or garage. Interior, exterior, ceramic coatings, and paint correction. Booking takes about a minute.
+              Professional detailing brought right to your driveway, office, or garage. We bring everything we need. You don&apos;t lift a finger.
             </p>
             <div
               className="animate-fade-up mt-8 flex flex-wrap gap-3"

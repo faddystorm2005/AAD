@@ -523,6 +523,32 @@ button:disabled {
   will-change: transform;
 }
 
+/* Blurred backdrop sitting behind the sharp hero image. Adds depth and a
+   soft color halo around the edges of the panning foreground. Slightly
+   over-sized via inset:-40px so the blur edges never reveal the container. */
+.hero-bg-back {
+  position: absolute;
+  inset: -40px;
+  z-index: 0;
+}
+.hero-bg-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(24px) saturate(0.7) brightness(0.5);
+  transform: scale(1.15);
+}
+
+/* Subtle radial darkening at the corners. Sits above the veil but below
+   the cursor spotlight so the spotlight's screen blend reads cleanly. */
+.hero-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
 /* ---------------------------------------------------------------
  * Gallery cinematic image treatment.
  *
