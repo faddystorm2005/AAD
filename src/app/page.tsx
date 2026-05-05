@@ -814,6 +814,12 @@ export default function Home() {
 
 const SERVICES = [
   {
+    icon: '⭐',
+    title: 'Full Detail',
+    description: 'Complete interior and exterior reset. Hand wash, decontamination, and clay bar outside. Vacuum, shampoo, and full surface dressing inside.',
+    priceLabel: '',
+  },
+  {
     icon: '🚗',
     title: 'Exterior Detailing',
     description: 'Hand wash, decontamination, clay bar, and trim/tire dressing. Your paint reset to like-new.',
@@ -823,12 +829,6 @@ const SERVICES = [
     icon: '🛋️',
     title: 'Interior Detailing',
     description: 'Vacuum, shampoo carpets and seats, wipe and dress every surface. Cabin completely reset.',
-    priceLabel: '',
-  },
-  {
-    icon: '⭐',
-    title: 'Full Detail',
-    description: 'Complete interior and exterior reset. Hand wash, decontamination, and clay bar outside. Vacuum, shampoo, and full surface dressing inside.',
     priceLabel: '',
   },
   {
