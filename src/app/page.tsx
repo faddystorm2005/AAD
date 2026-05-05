@@ -63,10 +63,17 @@ export default function Home() {
         >
           <Link
             href="/"
-            className="text-sm font-bold uppercase tracking-wider text-white sm:text-base sm:tracking-[0.18em]"
+            className="flex shrink-0 items-center gap-2"
             aria-label="Austin Auto Detail home"
           >
-            Austin Auto Detail
+            <Image
+              src="/images/aad/logo.png"
+              alt="Austin Auto Detail"
+              width={180}
+              height={48}
+              priority
+              className="h-9 w-auto sm:h-11"
+            />
           </Link>
           <ul className="hidden list-none items-center gap-6 p-0 text-base font-medium text-gray-100 sm:flex">
             <li><a href="#services" className="hover:text-red-300">Services</a></li>
