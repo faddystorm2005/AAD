@@ -11,7 +11,7 @@ interface Stat {
 
 const STATS: Stat[] = [
   { value: 90, label: 'Minutes Saved Per Detail' },
-  { value: 3, suffix: '/day', label: 'Cars Max - No Rush Jobs' },
+  { value: 3, suffix: '/day', label: 'Hand-Detailed, Not Rushed' },
   { value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
 ];
 

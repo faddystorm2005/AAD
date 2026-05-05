@@ -23,7 +23,7 @@ const SERVICE_INCLUDES: Record<string, string[]> = {
     'Tire dressing & shine',
   ],
   interior: [
-    'Full vacuum — seats, floor, trunk',
+    'Full vacuum: seats, floor, trunk',
     'Dashboard & console detail',
     'Door panels & pockets',
     'Interior windows',
@@ -33,7 +33,7 @@ const SERVICE_INCLUDES: Record<string, string[]> = {
     'Complete exterior detail',
     'Complete interior detail',
     'Door jamb cleaning',
-    'Biggest transformation — best value',
+    'Biggest transformation, best value',
   ],
 };
 
@@ -263,52 +263,68 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Three service tier cards */}
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICE_TYPES.map((type, i) => (
-            <div
-              key={type}
-              className={`glass-card lift-hover scroll-card relative rounded-2xl p-6${type === 'full_detail' ? ' ring-1 ring-red-500/40' : ''}`}
-              data-stagger-i={i}
-            >
-              {type === 'full_detail' && (
-                <span className="absolute right-4 top-4 rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
-                  Most Popular
-                </span>
-              )}
-              <h3 className="text-xl font-bold text-white">
-                {SERVICE_TYPE_NAMES[type]}
-              </h3>
-              <ul className="mt-3 space-y-1.5">
-                {SERVICE_INCLUDES[type].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
-                    <svg className="h-3.5 w-3.5 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-5 space-y-3 border-t border-white/10 pt-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-base text-gray-200">Coupe / Sedan</span>
-                  <span className="text-xl font-bold text-red-300">${SERVICE_PRICES[type].small}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-base text-gray-200">SUV</span>
-                  <span className="text-xl font-bold text-red-300">${SERVICE_PRICES[type].suv}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-base text-gray-200">Truck / 3-Row</span>
-                  <span className="text-xl font-bold text-red-300">${SERVICE_PRICES[type].truck}</span>
+        {/* Three service tier cards. Full Detail spans full width on
+            sm+ screens as the headliner; Interior and Exterior fall
+            beneath in a 2-col grid. SERVICE_TYPES already orders
+            full_detail first so the natural flow lands correctly. */}
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {SERVICE_TYPES.map((type, i) => {
+            const isFeatured = type === 'full_detail';
+            return (
+              <div
+                key={type}
+                className={`scroll-card relative overflow-hidden rounded-2xl p-6 transition-transform duration-500 ${
+                  isFeatured
+                    ? 'sm:col-span-2 border border-red-500/50 bg-gradient-to-b from-red-500/[0.08] via-zinc-950 to-black px-6 py-8 sm:p-10 shadow-[0_0_60px_-10px_rgba(214,32,48,0.35)]'
+                    : 'glass-card lift-hover'
+                }`}
+                data-stagger-i={i}
+              >
+                {isFeatured && (
+                  <span className="absolute left-1/2 top-0 -translate-x-1/2 rounded-b-lg bg-red-600 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_4px_14px_rgba(214,32,48,0.4)]">
+                    Most Popular
+                  </span>
+                )}
+                <div className={isFeatured ? 'sm:grid sm:grid-cols-2 sm:gap-10' : ''}>
+                  <div>
+                    <h3 className={`mt-3 font-bold uppercase tracking-wider text-white ${isFeatured ? 'text-2xl sm:text-3xl' : 'text-xl'}`}>
+                      {SERVICE_TYPE_NAMES[type]}
+                    </h3>
+                    <ul className="mt-4 space-y-1.5">
+                      {SERVICE_INCLUDES[type].map((item) => (
+                        <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
+                          <svg className="h-3.5 w-3.5 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className={isFeatured ? 'mt-6 sm:mt-0 sm:flex sm:flex-col sm:justify-center' : ''}>
+                    <div className={`space-y-3 ${isFeatured ? 'sm:border-l sm:border-red-500/20 sm:pl-8' : 'mt-5 border-t border-white/10 pt-4'}`}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-base text-gray-200">Coupe / Sedan</span>
+                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${SERVICE_PRICES[type].small}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-base text-gray-200">SUV</span>
+                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${SERVICE_PRICES[type].suv}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-base text-gray-200">Truck / 3-Row</span>
+                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${SERVICE_PRICES[type].truck}</span>
+                      </div>
+                    </div>
+                    <Link
+                      href="/auth"
+                      className={`mt-5 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200 ${isFeatured ? 'sm:pl-8' : ''}`}
+                    >
+                      Book {SERVICE_TYPE_NAMES[type]} →
+                    </Link>
+                  </div>
                 </div>
               </div>
-              <Link
-                href="/auth"
-                className="mt-5 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200"
-              >
-                Book {SERVICE_TYPE_NAMES[type]} →
-              </Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Add-ons section */}
@@ -334,14 +350,17 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="reveal-on-scroll mt-8 flex items-start gap-4 rounded-2xl border border-amber-500/30 bg-amber-950/40 px-5 py-4 sm:items-center">
+        {/* Returning customer banner: full-width dark card with a solid
+            red accent bar on the left, matching the cinematic preview. */}
+        <div className="reveal-on-scroll relative mt-8 flex items-start gap-4 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/80 px-5 py-5 pl-6 sm:items-center">
+          <span aria-hidden className="absolute left-0 top-0 h-full w-1 bg-red-500" />
           <span className="mt-0.5 shrink-0 text-2xl sm:mt-0" aria-hidden>🔁</span>
           <div>
-            <p className="font-semibold text-amber-100">
-              Come back, save {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}%
+            <p className="font-semibold uppercase tracking-wider text-white">
+              Returning customer? {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% off, no code needed.
             </p>
-            <p className="mt-0.5 text-sm text-amber-200/80">
-              Every returning customer gets {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% off their next detail — automatically applied. No codes, no hoops. Final quote may adjust for vehicle condition.
+            <p className="mt-1 text-sm text-gray-300">
+              The discount is applied automatically at checkout. Final quote may adjust for vehicle condition.
             </p>
           </div>
         </div>
@@ -378,7 +397,7 @@ export default function Home() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
-                alt={`${vehicle} — ${service} by Austin Auto Detail`}
+                alt={`${vehicle}, ${service} by Austin Auto Detail`}
                 loading="lazy"
                 className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
