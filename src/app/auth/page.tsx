@@ -213,7 +213,7 @@ function AuthInner() {
                     💻 On a different device?
                   </p>
                   <p className="mt-1 text-sm text-gray-200">
-                    The email also has a numeric code. Type it here to sign in on this device. <strong>Don&apos;t click the link first</strong> &mdash; that uses up the code.
+                    The email also has a numeric code. Type it here to sign in on this device. <strong>Don&apos;t click the link first</strong>, that uses up the code.
                   </p>
                   <form onSubmit={handleVerifyCode} className="mt-3 space-y-3">
                     <input

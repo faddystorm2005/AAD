@@ -374,7 +374,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
                 onClick={handleManualRefresh}
                 className="press rounded-lg border border-blue-500/40 bg-blue-950/40 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-900/40"
               >
-                I paid &mdash; check now
+                I paid. Check now
               </button>
             </div>
           )}
