@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Step {
   number: string;
@@ -75,6 +75,14 @@ function StepIcon({ name }: { name: Step['icon'] }) {
 
 export default function Timeline() {
   const rootRef = useRef<HTMLOListElement>(null);
+  const [expanded, setExpanded] = useState<Set<number>>(new Set());
+
+  const toggle = (i: number) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
 
   useEffect(() => {
     const root = rootRef.current;
@@ -125,9 +133,20 @@ export default function Timeline() {
             {step.number}
           </p>
           <h3 className="mt-2 text-lg font-bold text-white sm:text-xl">{step.title}</h3>
-          <p className="mt-2 max-w-xs text-base leading-relaxed text-gray-200 sm:max-w-[18rem]">
-            {step.description}
-          </p>
+          <button
+            type="button"
+            onClick={() => toggle(i)}
+            aria-expanded={expanded.has(i) ? 'true' : 'false'}
+            className="mt-2 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          >
+            <span className={`text-lg leading-none transition-transform duration-200 ${expanded.has(i) ? 'rotate-45' : ''}`} aria-hidden>+</span>
+            <span>{expanded.has(i) ? 'Hide' : 'Learn more'}</span>
+          </button>
+          {expanded.has(i) && (
+            <p className="mt-2 max-w-xs text-base leading-relaxed text-gray-200 sm:max-w-[18rem]">
+              {step.description}
+            </p>
+          )}
         </li>
       ))}
     </ol>

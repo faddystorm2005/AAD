@@ -19,6 +19,7 @@ import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 import MobileBottomBar from '@/components/home/MobileBottomBar';
 import PagePolish from '@/components/home/PagePolish';
 import ServiceMapLoader from '@/components/ServiceMapLoader';
+import ServiceCard from '@/components/home/ServiceCard';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
   exterior: [
@@ -241,24 +242,12 @@ export default function Home() {
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s, i) => (
             <div key={s.title} className="scroll-card" data-stagger-i={i}>
-            <TiltCard
-              className="glass-card rounded-2xl p-6"
-            >
-              <div className="text-3xl">{s.icon}</div>
-              <h3 className="mt-4 text-lg font-bold text-white">{s.title}</h3>
-              <p className="mt-2 text-base text-gray-200">{s.description}</p>
-              {s.priceLabel ? (
-                <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-red-300">
-                  {s.priceLabel}
-                </p>
-              ) : null}
-              <Link
-                href="/auth"
-                className="mt-4 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200"
-              >
-                Book this service →
-              </Link>
-            </TiltCard>
+              <ServiceCard
+                icon={s.icon}
+                title={s.title}
+                description={s.description}
+                priceLabel={s.priceLabel || undefined}
+              />
             </div>
           ))}
         </div>
