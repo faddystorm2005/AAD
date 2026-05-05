@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 
   const { data: booking } = await supabaseAdmin
     .from('bookings')
-    .select('id, user_id, status, service, cancel_requested_at')
+    .select('id, user_id, status, service, cancel_requested_at, credit_applied, promo_code_used')
     .eq('id', body.bookingId)
     .maybeSingle();
 
@@ -94,14 +94,21 @@ export async function POST(req: NextRequest) {
 
   // Try to set 'cancelled' first; fall back to 'declined' if the enum
   // doesn't have it yet (matches the existing /api/bookings/cancel flow).
-  let { error: cancelErr } = await supabaseAdmin
+  // Clear credit_applied and promo_code_used in the same UPDATE so a
+  // duplicate approve (race or retry) skips the refund. Scope by current
+  // status so only one writer wins.
+  let { data: cancelledRows, error: cancelErr } = await supabaseAdmin
     .from('bookings')
     .update({
       status: 'cancelled',
       cancel_reason: cancelLabel,
       cancelled_at: new Date().toISOString(),
+      credit_applied: 0,
+      promo_code_used: null,
     })
-    .eq('id', booking.id);
+    .eq('id', booking.id)
+    .eq('status', booking.status)
+    .select('id');
 
   if (cancelErr) {
     const fallback = await supabaseAdmin
@@ -110,9 +117,14 @@ export async function POST(req: NextRequest) {
         status: 'declined',
         decline_reason: cancelLabel,
         declined_at: new Date().toISOString(),
+        credit_applied: 0,
+        promo_code_used: null,
       })
-      .eq('id', booking.id);
+      .eq('id', booking.id)
+      .eq('status', booking.status)
+      .select('id');
     cancelErr = fallback.error;
+    cancelledRows = fallback.data;
   }
 
   if (cancelErr) {
@@ -122,15 +134,42 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Issue account credit atomically via the issue_credit RPC (P0-3 fix).
-  // credit_balance + amount in a single UPDATE is race-safe; the RPC keeps
-  // the call-site consistent with the debit side.
-  if (creditAmount > 0) {
+  const cancelledThisCall = (cancelledRows?.length ?? 0) > 0;
+
+  // Refund any account credit the customer originally spent on the booking,
+  // plus the goodwill credit the admin chose to issue. Both go through
+  // issue_credit so credit_balance is updated atomically (P0-3 pattern).
+  // Skip the refund if our UPDATE was a no-op (another writer beat us).
+  const creditRefund = Number(booking.credit_applied ?? 0);
+  const totalCreditToIssue =
+    (cancelledThisCall ? creditRefund : 0) + creditAmount;
+  if (totalCreditToIssue > 0) {
     const { error: creditErr } = await supabaseAdmin
-      .rpc('issue_credit', { p_user_id: booking.user_id, p_amount: creditAmount });
+      .rpc('issue_credit', { p_user_id: booking.user_id, p_amount: totalCreditToIssue });
     if (creditErr) {
       // Log but don't reverse the cancellation - admin can manually adjust.
       console.error('[cancel-approve] credit increment failed', creditErr);
+    }
+  }
+
+  // Release the promo code use so the code is available again.
+  if (cancelledThisCall && booking.promo_code_used) {
+    const { data: promoRow } = await supabaseAdmin
+      .from('promo_codes')
+      .select('id')
+      .eq('code', booking.promo_code_used)
+      .maybeSingle();
+    if (promoRow?.id) {
+      const { error: releaseErr } = await supabaseAdmin.rpc('release_promo_use', {
+        p_promo_id: promoRow.id,
+      });
+      if (releaseErr) {
+        console.error('[cancel-approve] promo release failed', {
+          bookingId: booking.id,
+          promoCode: booking.promo_code_used,
+          err: releaseErr,
+        });
+      }
     }
   }
 

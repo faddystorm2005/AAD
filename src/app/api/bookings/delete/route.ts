@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   const [{ data: booking, error: getErr }, { data: profile }] = await Promise.all([
     supabaseAdmin
       .from('bookings')
-      .select('id, user_id, status')
+      .select('id, user_id, status, credit_applied, promo_code_used')
       .eq('id', body.bookingId)
       .single(),
     supabaseAdmin.from('profiles').select('is_admin').eq('id', userId).single(),
@@ -86,6 +86,50 @@ export async function POST(req: NextRequest) {
 
   if (deleteErr) {
     return NextResponse.json({ error: deleteErr.message }, { status: 500 });
+  }
+
+  // Refund credit + release promo for non-terminal deletions. 'declined'
+  // never claimed the discount in the first place (the booking died before
+  // payment); 'completed' already redeemed it. Anything else - 'pending'
+  // is the customer-deletable case, plus admin-only deletions of approved/
+  // confirmed/in_progress - had its credit and promo claimed at create time
+  // and needs reversing.
+  const REDEEMED = new Set(['declined', 'completed']);
+  if (!REDEEMED.has(booking.status)) {
+    const creditApplied = Number(booking.credit_applied ?? 0);
+    if (creditApplied > 0) {
+      const { error: creditErr } = await supabaseAdmin.rpc('issue_credit', {
+        p_user_id: booking.user_id,
+        p_amount: creditApplied,
+      });
+      if (creditErr) {
+        console.error('[delete] credit refund failed', {
+          bookingId: body.bookingId,
+          userId: booking.user_id,
+          creditApplied,
+          err: creditErr,
+        });
+      }
+    }
+    if (booking.promo_code_used) {
+      const { data: promoRow } = await supabaseAdmin
+        .from('promo_codes')
+        .select('id')
+        .eq('code', booking.promo_code_used)
+        .maybeSingle();
+      if (promoRow?.id) {
+        const { error: releaseErr } = await supabaseAdmin.rpc('release_promo_use', {
+          p_promo_id: promoRow.id,
+        });
+        if (releaseErr) {
+          console.error('[delete] promo release failed', {
+            bookingId: body.bookingId,
+            promoCode: booking.promo_code_used,
+            err: releaseErr,
+          });
+        }
+      }
+    }
   }
 
   return NextResponse.json({ ok: true });

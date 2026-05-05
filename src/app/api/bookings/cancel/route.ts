@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
   const [{ data: booking }, { data: profile }] = await Promise.all([
     supabaseAdmin
       .from('bookings')
-      .select('id, user_id, status')
+      .select('id, user_id, status, credit_applied, promo_code_used')
       .eq('id', bookingId)
       .maybeSingle(),
     supabaseAdmin.from('profiles').select('is_admin').eq('id', userId).maybeSingle(),
@@ -99,15 +99,23 @@ export async function POST(req: NextRequest) {
     ? `Cancelled by admin${reason ? `: ${reason}` : ''}`
     : `Cancelled by customer${reason ? `: ${reason}` : ''}`;
 
-  // Try with the new 'cancelled' status + new columns.
-  let { error: cancelErr } = await supabaseAdmin
+  // Try with the new 'cancelled' status + new columns. Clear credit_applied
+  // and promo_code_used in the same UPDATE so a second cancel call (race or
+  // retry) sees zero/null and skips the refund - prevents double-refund.
+  // Scope the UPDATE with .eq('status', booking.status) so only one writer
+  // wins if two cancel calls fire simultaneously.
+  let { data: cancelledRows, error: cancelErr } = await supabaseAdmin
     .from('bookings')
     .update({
       status: 'cancelled',
       cancel_reason: cancelLabel,
       cancelled_at: new Date().toISOString(),
+      credit_applied: 0,
+      promo_code_used: null,
     })
-    .eq('id', bookingId);
+    .eq('id', bookingId)
+    .eq('status', booking.status)
+    .select('id');
 
   if (cancelErr) {
     // Common cause: enum doesn't have 'cancelled' yet OR cancel_* columns
@@ -119,9 +127,14 @@ export async function POST(req: NextRequest) {
         status: 'declined',
         decline_reason: cancelLabel,
         declined_at: new Date().toISOString(),
+        credit_applied: 0,
+        promo_code_used: null,
       })
-      .eq('id', bookingId);
+      .eq('id', bookingId)
+      .eq('status', booking.status)
+      .select('id');
     cancelErr = fallback.error;
+    cancelledRows = fallback.data;
   }
 
   if (cancelErr) {
@@ -129,6 +142,53 @@ export async function POST(req: NextRequest) {
       { error: cancelErr.message || 'Failed to cancel booking' },
       { status: 500 }
     );
+  }
+
+  // If our UPDATE didn't touch a row, another cancel call beat us to it.
+  // Skip refund/release - the winning call already handled them.
+  const cancelledThisCall = (cancelledRows?.length ?? 0) > 0;
+
+  if (cancelledThisCall) {
+    // Refund any account credit that was spent on this booking.
+    const creditApplied = Number(booking.credit_applied ?? 0);
+    if (creditApplied > 0) {
+      const { error: creditErr } = await supabaseAdmin.rpc('issue_credit', {
+        p_user_id: booking.user_id,
+        p_amount: creditApplied,
+      });
+      if (creditErr) {
+        console.error('[cancel] credit refund failed', {
+          bookingId,
+          userId: booking.user_id,
+          creditApplied,
+          err: creditErr,
+        });
+      }
+    }
+
+    // Release the promo code use so the customer (or someone else) can use
+    // it again. Look up the promo by code since the booking only stores the
+    // code string, not the id.
+    const promoCode: string | null = booking.promo_code_used ?? null;
+    if (promoCode) {
+      const { data: promoRow } = await supabaseAdmin
+        .from('promo_codes')
+        .select('id')
+        .eq('code', promoCode)
+        .maybeSingle();
+      if (promoRow?.id) {
+        const { error: releaseErr } = await supabaseAdmin.rpc('release_promo_use', {
+          p_promo_id: promoRow.id,
+        });
+        if (releaseErr) {
+          console.error('[cancel] promo release failed', {
+            bookingId,
+            promoCode,
+            err: releaseErr,
+          });
+        }
+      }
+    }
   }
 
   // Pull the booking off the admin's Google Calendar.
