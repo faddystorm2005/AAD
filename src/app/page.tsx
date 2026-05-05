@@ -670,6 +670,56 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Watch Us Work - autoplay video reel. Videos play muted + looped so
+          they behave like animated photos. No controls = no distraction.
+          The two portrait clips get their own narrower column on desktop. */}
+      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
+        <div className="reveal-on-scroll">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            Watch Us Work
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Real jobs. Real results.
+          </p>
+        </div>
+        {/* Landscape clips — 2-col grid */}
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {[
+            '/images/aad/6158071-hd_1920_1080_30fps.mp4',
+            '/images/aad/6158118-hd_1920_1080_30fps.mp4',
+            '/images/aad/6158070-hd_1920_1080_30fps.mp4',
+            '/images/aad/6159205-hd_1920_1080_30fps.mp4',
+          ].map((src) => (
+            <video
+              key={src}
+              src={src}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="aspect-video w-full rounded-2xl border border-white/10 object-cover"
+            />
+          ))}
+        </div>
+        {/* Portrait clips — narrower cards side by side */}
+        <div className="mt-4 grid grid-cols-2 gap-4 max-w-xl mx-auto">
+          {[
+            '/images/aad/13460847_2160_3840_60fps.mp4',
+            '/images/aad/13461023_2160_3840_60fps.mp4',
+          ].map((src) => (
+            <video
+              key={src}
+              src={src}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="aspect-[9/16] w-full rounded-2xl border border-white/10 object-cover"
+            />
+          ))}
+        </div>
+      </section>
+
       {/* Recent Work - 16-photo gallery from the field. */}
       <section
         id="recent-work"
