@@ -325,12 +325,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'DB update failed' }, { status: 500 });
     }
 
-    // Belt-and-suspenders: deposit_paid=true regardless of status.
+    // Belt-and-suspenders: deposit_paid=true for non-terminal statuses
+    // even if the primary update was a no-op. Skip terminal statuses
+    // (cancelled, declined, completed) so a delayed/replayed webhook
+    // can't re-mark a dead booking as paid.
     await supabaseAdmin
       .from('bookings')
       .update({ deposit_paid: true })
       .eq('id', bookingId)
-      .eq('deposit_paid', false);
+      .eq('deposit_paid', false)
+      .in('status', ['approved', 'pending', 'confirmed', 'in_progress']);
 
     // Sync to Google Calendar.
     const adminId = await findAdminUserId();
