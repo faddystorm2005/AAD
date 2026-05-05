@@ -429,18 +429,28 @@ export default function Home() {
           >
             {/* Ambient glow + base background */}
             <div aria-hidden className="tiktok-card-bg pointer-events-none absolute inset-0" />
-            {/* TikTok icon panel */}
-            <div className="relative flex shrink-0 items-center justify-center border-b border-white/5 bg-black/40 px-10 py-8 sm:border-b-0 sm:border-r sm:border-white/5 sm:px-14 sm:py-10">
-              <div className="flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-zinc-900 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-red-500/60 group-hover:shadow-[0_0_28px_rgba(214,32,48,0.4)]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-9 w-9 text-white"
-                  aria-hidden="true"
-                >
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
-                </svg>
+            {/* TikTok preview video panel - shows the actual content. The
+                small TikTok glyph overlays the bottom-right corner so the
+                card still reads as "TikTok" at a glance. */}
+            <div className="relative flex shrink-0 items-center justify-center border-b border-white/5 bg-black/40 p-4 sm:border-b-0 sm:border-r sm:border-white/5 sm:p-6">
+              <div className="relative aspect-[9/16] w-40 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-all duration-500 group-hover:ring-red-500/60 group-hover:shadow-[0_0_28px_rgba(214,32,48,0.4)] sm:w-44">
+                <LazyVideo
+                  src="/images/aad/tiktok-mercedes.mp4"
+                  ariaLabel="Mercedes detail TikTok preview"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                {/* TikTok glyph badge overlay */}
+                <div className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-lg bg-black/70 ring-1 ring-white/20 backdrop-blur-sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="h-4 w-4 text-white"
+                    aria-hidden="true"
+                  >
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
+                  </svg>
+                </div>
               </div>
             </div>
             {/* Content panel */}
