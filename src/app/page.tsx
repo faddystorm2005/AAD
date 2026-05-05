@@ -901,8 +901,12 @@ const RECENT_WORK_PHOTOS: string[] = [
   '/images/aad/9.jpg',
   '/images/aad/10.jpg',
   '/images/aad/11.jpg',
+  '/images/aad/bee.webp',
+  '/images/aad/695e6e710ecdce2e4be550be_how-much-ceramic-coating-durability.webp',
   '/images/aad/gallery-ford-king-ranch.jpg',
   '/images/aad/gallery-bmw-engine-bay.jpg',
+  '/images/aad/gallery-ford-super-duty.jpg',
+  '/images/aad/gallery-mercedes-gle-interior.jpg',
 ];
 
 // Three reasons mapped to the three things customers actually weigh:
