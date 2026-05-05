@@ -543,14 +543,11 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Trust pillars */}
+        {/* Trust pillars - 3D mouse-tilt on hover via TiltCard. */}
         <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {TRUST_PILLARS.map((p, i) => (
-            <div
-              key={p.title}
-              className="glass-card scroll-card rounded-2xl p-6 text-center"
-              data-stagger-i={i}
-            >
+            <div key={p.title} className="scroll-card" data-stagger-i={i}>
+            <TiltCard className="glass-card rounded-2xl p-6 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-2xl">
                 {p.icon}
               </div>
@@ -558,6 +555,7 @@ export default function Home() {
                 {p.title}
               </h3>
               <p className="mt-2 text-base text-gray-200">{p.description}</p>
+            </TiltCard>
             </div>
           ))}
         </div>
@@ -653,15 +651,15 @@ export default function Home() {
           </p>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 16 }, (_, i) => i + 1).map((n, i) => (
+          {RECENT_WORK_PHOTOS.map((src, i) => (
             <div
-              key={n}
+              key={src}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-gray-900"
               data-stagger-i={i}
             >
               <Image
-                src={`/images/aad/${n}.jpg`}
-                alt={`Austin Auto Detail recent work, photo ${n}`}
+                src={src}
+                alt={`Austin Auto Detail recent work, photo ${i + 1}`}
                 width={1200}
                 height={900}
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
@@ -886,6 +884,25 @@ const SERVICES = [
     description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
     priceLabel: '',
   },
+];
+
+// Recent Work gallery photos. Listed explicitly so deleting a file from
+// /public/images/aad/ doesn't show a broken square on the homepage.
+// Mix of numbered files and the named gallery shots that actually exist
+// on disk after the most recent cleanup.
+const RECENT_WORK_PHOTOS: string[] = [
+  '/images/aad/1.jpg',
+  '/images/aad/2.jpg',
+  '/images/aad/3.jpg',
+  '/images/aad/4.jpg',
+  '/images/aad/5.jpg',
+  '/images/aad/6.jpg',
+  '/images/aad/7.jpg',
+  '/images/aad/9.jpg',
+  '/images/aad/10.jpg',
+  '/images/aad/11.jpg',
+  '/images/aad/gallery-ford-king-ranch.jpg',
+  '/images/aad/gallery-bmw-engine-bay.jpg',
 ];
 
 // Three reasons mapped to the three things customers actually weigh:
