@@ -745,13 +745,6 @@ export default function Home() {
             </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
-                src="/images/aad/6158071-hd_1920_1080_30fps.mp4"
-                ariaLabel="Austin Auto Detail at work"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
-              <LazyVideo
                 src="/images/aad/6158118-hd_1920_1080_30fps.mp4"
                 ariaLabel="Austin Auto Detail at work"
                 className="absolute inset-0 h-full w-full object-cover"
