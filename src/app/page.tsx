@@ -735,7 +735,7 @@ export default function Home() {
             Recent Work
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Sixteen of the vehicles we&apos;ve detailed lately
+            A selection of vehicles we&apos;ve detailed recently
           </p>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -987,19 +987,26 @@ const SERVICES = [
 // Mix of numbered files and the named gallery shots that actually exist
 // on disk after the most recent cleanup.
 const RECENT_WORK_PHOTOS: string[] = [
+  '/images/aad/gallery-ford-super-duty.jpg',
+  '/images/aad/gallery-mercedes-gle-interior.jpg',
+  '/images/aad/gallery-audi-s4-red-leather.jpg',
+  '/images/aad/gallery-toyota-tundra-console.jpg',
+  '/images/aad/gallery-nissan-rogue-interior.jpg',
+  '/images/aad/gallery-bmw-engine-bay.jpg',
+  '/images/aad/gallery-suv-cargo-area.jpg',
+  '/images/aad/gallery-ford-king-ranch.jpg',
   '/images/aad/1.jpg',
   '/images/aad/2.jpg',
   '/images/aad/3.jpg',
   '/images/aad/4.jpg',
-  '/images/aad/5.jpg',
   '/images/aad/6.jpg',
   '/images/aad/7.jpg',
   '/images/aad/9.jpg',
   '/images/aad/10.jpg',
   '/images/aad/11.jpg',
-  '/images/aad/gallery-ford-king-ranch.jpg',
-  '/images/aad/gallery-bmw-engine-bay.jpg',
-  '/images/aad/gallery-ford-super-duty.jpg',
+  '/images/aad/14.jpg',
+  '/images/aad/15.jpg',
+  '/images/aad/16.jpg',
 ];
 
 // Three reasons mapped to the three things customers actually weigh:

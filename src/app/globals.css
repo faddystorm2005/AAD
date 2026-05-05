@@ -605,11 +605,14 @@ button:disabled {
   transform: scaleY(1);
 }
 
-/* Desktop (>= 640px): horizontal connector between icons. */
+/* Desktop (>= 640px): horizontal connector between icons.
+   Icons are left-aligned (sm:items-start), so left edge of icon = 0,
+   right edge = 56px. Connector runs from right-of-icon to left edge of
+   the next column (= 100% of the li width in a gap-0 grid). */
 @media (min-width: 640px) {
   .aad-connector {
-    left: calc(50% + 28px);
-    top: 28px;
+    left: 56px;
+    top: 27px;
     width: calc(100% - 56px);
     height: 2px;
   }
@@ -704,6 +707,12 @@ button:disabled {
     animation: none !important;
     transform: none !important;
   }
+}
+
+/* ── Mobile nav hamburger button ────────────────────────────────────────── */
+.mobile-nav-toggle {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 /* ── Sticky mobile bottom bar ────────────────────────────────────────────── */
