@@ -741,7 +741,7 @@ button:disabled {
     transform: translateY(0);
   }
   body.has-bottom-bar {
-    padding-bottom: 80px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
 }
 @media (prefers-reduced-motion: reduce) {

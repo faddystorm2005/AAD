@@ -694,26 +694,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Watch Us Work - single Bentley interior clip, lazy-loaded so the
-          4K vertical 60fps file doesn't stall first paint. The video element
-          stays src-less until the LazyVideo IntersectionObserver fires when
-          the section scrolls into view. */}
+      {/* Watch Us Work - lazy-loaded so the videos don't stall first paint.
+          Each <video> stays src-less until LazyVideo's IntersectionObserver
+          fires when this section scrolls into view. Portrait Bentley clip
+          + landscape clip side-by-side on desktop, stacked on mobile. */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll text-center">
           <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Watch Us Work
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Bentley interior detail in progress.
+            Real jobs. Real results.
           </p>
         </div>
-        <div className="mt-10 flex justify-center">
-          <div className="relative aspect-[9/16] w-full max-w-xs overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-stretch">
+          {/* Bentley portrait (left column on desktop) */}
+          <div className="relative mx-auto aspect-[9/16] w-full max-w-xs overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 sm:mx-0 sm:w-1/3 sm:max-w-none">
             <LazyVideo
               src="/images/aad/13460847_2160_3840_60fps.mp4"
               ariaLabel="Bentley interior detailing in progress"
               className="absolute inset-0 h-full w-full object-cover"
             />
+          </div>
+          {/* Three landscape clips stacked (right column on desktop) */}
+          <div className="flex flex-1 flex-col gap-4">
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+              <LazyVideo
+                src="/images/aad/6158071-hd_1920_1080_30fps.mp4"
+                ariaLabel="Austin Auto Detail at work"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+              <LazyVideo
+                src="/images/aad/6158118-hd_1920_1080_30fps.mp4"
+                ariaLabel="Austin Auto Detail at work"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+              <LazyVideo
+                src="/images/aad/6159205-hd_1920_1080_30fps.mp4"
+                ariaLabel="Austin Auto Detail at work"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
