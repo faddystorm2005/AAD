@@ -95,7 +95,7 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
               aria-hidden="true"
             />
             <span
-              className={`w-full break-words text-center text-[10px] leading-tight ${
+              className={`w-full break-words text-center text-[11px] leading-tight sm:text-xs ${
                 status === 'done'
                   ? 'text-gray-300'
                   : status === 'current'
@@ -321,7 +321,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
                 <div className="mt-1">
                   <BookingWeather date={b.scheduled_at} compact />
                 </div>
-                <p className="mt-1 text-sm text-gray-300">
+                <p className="mt-1 break-words text-sm text-gray-300">
                   {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
                 </p>
                 {status === 'declined' && b.decline_reason && (

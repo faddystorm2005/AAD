@@ -715,6 +715,15 @@ button:disabled {
   touch-action: manipulation;
 }
 
+/* ── Modal backdrop with iOS safe-area padding ───────────────────────────── */
+/* Used by BookingForm so the modal doesn't render under the iPhone notch
+   or home indicator. max() falls back to 1.5rem on devices without safe
+   areas (most Android, all desktop). */
+.modal-safe-padding {
+  padding-top: max(env(safe-area-inset-top), 1.5rem);
+  padding-bottom: max(env(safe-area-inset-bottom), 1.5rem);
+}
+
 /* ── Sticky mobile bottom bar ────────────────────────────────────────────── */
 .mobile-bottom-bar {
   position: fixed;

@@ -416,7 +416,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
         <div className="glass-card space-y-5 rounded-3xl p-6 sm:p-8">
           <div>
             <p className="text-sm uppercase tracking-wider text-gray-300">Booking ID</p>
-            <p className="mt-1 font-mono text-base text-white sm:text-lg">{booking.id}</p>
+            <p className="mt-1 break-all font-mono text-sm text-white sm:text-base">{booking.id}</p>
           </div>
 
           <div>
@@ -435,7 +435,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
 
           <div>
             <p className="text-sm uppercase tracking-wider text-gray-300">We&apos;ll come to</p>
-            <p className="mt-1 text-base text-white">
+            <p className="mt-1 break-words text-base text-white">
               {booking.address}{booking.unit ? ` ${booking.unit}` : ''}, {booking.city}, {booking.state} {booking.zip}
             </p>
           </div>

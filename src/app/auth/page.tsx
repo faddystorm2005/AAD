@@ -249,7 +249,7 @@ function AuthInner() {
                   setCode('');
                   setError('');
                 }}
-                className="press w-full rounded-lg border border-white/20 bg-black/30 px-4 py-2.5 text-sm font-medium text-gray-200 hover:bg-black/50"
+                className="press w-full rounded-lg border border-white/20 bg-black/30 px-4 py-3 text-base font-semibold text-gray-200 hover:bg-black/50"
               >
                 Use a different email
               </button>
@@ -278,6 +278,14 @@ function AuthInner() {
                 Or use your email
               </p>
 
+              {/* Inline error sits above the form so users see validation
+                  without scrolling on mobile. */}
+              {error && (
+                <div className="mb-4 rounded-lg border border-red-700 bg-red-900/50 p-3 text-base text-red-200">
+                  {error}
+                </div>
+              )}
+
               <form onSubmit={handleMagicLink} className="space-y-3">
                 <input
                   id="email"
@@ -287,29 +295,23 @@ function AuthInner() {
                   required
                   autoComplete="email"
                   aria-label="Email address"
-                  className="block w-full rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                  className="block w-full rounded-lg border border-gray-700 bg-gray-900/60 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                   placeholder="your@email.com"
                 />
 
                 <button
                   type="submit"
                   disabled={loadingGoogle || loadingMagic || !email.trim()}
-                  className="press w-full rounded-lg border border-gray-600 bg-transparent px-4 py-2.5 text-sm font-medium text-gray-200 hover:border-gray-400 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="press w-full rounded-lg border border-gray-600 bg-transparent px-4 py-3 text-base font-semibold text-gray-200 hover:border-gray-400 hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loadingMagic ? 'Sending link...' : 'Send me a sign-in code'}
                 </button>
               </form>
 
-              <p className="mt-4 text-center text-xs text-gray-500">
+              <p className="mt-4 text-center text-sm text-gray-400">
                 We&apos;ll email a link + code. First time? Account created automatically.
               </p>
             </>
-          )}
-
-          {error && (
-            <div className="mt-4 rounded-lg border border-red-700 bg-red-900/50 p-3 text-sm text-red-200">
-              {error}
-            </div>
           )}
         </div>
       </div>

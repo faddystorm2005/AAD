@@ -496,7 +496,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   };
 
   return (
-    <div ref={modalRef} className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 overflow-y-auto py-6 animate-fade-in">
+    <div
+      ref={modalRef}
+      className="modal-safe-padding fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 overflow-y-auto animate-fade-in"
+    >
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
@@ -511,7 +514,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
             onClick={onClose}
             disabled={isProcessing}
             aria-label="Close booking form"
-            className="press shrink-0 rounded-full border border-white/20 bg-white/5 p-3 text-xl text-gray-300 hover:bg-white/10 hover:text-white disabled:opacity-50"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-xl text-gray-300 hover:bg-white/10 hover:text-white disabled:opacity-50"
           >
             ✕
           </button>
@@ -739,7 +742,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   <p className="text-base text-gray-300">Checking what&apos;s open...</p>
                 ) : availability ? (
                   <>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       {SLOT_TIMES.map((time) => {
                         const slot = availability.slots.find((s) => s.time === time)!;
                         const usable = ceramic ? slot.availableForCeramic : slot.availableForRegular;
@@ -761,20 +764,20 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                               if (error) setError('');
                               setFormData((prev) => ({ ...prev, slotTime: time }));
                             }}
-                            className={`rounded-xl border-2 px-3 py-4 text-base transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                            className={`min-h-[72px] rounded-xl border-2 px-2 py-3 text-base transition-colors disabled:opacity-40 disabled:cursor-not-allowed sm:px-3 sm:py-4 ${
                               isSelected
-                                ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50'
+                                ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50 ring-2 ring-red-400/40'
                                 : usable
                                 ? 'border-gray-700 bg-gray-900 text-white hover:border-gray-500'
                                 : 'border-gray-800 bg-gray-900/50 text-gray-500'
                             }`}
                           >
-                            <p className="text-base font-bold">{slot.label}</p>
-                            <p className="mt-1 text-xs uppercase tracking-wider opacity-90">
+                            <p className="text-sm font-bold sm:text-base">{slot.label}</p>
+                            <p className="mt-1 text-[11px] uppercase tracking-wider opacity-90 sm:text-xs">
                               {usable
                                 ? slot.takenCount === 0
                                   ? 'Open'
-                                  : `${slot.takenCount}/${slot.perSlotCapacity} booked`
+                                  : `${slot.takenCount}/${slot.perSlotCapacity}`
                                 : reason}
                             </p>
                           </button>
