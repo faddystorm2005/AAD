@@ -14,6 +14,7 @@ import HeroStatCounter from '@/components/HeroStatCounter';
 import HeroParallax from '@/components/home/HeroParallax';
 import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
+import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
   exterior: [
@@ -457,9 +458,9 @@ export default function Home() {
                 Watch Every Detail Live
               </h2>
               <p className="mt-3 max-w-lg text-base leading-relaxed text-gray-300">
-                Before &amp; afters. Deep-clean transformations. The
+                Before and afters. Deep-clean transformations. The
                 satisfying moments most customers never see. Real cars,
-                real Austin drivers &mdash; follow along and see what
+                real Austin drivers. Follow along and see what
                 yours could look like.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -634,17 +635,42 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Recent Work - 16-photo gallery from the field. Files live at
-          /images/aad/1.jpg through 16.jpg.
+      {/* See the Transformation. Three before/after sliders on cropped
+          composite images. TODO: replace with real before/after pairs from
+          Alex when he sends them (4-6 pairs, see migration plan). */}
+      <section
+        id="transformations"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
+      >
+        <div className="reveal-on-scroll">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            See the Transformation
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            Drag the slider on each photo to see the difference.
+          </p>
+        </div>
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* TODO: replace with real before/after pair from Alex */}
+          <BeforeAfterSlider
+            src="/images/aad/before-after-paint-1.jpg"
+            caption="Black hood, paint correction"
+          />
+          {/* TODO: replace with real before/after pair from Alex */}
+          <BeforeAfterSlider
+            src="/images/aad/before-after-paint-2.webp"
+            caption="Audi S5, swirl mark removal"
+          />
+          {/* TODO: replace with real before/after pair from Alex */}
+          <BeforeAfterSlider
+            src="/images/aad/before-after-ceramic.webp"
+            caption="Ceramic coating, water beading"
+            afterSide="left"
+          />
+        </div>
+      </section>
 
-          TODO: When Alex sends 4-6 real before/after photo pairs, add a
-          "See the Transformation" section above this one with three
-          BeforeAfterSlider components. The slider should use pointer
-          events (mouse + touch), touch-action:pan-y so vertical scroll
-          still works, a centered red drag handle, and a 50/50 default
-          split. Per the migration plan, the existing Squarespace
-          composites can serve as cropped placeholders until real pairs
-          land. Source images are needed before this section can ship. */}
+      {/* Recent Work - 16-photo gallery from the field. */}
       <section
         id="recent-work"
         className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
