@@ -569,7 +569,18 @@ export default function Home() {
         aria-label="Our mission"
         className="relative z-10 border-y border-white/5 bg-gradient-to-b from-black via-zinc-950 to-black py-20"
       >
-        <div className="mx-auto w-full max-w-3xl px-6 text-center">
+        {/* Subtle cross watermark - aria-hidden so screen readers skip it */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+          <svg
+            viewBox="0 0 100 100"
+            className="h-64 w-64 opacity-[0.03] sm:h-80 sm:w-80"
+            fill="white"
+          >
+            <rect x="42" y="5" width="16" height="90" rx="3" />
+            <rect x="5" y="32" width="90" height="16" rx="3" />
+          </svg>
+        </div>
+        <div className="relative mx-auto w-full max-w-3xl px-6 text-center">
           <p className="reveal-on-scroll text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
             Our Mission
           </p>
@@ -589,6 +600,9 @@ export default function Home() {
           </p>
           <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-500">
             Alex, Founder
+          </p>
+          <p className="reveal-on-scroll mt-4 text-xs italic text-gray-700">
+            &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &mdash; Prov. 16:3
           </p>
         </div>
       </section>
@@ -817,6 +831,9 @@ export default function Home() {
             <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
               Austin Auto Detail
             </p>
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-600 italic">
+              <span aria-hidden>✝</span> Faith-driven, owner-operated
+            </p>
             <p className="mt-3 text-base text-gray-200">
               Mobile detailing in Austin. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
             </p>
@@ -871,7 +888,8 @@ export default function Home() {
         </div>
         <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
           <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
-          <p className="text-xs text-gray-600 italic">
+          <p className="text-xs text-gray-500 italic text-center sm:text-right">
+            <span aria-hidden className="mr-1.5 text-gray-600">✝</span>
             &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
           </p>
         </div>

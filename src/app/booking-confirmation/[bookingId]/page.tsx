@@ -33,6 +33,7 @@ interface ConfirmationBooking {
   deposit_amount: number;
   deposit_paid: boolean;
   discount_amount: number;
+  promo_code_used?: string | null;
   decline_reason: string | null;
   payment_url: string | null;
   photo_permission?: boolean | null;
@@ -448,7 +449,11 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
               </div>
               {Number(booking.discount_amount) > 0 && (
                 <div className="flex justify-between text-base text-green-300">
-                  <span>Returning customer &minus;10%</span>
+                  <span>
+                    {booking.promo_code_used
+                      ? `Promo "${booking.promo_code_used}"`
+                      : 'Returning customer discount'}
+                  </span>
                   <span>&minus;${Number(booking.discount_amount).toFixed(2)}</span>
                 </div>
               )}

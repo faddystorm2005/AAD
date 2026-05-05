@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createPaymentLink } from '@/lib/squarePayment';
+import { createPaymentLink as createSquarePaymentLink } from '@/lib/squarePayment';
+import { createPaymentLink as createPayPalPaymentLink } from '@/lib/paypalPayment';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,15 +13,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Convert dollars to cents for Square
+    // Respect PAYMENT_PROCESSOR env var. Defaults to 'paypal' (production default).
+    const processor = (process.env.PAYMENT_PROCESSOR || 'paypal').toLowerCase();
+    const createLink = processor === 'paypal' ? createPayPalPaymentLink : createSquarePaymentLink;
+
+    // Convert dollars to cents for both processors.
     const amountInCents = Math.round(amount * 100);
 
-    const result = await createPaymentLink(
-      amountInCents,
-      description,
-      bookingId,
-      returnUrl
-    );
+    const result = await createLink(amountInCents, description, bookingId, returnUrl);
 
     return NextResponse.json(result);
   } catch (error: any) {
