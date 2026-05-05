@@ -140,27 +140,13 @@ export default function BeforeAfterSlider({
             </svg>
           </div>
         </div>
-        {/* Corner labels follow the visible halves: BEFORE half is always on
-            the side opposite the AFTER half, regardless of afterSide. */}
-        {afterSide === 'right' ? (
-          <>
-            <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
-              Before
-            </span>
-            <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
-              After
-            </span>
-          </>
-        ) : (
-          <>
-            <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
-              After
-            </span>
-            <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
-              Before
-            </span>
-          </>
-        )}
+        {/* Corner labels: Before is always left of the divider, After always right. */}
+        <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+          Before
+        </span>
+        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+          After
+        </span>
       </div>
       {caption && (
         <figcaption className="mt-3 text-center text-sm text-gray-300">{caption}</figcaption>
