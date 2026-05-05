@@ -91,6 +91,7 @@ interface AdminBooking {
   completed_at: string | null;
   cancel_requested_at: string | null;
   cancel_request_reason: string | null;
+  promo_code_used?: string | null;
   customer: Customer | null;
   vehicle: Vehicle | null;
 }
@@ -1139,7 +1140,11 @@ export default function AdminPage() {
                             </div>
                             {Number(b.discount_amount) > 0 && (
                               <div className="flex justify-between text-green-400">
-                                <span>Returning customer −10%</span>
+                                <span>
+                                  {b.promo_code_used
+                                    ? `Promo "${b.promo_code_used}"`
+                                    : 'Returning customer discount'}
+                                </span>
                                 <span>−${Number(b.discount_amount).toFixed(2)}</span>
                               </div>
                             )}

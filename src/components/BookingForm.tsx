@@ -53,10 +53,35 @@ interface SlotFormData extends BookingData {
   slotTime: SlotTime | '';
 }
 
+const DRAFT_KEY = 'aad_booking_draft';
+
+function loadDraft() {
+  try {
+    const raw = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(DRAFT_KEY) : null;
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveDraft(data: object) {
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+function clearDraft() {
+  try {
+    sessionStorage.removeItem(DRAFT_KEY);
+  } catch {}
+}
+
 export default function BookingForm({ onClose }: BookingFormProps) {
   const { user, session } = useAuth();
   const { vehicles, loading: vehiclesLoading } = useVehicles();
-  const [step, setStep] = useState(1);
+  const draft = loadDraft();
+  const [step, setStep] = useState<number>(draft?.step ?? 1);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,29 +104,35 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [availability, setAvailability] = useState<DayAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const lastSubmissionRef = useRef<number>(0);
-  const [serviceType, setServiceType] = useState<ServiceType>(SERVICE_TYPE_DEFAULT);
+  const [serviceType, setServiceType] = useState<ServiceType>(
+    draft?.serviceType ?? SERVICE_TYPE_DEFAULT
+  );
 
+  const today = todayAustinDateString();
+  const draftDateValid = draft?.formData?.slotDate >= today;
   const [formData, setFormData] = useState<SlotFormData & { unit: string; notes: string }>({
-    vehicleId: '',
-    serviceSize: 'small',
-    selectedAddOns: [],
+    vehicleId: draft?.formData?.vehicleId ?? '',
+    serviceSize: draft?.formData?.serviceSize ?? 'small',
+    selectedAddOns: draft?.formData?.selectedAddOns ?? [],
     scheduledAt: '',
-    slotDate: todayAustinDateString(),
-    slotTime: '',
-    address: '',
-    unit: '',
-    city: '',
-    state: 'TX',
-    zip: '',
-    notes: '',
+    slotDate: draftDateValid ? draft.formData.slotDate : today,
+    slotTime: draftDateValid ? (draft.formData.slotTime ?? '') : '',
+    address: draft?.formData?.address ?? '',
+    unit: draft?.formData?.unit ?? '',
+    city: draft?.formData?.city ?? '',
+    state: draft?.formData?.state ?? 'TX',
+    zip: draft?.formData?.zip ?? '',
+    notes: draft?.formData?.notes ?? '',
   });
 
   const ceramic = isCeramicSelected(formData.selectedAddOns);
 
   // Promo code (optional). User types a code and clicks Apply; we hit the
   // validate endpoint and store the rate so calculatePricing reflects it.
-  const [promoInput, setPromoInput] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string; rate: number } | null>(null);
+  const [promoInput, setPromoInput] = useState(draft?.appliedPromo?.code ?? '');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; rate: number } | null>(
+    draft?.appliedPromo ?? null
+  );
   const [promoBusy, setPromoBusy] = useState(false);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [selectedPhotos, setSelectedPhotos] = useState<Record<string, File | null>>({});
@@ -232,6 +263,11 @@ export default function BookingForm({ onClose }: BookingFormProps) {
       return { ...prev, selectedAddOns: stillValid };
     });
   }, [serviceType]);
+
+  // Persist form progress to sessionStorage so switching apps doesn't lose work.
+  useEffect(() => {
+    saveDraft({ step, serviceType, formData, appliedPromo });
+  }, [step, serviceType, formData, appliedPromo]);
 
   // Clean up object URLs on unmount. Reads from the ref (not the state
   // closure captured at first render) so URLs created later are revoked too.
@@ -413,6 +449,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
       // Booking is now 'pending' awaiting admin approval. No payment yet -
       // the customer waits on the confirmation page until admin approves.
+      clearDraft();
       window.location.href = `/booking-confirmation/${data.bookingId}`;
     } catch (err: any) {
       setError(err.message || 'An error occurred. Please try again.');
@@ -898,7 +935,6 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                         id={`photo-${slot.key}`}
                         type="file"
                         accept="image/*"
-                        capture="environment"
                         className="sr-only"
                         onChange={(e) => {
                           const file = e.target.files?.[0] ?? null;

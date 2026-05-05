@@ -20,7 +20,7 @@ export default function StickyBookCta() {
 
   return (
     <div
-      className={`fixed fixed-safe-bottom-right z-40 transition-all duration-300 ${
+      className={`fixed fixed-safe-bottom-right z-40 hidden transition-all duration-300 sm:block ${
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
       }`}
     >

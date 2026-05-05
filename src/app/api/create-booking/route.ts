@@ -185,27 +185,50 @@ export async function POST(req: NextRequest) {
     discountSingleUse = false;
   }
 
-  // Promo code (optional). use_promo_code atomically validates and claims one
-  // use in a single UPDATE so two concurrent bookings cannot both consume the
-  // last available use of a code (P0-2 fix). If the booking insert later fails
-  // we call release_promo_code to restore the use.
+  // Promo code (optional). Try the atomic claim_promo_use RPC first; fall back
+  // to a direct query if the RPC isn't deployed yet so discounts still work.
   let promoDiscountRate = 0;
   let promoCodeUsed: string | null = null;
   let promoCodeId: string | null = null;
   const promoCodeRaw: string | null | undefined = body.promoCode;
   if (promoCodeRaw && promoCodeRaw.trim()) {
     const code = promoCodeRaw.trim().toUpperCase();
+    let claimed = false;
     try {
-      const { data: claimed } = await supabaseAdmin
+      const { data: claimData } = await supabaseAdmin
         .rpc('claim_promo_use', { p_code: code });
-      const row = Array.isArray(claimed) && claimed.length > 0 ? claimed[0] : null;
+      const row = Array.isArray(claimData) && claimData.length > 0 ? claimData[0] : null;
       if (row) {
         promoDiscountRate = Number(row.discount_rate) || 0;
         promoCodeUsed = row.promo_code as string;
         promoCodeId = row.promo_id as string;
+        claimed = true;
       }
     } catch {
-      // RPC not deployed yet - silently skip.
+      // RPC not deployed - fall back to direct query below.
+    }
+
+    if (!claimed) {
+      const { data: promoRow } = await supabaseAdmin
+        .from('promo_codes')
+        .select('id, code, discount_rate, max_uses, uses_count, expires_at, active')
+        .eq('code', code)
+        .maybeSingle();
+      if (
+        promoRow &&
+        promoRow.active &&
+        (!promoRow.expires_at || new Date(promoRow.expires_at) >= new Date()) &&
+        (promoRow.max_uses == null || promoRow.uses_count < promoRow.max_uses)
+      ) {
+        promoDiscountRate = Number(promoRow.discount_rate) || 0;
+        promoCodeUsed = promoRow.code as string;
+        promoCodeId = promoRow.id as string;
+        // Increment usage count (non-atomic fallback - acceptable until RPC is deployed).
+        await supabaseAdmin
+          .from('promo_codes')
+          .update({ uses_count: promoRow.uses_count + 1 })
+          .eq('id', promoRow.id);
+      }
     }
   }
 
