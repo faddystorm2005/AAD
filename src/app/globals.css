@@ -244,7 +244,8 @@ h6 {
 /* Shimmer sweep: child span, slides via transform (composited) */
 .book-cta-shine {
   position: absolute;
-  inset-y: 0;
+  top: 0;
+  bottom: 0;
   left: 0;
   width: 45%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
@@ -722,6 +723,16 @@ button:disabled {
 .modal-safe-padding {
   padding-top: max(env(safe-area-inset-top), 1.5rem);
   padding-bottom: max(env(safe-area-inset-bottom), 1.5rem);
+}
+
+/* ── Stats strip stagger ─────────────────────────────────────────────────── */
+/* Each tile has animate-fade-up. nth-child gives us a clean 80ms stagger
+   without an inline style on every render. */
+.stats-strip > li:nth-child(2) {
+  animation-delay: 80ms;
+}
+.stats-strip > li:nth-child(3) {
+  animation-delay: 160ms;
 }
 
 /* ── Sticky mobile bottom bar ────────────────────────────────────────────── */
