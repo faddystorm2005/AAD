@@ -645,7 +645,17 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Recent Work - real photos from the field */}
+      {/* Recent Work - 16-photo gallery from the field. Files live at
+          /images/aad/1.jpg through 16.jpg.
+
+          TODO: When Alex sends 4-6 real before/after photo pairs, add a
+          "See the Transformation" section above this one with three
+          BeforeAfterSlider components. The slider should use pointer
+          events (mouse + touch), touch-action:pan-y so vertical scroll
+          still works, a centered red drag handle, and a 50/50 default
+          split. Per the migration plan, the existing Squarespace
+          composites can serve as cropped placeholders until real pairs
+          land. Source images are needed before this section can ship. */}
       <section
         id="recent-work"
         className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
@@ -655,23 +665,23 @@ export default function Home() {
             Recent Work
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            A few of the vehicles we&apos;ve detailed
+            Sixteen of the vehicles we&apos;ve detailed lately
           </p>
         </div>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {RECENT_WORK.map((p, i) => (
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 16 }, (_, i) => i + 1).map((n, i) => (
             <div
-              key={p.src}
+              key={n}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-gray-900"
               data-stagger-i={i}
             >
               <Image
-                src={p.src}
-                alt={p.alt}
+                src={`/images/aad/${n}.jpg`}
+                alt={`Austin Auto Detail recent work, photo ${n}`}
                 width={1200}
                 height={900}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
               />
             </div>
@@ -978,11 +988,3 @@ const FAQS = [
   },
 ];
 
-const RECENT_WORK: { src: string; alt: string }[] = [
-  { src: '/gallery/hummer-h2-black.jpeg', alt: 'Black Hummer H2 after full exterior detail' },
-  { src: '/gallery/bentley-continental-rear.jpeg', alt: 'Bentley Continental GTC after detail service' },
-  { src: '/gallery/bentley-continental-foam-wash.jpeg', alt: 'Bentley Continental during foam pre-wash' },
-  { src: '/gallery/mercedes-gle-amg-black.jpeg', alt: 'Mercedes-AMG GLE Coupe after full detail' },
-  { src: '/gallery/audi-black-wheel-detail.jpeg', alt: 'Black Audi after exterior detail with wheel cleaning' },
-  { src: '/gallery/toyota-4runner-army-green.jpeg', alt: 'Toyota 4Runner Army Green after exterior detail' },
-];
