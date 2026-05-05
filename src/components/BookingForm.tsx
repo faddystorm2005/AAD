@@ -106,6 +106,9 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   const [promoError, setPromoError] = useState<string | null>(null);
   const [selectedPhotos, setSelectedPhotos] = useState<Record<string, File | null>>({});
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<Record<string, string>>({});
+  // Ref mirror so the unmount cleanup (which has [] deps) sees the LATEST
+  // URLs, not the empty object captured on first render.
+  const photoPreviewUrlsRef = useRef<Record<string, string>>({});
   const [photoPermission, setPhotoPermission] = useState(false);
 
   const applyPromo = async () => {
@@ -150,6 +153,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
       } else {
         delete next[slotKey];
       }
+      photoPreviewUrlsRef.current = next;
       return next;
     });
 
@@ -229,14 +233,15 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     });
   }, [serviceType]);
 
-  // Clean up object URLs to prevent memory leaks. Runs once on unmount.
+  // Clean up object URLs on unmount. Reads from the ref (not the state
+  // closure captured at first render) so URLs created later are revoked too.
   useEffect(() => {
     return () => {
-      Object.values(photoPreviewUrls).forEach((url) => {
+      Object.values(photoPreviewUrlsRef.current).forEach((url) => {
         if (url) URL.revokeObjectURL(url);
       });
+      photoPreviewUrlsRef.current = {};
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selectedVehicle = vehicles.find((v) => v.id === formData.vehicleId);
