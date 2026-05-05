@@ -550,6 +550,88 @@ button:disabled {
 }
 
 /* ---------------------------------------------------------------
+ * How-It-Works timeline connectors.
+ *
+ * The connector is a 2px line between adjacent step icons. It stays
+ * gray by default and fills with the brand red gradient once the
+ * step gets .is-active (set by IntersectionObserver in Timeline.tsx
+ * when the step crosses 50% in the viewport).
+ *
+ * Desktop: horizontal line between icons (sm and up).
+ * Mobile: vertical line below each icon, connecting down to next.
+ * --------------------------------------------------------------- */
+.aad-connector {
+  background: rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+}
+.aad-connector::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    rgba(214, 32, 48, 0.6) 100%
+  );
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.aad-step.is-active .aad-connector::after {
+  transform: scaleX(1);
+}
+
+/* Mobile: vertical connector positioned below the 56px icon. */
+.aad-connector {
+  left: calc(50% - 1px);
+  top: 56px;
+  width: 2px;
+  height: calc(100% - 56px + 32px);
+}
+.aad-connector::after {
+  background: linear-gradient(
+    180deg,
+    var(--accent) 0%,
+    rgba(214, 32, 48, 0.6) 100%
+  );
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+.aad-step.is-active .aad-connector::after {
+  transform: scaleY(1);
+}
+
+/* Desktop (>= 640px): horizontal connector between icons. */
+@media (min-width: 640px) {
+  .aad-connector {
+    left: calc(50% + 28px);
+    top: 28px;
+    width: calc(100% - 56px);
+    height: 2px;
+  }
+  .aad-connector::after {
+    background: linear-gradient(
+      90deg,
+      var(--accent) 0%,
+      rgba(214, 32, 48, 0.6) 100%
+    );
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .aad-step.is-active .aad-connector::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Active icon swaps to a filled red look. */
+.aad-step.is-active .aad-step-icon {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(214, 32, 48, 0.18);
+}
+
+/* ---------------------------------------------------------------
  * Gallery cinematic image treatment.
  *
  * .cinematic-img: smooth zoom + color-grade on hover.

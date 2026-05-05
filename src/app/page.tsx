@@ -13,6 +13,7 @@ import ScrollCardObserver from '@/components/ScrollCardObserver';
 import HeroStatCounter from '@/components/HeroStatCounter';
 import HeroParallax from '@/components/home/HeroParallax';
 import MobileNav from '@/components/home/MobileNav';
+import Timeline from '@/components/home/Timeline';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
   exterior: [
@@ -484,25 +485,8 @@ export default function Home() {
             Booking mobile detailing in Austin takes about a minute. Here&apos;s how it goes:
           </p>
         </div>
-        <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-stretch sm:gap-0">
-          {STEPS.map((step, i) => (
-            <div key={step.title} className="flex flex-1 items-stretch">
-              <div className="glass-card scroll-card min-w-0 flex-1 rounded-2xl p-6" data-stagger-i={i}>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
-                  {i + 1}
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-white">{step.title}</h3>
-                <p className="mt-2 text-base text-gray-200">{step.description}</p>
-              </div>
-              {i < STEPS.length - 1 && (
-                <div className="hidden shrink-0 items-center justify-center px-2 sm:flex" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400/50">
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="mt-12">
+          <Timeline />
         </div>
       </section>
 
@@ -901,21 +885,6 @@ const SERVICES = [
     title: 'Mobile - We Come To You',
     description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
     priceLabel: '',
-  },
-];
-
-const STEPS = [
-  {
-    title: 'Pick a slot',
-    description: '9 AM, 1 PM, or 5 PM, any day. Real-time availability - no calls, no back-and-forth.',
-  },
-  {
-    title: 'We confirm',
-    description: 'Austin Auto Detail reviews your booking within 24 hours. No charge until we approve.',
-  },
-  {
-    title: 'We come to you',
-    description: 'On the day of service, our team arrives at your address with everything we need. You don’t move a thing.',
   },
 ];
 
