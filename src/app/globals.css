@@ -210,6 +210,10 @@ h6 {
 }
 
 /* Floating Book Now CTA — all animations are transform/opacity only (GPU composited). */
+@keyframes map-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%       { transform: scale(2.2); opacity: 0; }
+}
 @keyframes aad-cta-bounce {
   0%, 100% { transform: translateY(0) translateZ(0); }
   50%       { transform: translateY(-5px) translateZ(0); }

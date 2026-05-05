@@ -16,6 +16,7 @@ import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
 import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
 import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
+import ServiceMapLoader from '@/components/ServiceMapLoader';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
   exterior: [
@@ -811,22 +812,9 @@ export default function Home() {
           </p>
           <div className="mt-6">
             <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
-              Areas we cover
+              Service Area
             </p>
-            <div className="flex flex-wrap gap-2">
-              {[
-                'Downtown Austin', 'South Austin', 'East Austin', 'North Austin',
-                'The Domain', 'Round Rock', 'Cedar Park', 'Georgetown',
-                'Pflugerville', 'Buda / Kyle', 'Lakeway / Westlake', 'Dripping Springs',
-              ].map((area) => (
-                <span
-                  key={area}
-                  className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm text-gray-300"
-                >
-                  {area}
-                </span>
-              ))}
-            </div>
+            <ServiceMapLoader />
           </div>
         </div>
       </section>
