@@ -1,5 +1,7 @@
 'use client';
 
+import { useRef, useState, useCallback } from 'react';
+
 interface Testimonial {
   name: string;
   text: string;
@@ -24,7 +26,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: 'Jen K.',
     vehicle: 'Civic',
     rating: 5,
-    text: 'Quality over quantity is right — he took his time and did it right.',
+    text: 'Quality over quantity is right. He took his time and did it right.',
   },
   {
     name: 'Carlos V.',
@@ -42,7 +44,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: 'Jordan B.',
     vehicle: 'Mustang',
     rating: 5,
-    text: "Worth every dollar. My paint has never looked this good — like driving off the lot again.",
+    text: "Worth every dollar. My paint has never looked this good. Like driving off the lot again.",
   },
   {
     name: 'Priya S.',
@@ -64,17 +66,33 @@ function StarRating({ count }: { count: number }) {
   );
 }
 
-/**
- * Auto-scrolling marquee of customer testimonials. Pauses on hover so
- * users can stop and read. Duplicated array produces a seamless loop.
- */
 export default function MarqueeTestimonials() {
   const items = [...TESTIMONIALS, ...TESTIMONIALS];
+  const [touchPaused, setTouchPaused] = useState(false);
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleTouchStart = useCallback(() => {
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
+    setTouchPaused(true);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    resumeTimer.current = setTimeout(() => setTouchPaused(false), 1500);
+  }, []);
+
+  const paused = touchPaused;
+
   return (
-    <div className="group relative overflow-hidden">
+    <div
+      className="group relative overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent" />
-      <div className="animate-marquee flex gap-4 group-hover:[animation-play-state:paused]">
+      <div
+        className={`animate-marquee flex gap-4 group-hover:[animation-play-state:paused] ${paused ? '[animation-play-state:paused]' : ''}`}
+      >
         {items.map((t, i) => (
           <div
             key={`${t.name}-${i}`}
@@ -86,7 +104,7 @@ export default function MarqueeTestimonials() {
             </p>
             <p className="text-sm uppercase tracking-wider text-gray-300">
               <span className="text-red-300">{t.name}</span>
-              {t.vehicle && <span className="text-gray-400"> · {t.vehicle}</span>}
+              {t.vehicle && <span className="text-gray-400"> &middot; {t.vehicle}</span>}
             </p>
           </div>
         ))}

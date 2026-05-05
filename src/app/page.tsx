@@ -15,6 +15,7 @@ import HeroParallax from '@/components/home/HeroParallax';
 import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
 import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
+import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 
 const SERVICE_INCLUDES: Record<string, string[]> = {
   exterior: [
@@ -600,10 +601,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Testimonials marquee - social proof before FAQ. Auto-scrolls,
+          pauses on hover (desktop) and touch-hold (mobile). */}
+      <section aria-label="Customer reviews" className="relative z-10 py-16 overflow-hidden">
+        <div className="reveal-on-scroll mx-auto w-full max-w-5xl px-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+            What Customers Say
+          </p>
+          <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
+            Real Reviews
+          </h2>
+        </div>
+        <div className="mt-10">
+          <MarqueeTestimonials />
+        </div>
+      </section>
+
       {/* FAQ - adds keyword-rich content + answers common pre-booking questions */}
       <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
-        <div className="reveal-on-scroll">
-          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+        <div className="reveal-on-scroll text-center">
+          <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             Frequently Asked Questions
           </h2>
         </div>
