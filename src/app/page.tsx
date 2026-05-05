@@ -99,7 +99,7 @@ export default function Home() {
               </svg>
               <span className="hidden text-sm sm:inline">(480) 793-3782</span>
             </a>
-            {/* Hidden on mobile — accessible via hamburger menu instead */}
+            {/* Hidden on mobile: accessible via hamburger menu instead */}
             <div className="hidden sm:flex sm:items-center sm:gap-4">
               <HomeNavAccountLink />
               <Link
@@ -379,7 +379,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Results showcase — specific vehicles + service labels so visitors
+      {/* Results showcase: specific vehicles + service labels so visitors
           can see exactly what level of finish they're paying for. Swap in
           real before/after pairs as they come in. */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">

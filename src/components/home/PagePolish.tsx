@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 
 /**
  * Mounts two passive observers that add interactive polish:
- * 1. Card hover spotlight — tracks cursor position as CSS vars on each .glass-card
- * 2. Active nav highlighting — marks the current section's nav link with .nav-active
+ * 1. Card hover spotlight: tracks cursor position as CSS vars on each .glass-card
+ * 2. Active nav highlighting: marks the current section's nav link with .nav-active
  */
 export default function PagePolish() {
   useEffect(() => {

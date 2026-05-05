@@ -24,14 +24,14 @@ export default function StickyBookCta() {
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
       }`}
     >
-      {/* Pulse ring sits behind the button — scale+opacity only (composited) */}
+      {/* Pulse ring sits behind the button: scale+opacity only (composited) */}
       <div className="book-cta-ring" aria-hidden="true" />
       <Link
         href="/auth"
         aria-label="Book mobile detailing"
         className="book-cta-pill btn-primary relative flex items-center gap-2 rounded-full px-6 py-4 text-base font-semibold shadow-2xl shadow-red-900/40 sm:text-lg"
       >
-        {/* Shimmer sweep — translateX only (composited) */}
+        {/* Shimmer sweep: translateX only (composited) */}
         <span className="book-cta-shine" aria-hidden="true" />
         🚗 Book Now
       </Link>

@@ -969,7 +969,7 @@ export default function AdminPage() {
                       </div>
                     </button>
 
-                    {/* Quick-action panel — approve/decline without expanding */}
+                    {/* Quick-action panel: approve/decline without expanding */}
                     {b.status === 'pending' && (
                       <div className="flex shrink-0 flex-col justify-center gap-2 border-l border-gray-700 px-3 py-3">
                         <button

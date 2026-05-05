@@ -5,7 +5,7 @@ export default function HeroParallax() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    // Skip on touch devices — parallax causes scroll jank on mobile/low-end phones
+    // Skip on touch devices: parallax causes scroll jank on mobile/low-end phones
     if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
 
     const wrap = document.querySelector<HTMLElement>('.hero-parallax-wrap');

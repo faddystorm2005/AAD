@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     },
     interior: {
       title: 'Interior detail started',
-      body: 'Now working on your car\'s interior — almost done!',
+      body: 'Now working on your car\'s interior. Almost done!',
     },
     coatings: {
       title: 'Protective coating being applied',

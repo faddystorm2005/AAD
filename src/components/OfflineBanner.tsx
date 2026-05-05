@@ -26,7 +26,7 @@ export default function OfflineBanner() {
       style={{ top: 'env(safe-area-inset-top, 0px)' }}
     >
       <span aria-hidden>⚠️</span>
-      No internet connection — some features may be unavailable.
+      No internet connection. Some features may be unavailable.
     </div>
   );
 }
