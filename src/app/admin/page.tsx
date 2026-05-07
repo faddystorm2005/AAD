@@ -752,26 +752,33 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <DailyCapacityPanel session={session} />
+        {/* Settings group: calendar sync, admin management, promo codes, and
+            push alerts. Things you set up once or touch occasionally, kept
+            at the top so the most-used controls are within thumb reach on
+            mobile before the bookings list pushes them off-screen. */}
+        <div className="space-y-3">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-300">
+            Settings &amp; Tools
+          </h2>
 
-        {user && (
-          <GoogleCalendarSubscribe
-            adminUserId={user.id}
-            accessToken={session?.access_token ?? null}
-          />
-        )}
+          {user && (
+            <GoogleCalendarSubscribe
+              adminUserId={user.id}
+              accessToken={session?.access_token ?? null}
+            />
+          )}
 
-        {user && (
-          <ManageAdmins
-            currentAdminId={user.id}
-            accessToken={session?.access_token ?? null}
-          />
-        )}
+          {user && (
+            <ManageAdmins
+              currentAdminId={user.id}
+              accessToken={session?.access_token ?? null}
+            />
+          )}
 
-        <ManagePromoCodes accessToken={session?.access_token ?? null} />
+          <ManagePromoCodes accessToken={session?.access_token ?? null} />
 
-        {/* Booking Alerts - web push for new bookings */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          {/* Booking Alerts - web push for new bookings */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h2 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-300">Booking Alerts</h2>
           <p className="mb-4 text-xs text-gray-300">
             Get a push notification on this device when a new booking comes in.
@@ -831,6 +838,7 @@ export default function AdminPage() {
               </button>
             </div>
           )}
+          </div>
         </div>
 
         {/* Search - find a customer by name, phone, email, or address */}
@@ -1447,6 +1455,15 @@ export default function AdminPage() {
             })}
           </div>
         )}
+
+        {/* Daily Capacity: moved below the bookings list so the day-to-day
+            workflow (alerts, filters, bookings) sits at the top and the
+            week-ahead schedule lives one scroll down. The thicker top border
+            marks the section break so it reads as its own zone, not just
+            another card under the bookings. */}
+        <div className="mt-4 border-t-2 border-white/10 pt-8">
+          <DailyCapacityPanel session={session} />
+        </div>
       </div>
     </main>
   );

@@ -956,7 +956,7 @@ const SERVICES = [
   {
     icon: <Shield size={ICON_SIZE} aria-hidden />,
     title: 'Ceramic Coating',
-    description: 'Premium clear coat that delivers multi-year protection. Adds gloss and shields paint from UV, water spots, and contaminants.',
+    description: 'Premium clear coat that lasts up to 10 years. Adds deep gloss and shields paint from UV, water spots, and contaminants.',
     priceLabel: 'Quote',
   },
   {
