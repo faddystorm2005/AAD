@@ -1,5 +1,19 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import {
+  Sparkles,
+  Car,
+  Sofa,
+  Shield,
+  ShieldCheck,
+  Brush,
+  Wrench,
+  Droplets,
+  Lightbulb,
+  SprayCan,
+  MapPin,
+  Eye,
+} from 'lucide-react';
 import { SERVICE_TYPES, SERVICE_TYPE_NAMES, SERVICE_PRICES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE, DEPOSIT_AMOUNT } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
@@ -370,9 +384,14 @@ export default function Home() {
       </section>
 
       {/* Results showcase: specific vehicles + service labels so visitors
-          can see exactly what level of finish they're paying for. Swap in
-          real before/after pairs as they come in. */}
-      <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
+          can see exactly what level of finish they're paying for. The
+          "recent-work" id is also where the Work nav anchor points - one
+          gallery instead of two so visitors don't see the same photos
+          twice. */}
+      <section
+        id="recent-work"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
+      >
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             The Results
@@ -761,40 +780,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Recent Work - 16-photo gallery from the field. */}
-      <section
-        id="recent-work"
-        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
-      >
-        <div className="reveal-on-scroll">
-          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Recent Work
-          </h2>
-          <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            A selection of vehicles we&apos;ve detailed recently
-          </p>
-        </div>
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {RECENT_WORK_PHOTOS.map((src, i) => (
-            <div
-              key={src}
-              className="group overflow-hidden rounded-2xl border border-white/10 bg-gray-900"
-              data-stagger-i={i}
-            >
-              <Image
-                src={src}
-                alt={`Austin Auto Detail recent work, photo ${i + 1}`}
-                width={1200}
-                height={900}
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16">
         <div className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 reveal-on-scroll">
@@ -943,103 +928,83 @@ export default function Home() {
   );
 }
 
+// Service icon size standardized at 24px so they sit consistently inside
+// the red-accented circular badge in ServiceCard.
+const ICON_SIZE = 24;
+
 const SERVICES = [
   {
-    icon: '⭐',
+    icon: <Sparkles size={ICON_SIZE} aria-hidden />,
     title: 'Full Detail',
     description: 'Complete interior and exterior reset. Hand wash, decontamination, and clay bar outside. Vacuum, shampoo, and full surface dressing inside.',
     priceLabel: '',
   },
   {
-    icon: '🚗',
+    icon: <Car size={ICON_SIZE} aria-hidden />,
     title: 'Exterior Detailing',
     description: 'Hand wash, decontamination, clay bar, and trim/tire dressing. Your paint reset to like-new.',
     priceLabel: '',
   },
   {
-    icon: '🛋️',
+    icon: <Sofa size={ICON_SIZE} aria-hidden />,
     title: 'Interior Detailing',
     description: 'Vacuum, shampoo carpets and seats, wipe and dress every surface. Cabin completely reset.',
     priceLabel: '',
   },
   {
-    icon: '✨',
+    icon: <Shield size={ICON_SIZE} aria-hidden />,
     title: 'Ceramic Coating',
     description: 'Premium clear coat that delivers multi-year protection. Adds gloss and shields paint from UV, water spots, and contaminants.',
     priceLabel: 'Quote',
   },
   {
-    icon: '🪞',
+    icon: <Brush size={ICON_SIZE} aria-hidden />,
     title: 'Paint Correction',
     description: 'One- or two-step paint correction to remove swirl marks, oxidation, and minor scratches. Restores depth and clarity.',
     priceLabel: 'Add-on, from $95',
   },
   {
-    icon: '🛡️',
+    icon: <ShieldCheck size={ICON_SIZE} aria-hidden />,
     title: '6-Month Wax',
     description: 'Long-lasting wax application for daily protection from sun, rain, and road grime - without committing to a coating.',
     priceLabel: 'Add-on, from $50',
   },
   {
-    icon: '🔧',
+    icon: <Wrench size={ICON_SIZE} aria-hidden />,
     title: 'Engine Bay Cleaning',
     description: 'Deep degrease and dress under the hood. Brings the engine bay back to showroom clean.',
     priceLabel: 'Add-on, from $25',
   },
   {
-    icon: '🫧',
+    icon: <Droplets size={ICON_SIZE} aria-hidden />,
     title: 'Stain Removal',
     description: 'Targeted treatment for stubborn upholstery, carpet, and seat stains. Coffee, ink, pet, you name it.',
     priceLabel: 'Add-on, from $30',
   },
   {
-    icon: '💡',
+    icon: <Lightbulb size={ICON_SIZE} aria-hidden />,
     title: 'Headlight Restoration',
     description: 'Cloudy, yellowed headlights brought back to clear like-new condition. Improves nighttime visibility and curb appeal.',
     priceLabel: 'Standalone or add-on, $80',
   },
   {
-    icon: '🪟',
+    icon: <Eye size={ICON_SIZE} aria-hidden />,
     title: 'Windshield Coating',
     description: 'Hydrophobic glass treatment that repels rain and improves visibility at highway speeds. Lasts months, not weeks.',
     priceLabel: 'Add-on, from $40',
   },
   {
-    icon: '🧴',
+    icon: <SprayCan size={ICON_SIZE} aria-hidden />,
     title: 'Leather Conditioning',
     description: 'Deep clean and condition for leather seats and surfaces. Prevents cracking and restores that new-car softness.',
     priceLabel: 'Add-on, from $10',
   },
   {
-    icon: '📍',
+    icon: <MapPin size={ICON_SIZE} aria-hidden />,
     title: 'Mobile - We Come To You',
     description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
     priceLabel: '',
   },
-];
-
-// Recent Work gallery photos. Listed explicitly so deleting a file from
-// /public/images/aad/ doesn't show a broken square on the homepage.
-// Mix of numbered files and the named gallery shots that actually exist
-// on disk after the most recent cleanup.
-const RECENT_WORK_PHOTOS: string[] = [
-  '/images/aad/gallery-ford-super-duty.jpg',
-  '/images/aad/gallery-mercedes-gle-interior.jpg',
-  '/images/aad/gallery-audi-s4-red-leather.jpg',
-  '/images/aad/gallery-toyota-tundra-console.jpg',
-  '/images/aad/gallery-nissan-rogue-interior.jpg',
-  '/images/aad/gallery-bmw-engine-bay.jpg',
-  '/images/aad/gallery-suv-cargo-area.jpg',
-  '/images/aad/gallery-ford-king-ranch.jpg',
-  '/images/aad/1.jpg',
-  '/images/aad/2.jpg',
-  '/images/aad/3.jpg',
-  '/images/aad/4.jpg',
-  '/images/aad/6.jpg',
-  '/images/aad/7.jpg',
-  '/images/aad/9.jpg',
-  '/images/aad/10.jpg',
-  '/images/aad/11.jpg',
 ];
 
 // Three reasons mapped to the three things customers actually weigh:

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import TiltCard from './TiltCard';
 
 interface ServiceCardProps {
-  icon: string;
+  icon: ReactNode;
   title: string;
   description: string;
   priceLabel?: string;
@@ -16,7 +16,9 @@ export default function ServiceCard({ icon, title, description, priceLabel }: Se
 
   return (
     <TiltCard className="glass-card rounded-2xl p-6">
-      <div className="text-3xl">{icon}</div>
+      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-red-300">
+        {icon}
+      </div>
       <h3 className="mt-4 text-lg font-bold text-white">{title}</h3>
       {priceLabel ? (
         <p className="mt-1.5 text-sm font-semibold uppercase tracking-wider text-red-300">
