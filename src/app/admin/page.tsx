@@ -677,7 +677,7 @@ export default function AdminPage() {
           <p className="mb-6 text-sm text-gray-300">
             You don&apos;t have admin access to this workspace.
           </p>
-          <Link href="/dashboard" className="inline-block rounded-lg bg-red-600 px-6 py-2 hover:bg-red-700">
+          <Link href="/dashboard" className="inline-block rounded-lg bg-red-600 px-6 py-3 text-base font-semibold hover:bg-red-700">
             Back to Dashboard
           </Link>
         </div>
@@ -721,22 +721,22 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-black px-6 py-12 text-white">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold uppercase tracking-[0.18em]">Admin</h1>
-            <p className="text-sm text-gray-300">{user?.email}</p>
+            <p className="break-all text-sm text-gray-300">{user?.email}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Link
               href="/"
-              className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
+              className="rounded-lg border border-gray-600 px-4 py-3 text-base text-gray-300 hover:bg-gray-800"
               title="View public homepage"
             >
               ← Home
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
+              className="rounded-lg border border-gray-600 px-4 py-3 text-base text-gray-300 hover:bg-gray-800"
             >
               Customer view
             </Link>
@@ -745,7 +745,7 @@ export default function AdminPage() {
                 await signOut();
                 router.push('/auth');
               }}
-              className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
+              className="rounded-lg border border-gray-600 px-4 py-3 text-base text-gray-300 hover:bg-gray-800"
             >
               Sign Out
             </button>
@@ -810,13 +810,13 @@ export default function AdminPage() {
               type="button"
               onClick={handleEnablePush}
               disabled={pushWorking}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              className="rounded-lg bg-red-600 px-4 py-3 text-base font-semibold text-white hover:bg-red-700 disabled:opacity-50"
             >
               {pushWorking ? 'Enabling...' : 'Enable booking alerts on this device'}
             </button>
           )}
           {pushState === 'enabled' && (
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <span className="flex items-center gap-2 text-sm text-green-400">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
                 Alerts enabled on this device
@@ -825,7 +825,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={handleDisablePush}
                 disabled={pushWorking}
-                className="rounded-lg border border-gray-600 px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                className="rounded-lg border border-gray-600 px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50"
               >
                 {pushWorking ? 'Disabling...' : 'Disable'}
               </button>
@@ -840,17 +840,17 @@ export default function AdminPage() {
           </svg>
           <input
             type="search"
-            placeholder="Search by name, phone, email, or address…"
+            placeholder="Search by name, phone, email, or address"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-2.5 pl-9 pr-4 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-3 pl-10 pr-4 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
           />
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter('pending')}
-            className={`rounded-full px-4 py-1.5 text-sm ${
+            className={`rounded-full px-4 py-3 text-sm ${
               filter === 'pending' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'
             }`}
           >
@@ -858,7 +858,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setFilter('cancel_requests')}
-            className={`rounded-full px-4 py-1.5 text-sm ${
+            className={`rounded-full px-4 py-3 text-sm ${
               filter === 'cancel_requests'
                 ? 'bg-amber-600 text-white'
                 : cancelRequestCount > 0
@@ -870,7 +870,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setFilter('active')}
-            className={`rounded-full px-4 py-1.5 text-sm ${
+            className={`rounded-full px-4 py-3 text-sm ${
               filter === 'active' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'
             }`}
           >
@@ -878,7 +878,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setFilter('all')}
-            className={`rounded-full px-4 py-1.5 text-sm ${
+            className={`rounded-full px-4 py-3 text-sm ${
               filter === 'all' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'
             }`}
           >
@@ -1021,7 +1021,7 @@ export default function AdminPage() {
                             <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                               Customer Photos ({photosByBooking[b.id].length})
                             </h3>
-                            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+                            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                               {photosByBooking[b.id].map((p) => (
                                 <a
                                   key={p.id}
@@ -1038,12 +1038,12 @@ export default function AdminPage() {
                                       className="h-full w-full object-cover transition group-hover:scale-105"
                                     />
                                   ) : (
-                                    <div className="flex h-full items-center justify-center text-xs text-gray-300">
+                                    <div className="flex h-full items-center justify-center text-sm text-gray-300">
                                       Failed
                                     </div>
                                   )}
-                                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-1.5">
-                                    <p className="text-[10px] font-medium leading-tight text-white">
+                                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                    <p className="text-xs font-medium leading-tight text-white">
                                       {slotKeyToLabel(p.slotKey)}
                                     </p>
                                   </div>
@@ -1171,7 +1171,7 @@ export default function AdminPage() {
                               e.stopPropagation();
                               handleMarkDeposit(b.id, !b.deposit_paid);
                             }}
-                            className={`mt-3 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 ${
+                            className={`mt-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors disabled:opacity-50 ${
                               b.deposit_paid
                                 ? 'border border-gray-600 text-gray-300 hover:bg-gray-800'
                                 : 'bg-green-600 text-white hover:bg-green-700'
@@ -1228,7 +1228,7 @@ export default function AdminPage() {
                                   Account credit to issue (optional)
                                 </label>
                                 <div className="mt-1 flex items-center">
-                                  <span className="rounded-l-lg border border-r-0 border-amber-500/40 bg-black/40 px-3 py-2 text-sm text-amber-200">
+                                  <span className="rounded-l-lg border border-r-0 border-amber-500/40 bg-black/40 px-3 py-3 text-base text-amber-200">
                                     $
                                   </span>
                                   <input
@@ -1246,10 +1246,10 @@ export default function AdminPage() {
                                       }))
                                     }
                                     onClick={(e) => e.stopPropagation()}
-                                    className="w-full rounded-r-lg border border-amber-500/40 bg-black/40 px-3 py-2 text-sm text-white placeholder-amber-200/40 focus:border-amber-400 focus:outline-none"
+                                    className="w-full rounded-r-lg border border-amber-500/40 bg-black/40 px-3 py-3 text-base text-white placeholder-amber-200/40 focus:border-amber-400 focus:outline-none"
                                   />
                                 </div>
-                                <p className="mt-1 text-xs text-amber-200/60">
+                                <p className="mt-1 text-sm text-amber-200/60">
                                   Adds to the customer&apos;s account credit. Auto-applied to next booking.
                                 </p>
                               </div>
@@ -1260,7 +1260,7 @@ export default function AdminPage() {
                                   e.stopPropagation();
                                   handleCancelApprove(b.id);
                                 }}
-                                className="shrink-0 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+                                className="shrink-0 rounded-lg bg-amber-600 px-4 py-3 text-base font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
                               >
                                 {updatingId === b.id ? 'Working…' : 'Approve cancellation'}
                               </button>
@@ -1286,7 +1286,7 @@ export default function AdminPage() {
                                     }))
                                   }
                                   onClick={(e) => e.stopPropagation()}
-                                  className="flex-1 rounded-lg border border-amber-500/40 bg-black/40 px-3 py-2 text-sm text-white placeholder-amber-200/40 focus:border-amber-400 focus:outline-none"
+                                  className="flex-1 rounded-lg border border-amber-500/40 bg-black/40 px-3 py-3 text-base text-white placeholder-amber-200/40 focus:border-amber-400 focus:outline-none"
                                 />
                                 <button
                                   type="button"
@@ -1295,7 +1295,7 @@ export default function AdminPage() {
                                     e.stopPropagation();
                                     handleCancelDeny(b.id);
                                   }}
-                                  className="shrink-0 rounded-lg border border-amber-500/40 bg-black/30 px-4 py-2 text-sm font-semibold text-amber-200 hover:bg-amber-900/40 disabled:opacity-50"
+                                  className="shrink-0 rounded-lg border border-amber-500/40 bg-black/30 px-4 py-3 text-base font-semibold text-amber-200 hover:bg-amber-900/40 disabled:opacity-50"
                                 >
                                   Deny request
                                 </button>
@@ -1323,7 +1323,7 @@ export default function AdminPage() {
                               }
                               placeholder="Optional decline reason (only sent if you decline)"
                               rows={2}
-                              className="mt-3 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+                              className="mt-3 w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none sm:max-w-md"
                               onClick={(e) => e.stopPropagation()}
                             />
                             <div className="mt-3 flex flex-wrap gap-2">
@@ -1334,7 +1334,7 @@ export default function AdminPage() {
                                   e.stopPropagation();
                                   handleApprove(b.id);
                                 }}
-                                className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                                className="flex-1 rounded-lg bg-green-600 px-4 py-3 text-base font-semibold text-white hover:bg-green-700 disabled:opacity-50 sm:flex-none"
                               >
                                 {updatingId === b.id ? 'Approving…' : 'Approve'}
                               </button>
@@ -1345,7 +1345,7 @@ export default function AdminPage() {
                                   e.stopPropagation();
                                   handleDecline(b.id);
                                 }}
-                                className="rounded-lg border border-red-600 px-4 py-2 text-sm font-semibold text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                                className="flex-1 rounded-lg border border-red-600 px-4 py-3 text-base font-semibold text-red-400 hover:bg-red-900/30 disabled:opacity-50 sm:flex-none"
                               >
                                 {updatingId === b.id ? 'Declining…' : 'Decline'}
                               </button>
@@ -1434,7 +1434,7 @@ export default function AdminPage() {
                               e.stopPropagation();
                               handleDelete(b.id);
                             }}
-                            className="mt-3 rounded-lg border border-red-700 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                            className="mt-3 rounded-lg border border-red-700 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-900/30 disabled:opacity-50"
                           >
                             {updatingId === b.id ? 'Deleting…' : 'Delete booking'}
                           </button>

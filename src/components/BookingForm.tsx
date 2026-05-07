@@ -1150,7 +1150,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   ${pricing.total.toFixed(2)}
                 </p>
               </div>
-              <p className="text-right text-xs text-gray-300 sm:text-sm">
+              <p className="text-right text-sm text-gray-300 sm:text-base">
                 ${pricing.deposit.toFixed(2)} deposit
                 <br />
                 holds your slot
