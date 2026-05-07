@@ -4,10 +4,11 @@
  * The activate handler purges any cache that doesn't match the new version
  * names, so every visitor gets a clean slate on their next page load.
  *
- * v1 → v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
- * v5 → v6: add push notification handlers for admin + customer alerts.
+ * v1 -> v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
+ * v5 -> v6: add push notification handlers for admin + customer alerts.
+ * v7 -> v8: review-request cron + admin/homepage refresh shipped.
  */
-const VERSION = "aad-v7";
+const VERSION = "aad-v8";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
