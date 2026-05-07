@@ -162,9 +162,15 @@ function AuthInner() {
     <main className="min-h-screen bg-black text-white">
       {/* Hero */}
       <div className="relative h-[45vh] min-h-[280px] w-full overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_IMAGE.src}
           alt={HERO_IMAGE.alt}
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />

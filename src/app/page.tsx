@@ -157,7 +157,14 @@ export default function Home() {
               img already has the alt text. */}
           <div className="hero-bg-back" aria-hidden>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={DASHBOARD_BANNER.src} alt="" />
+            <img
+              src={DASHBOARD_BANNER.src}
+              alt=""
+              width={1920}
+              height={1080}
+              loading="eager"
+              decoding="async"
+            />
           </div>
           {/* Parallax wrapper: JS moves this div at 0.38x scroll speed.
               The img inside keeps animate-banner-pan on a separate element
@@ -167,7 +174,11 @@ export default function Home() {
             <img
               src={DASHBOARD_BANNER.src}
               alt="Mobile detailing in Austin - professional auto detailing at your location"
+              width={1920}
+              height={1080}
               fetchPriority="high"
+              loading="eager"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
               style={{ objectPosition: 'center 55%' }}
             />
@@ -787,6 +798,10 @@ export default function Home() {
           <img
             src={BOOK_CTA_IMAGE.src}
             alt="Book mobile detailing in Austin - professional on-site car cleaning"
+            width={1920}
+            height={1080}
+            loading="lazy"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import 'leaflet/dist/leaflet.css';
+// Leaflet CSS is imported once in globals.css so it doesn't block the
+// first render of any client component that loads Leaflet itself.
 
 const NEIGHBORHOODS: { name: string; lat: number; lng: number; hq?: boolean }[] = [
   { name: 'Downtown Austin', lat: 30.267, lng: -97.743, hq: true },

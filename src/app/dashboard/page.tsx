@@ -184,9 +184,15 @@ export default function Dashboard() {
 
       {/* Header banner */}
       <div className="relative h-[280px] w-full overflow-hidden sm:h-64">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={DASHBOARD_BANNER.src}
           alt={DASHBOARD_BANNER.alt}
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black" />
@@ -267,9 +273,14 @@ export default function Dashboard() {
           className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 animate-fade-up"
           style={{ animationDelay: '180ms' }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={BOOK_CTA_IMAGE.src}
             alt={BOOK_CTA_IMAGE.alt}
+            width={1920}
+            height={1080}
+            loading="lazy"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
