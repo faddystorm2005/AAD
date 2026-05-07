@@ -21,10 +21,12 @@ const oswald = Oswald({
   display: "swap",
 });
 
-// Canonical site URL. Non-www to match sitemap.ts and robots.ts; the
-// www subdomain redirects to apex on the live deployment, so search
-// engines should only ever see this form to keep authority unified.
-const SITE_URL = "https://austin-autodetail.com";
+// Canonical site URL. The Vercel domain config serves www as the live
+// address and redirects apex (austin-autodetail.com) -> www, so the
+// canonical must match what the customer actually hits in the browser.
+// If the redirect direction is ever flipped to www -> apex, change
+// this AND sitemap.ts AND robots.ts in the same commit.
+const SITE_URL = "https://www.austin-autodetail.com";
 const SOCIAL_TITLE = "Austin Auto Detail. Mobile Detailing in Austin, TX.";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
 // so search engines and social previews stay consistent.
