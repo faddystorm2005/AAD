@@ -120,11 +120,13 @@ export default function Timeline() {
           key={step.title}
           className="aad-step relative flex flex-col items-center text-center sm:items-start sm:text-left"
         >
-          {/* Connector to the next step. Hidden on the last item. The
-              filled state animates via the .is-active class added when
-              this step crosses 50% in the viewport. */}
+          {/* Connector to the next step. Hidden on the last item AND on
+              mobile (where steps stack vertically and a center-line would
+              run through the centered title/description text). On desktop
+              the connector is a horizontal line between icons; the filled
+              state animates via the .is-active class. */}
           {i < STEPS.length - 1 && (
-            <span className="aad-connector pointer-events-none absolute" aria-hidden />
+            <span className="aad-connector pointer-events-none absolute hidden sm:block" aria-hidden />
           )}
           <div className="aad-step-icon relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-red-500/40 bg-zinc-950 text-red-400 transition-colors duration-500">
             <StepIcon name={step.icon} />
@@ -136,7 +138,7 @@ export default function Timeline() {
           <button
             type="button"
             onClick={() => toggle(i)}
-            aria-expanded={expanded.has(i) ? 'true' : 'false'}
+            aria-expanded={expanded.has(i)}
             className="mt-2 flex items-center gap-1.5 text-sm text-gray-300 hover:text-gray-200 transition-colors"
           >
             <span className={`text-lg leading-none transition-transform duration-200 ${expanded.has(i) ? 'rotate-45' : ''}`} aria-hidden>+</span>

@@ -16,6 +16,33 @@ export function todayAustinDateString(): string {
 }
 
 /**
+ * Current wall-clock moment in Austin as { date: 'YYYY-MM-DD', time: 'HH:MM:SS' }.
+ * Used to block same-day slots whose start time has already passed (e.g. it's
+ * 9:00 PM and the form would otherwise still offer the 9 AM, 1 PM, 5 PM slots).
+ * Both server (Vercel UTC) and client (any user TZ) compute the same Austin
+ * wall clock through Intl, so the past-slot check agrees on both sides.
+ */
+export function austinNowParts(): { date: string; time: string } {
+  const now = new Date();
+  const date = new Intl.DateTimeFormat('en-CA', {
+    timeZone: AUSTIN_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+  const time = new Intl.DateTimeFormat('en-GB', {
+    timeZone: AUSTIN_TZ,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(now);
+  // 'en-GB' returns 'HH:MM:SS' but uses '24:00:00' at midnight on some
+  // engines, so normalize the leading-24 edge case to '00:00:00'.
+  return { date, time: time.startsWith('24') ? '00' + time.slice(2) : time };
+}
+
+/**
  * UTC offset for a given Austin-local calendar date, e.g. "-05:00" (CDT) or
  * "-06:00" (CST). Used to build a TIMESTAMPTZ string like "2026-07-04T09:00:00-05:00".
  *

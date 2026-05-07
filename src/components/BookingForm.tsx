@@ -749,7 +749,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                         const isSelected = formData.slotTime === time;
                         let reason = '';
                         if (!usable) {
-                          if (ceramic && time !== CERAMIC_SLOT) reason = 'Mornings only';
+                          // Past-slot check first: if it's already past 5 PM,
+                          // saying "Booked" or "Full" would be misleading.
+                          if (slot.pastSlot) reason = 'Past';
+                          else if (ceramic && time !== CERAMIC_SLOT) reason = 'Mornings only';
                           else if (slot.ceramicTaken) reason = 'Booked';
                           else if (slot.takenCount >= slot.perSlotCapacity) reason = 'Full';
                           else if (availability.totalBookings >= availability.perDayCapacity) reason = 'Day full';

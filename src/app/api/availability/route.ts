@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SlotTime } from '@/lib/slots';
+import { austinNowParts } from '@/lib/austinTime';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -106,6 +107,7 @@ export async function GET(req: NextRequest) {
     days.push(d.toISOString().slice(0, 10));
   }
 
+  const now = austinNowParts();
   const result = days.map((date) => {
     // Explicit row from daily_capacity wins. Otherwise fall back to the
     // day-of-week default from app_config. UTC midday avoids any DST/TZ
@@ -114,7 +116,7 @@ export async function GET(req: NextRequest) {
     const dow = new Date(date + 'T12:00:00Z').getUTCDay();
     const helpAvailable =
       explicit !== undefined ? explicit : defaultHelpDow.includes(dow);
-    return computeAvailability(date, helpAvailable, bookingsByDay.get(date) ?? []);
+    return computeAvailability(date, helpAvailable, bookingsByDay.get(date) ?? [], now);
   });
 
   return NextResponse.json({ days: result });

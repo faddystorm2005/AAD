@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
-import { austinOffsetFor } from '@/lib/austinTime';
+import { austinOffsetFor, austinNowParts } from '@/lib/austinTime';
 import { pushBookingToGoogle, findAdminUserId } from '@/lib/googleCalendar';
 
 export const runtime = 'nodejs';
@@ -156,7 +156,8 @@ export async function POST(req: NextRequest) {
     liveBookings.map((b) => ({
       slot_time: b.slot_time as SlotTime,
       is_ceramic: b.is_ceramic,
-    }))
+    })),
+    austinNowParts()
   );
 
   const slot = availability.slots.find((s) => s.time === slotTime);
@@ -165,10 +166,10 @@ export async function POST(req: NextRequest) {
   }
   const slotOk = booking.is_ceramic ? slot.availableForCeramic : slot.availableForRegular;
   if (!slotOk) {
-    return NextResponse.json(
-      { error: 'That slot is full. Please pick another time.' },
-      { status: 409 }
-    );
+    const message = slot.pastSlot
+      ? "That time has already passed. Please pick a later slot or a different day."
+      : 'That slot is full. Please pick another time.';
+    return NextResponse.json({ error: message }, { status: 409 });
   }
 
   const scheduledAt = `${slotDate}T${slotTime}${austinOffsetFor(slotDate)}`;

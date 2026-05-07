@@ -12,7 +12,7 @@ import {
 } from '@/lib/bookingPricing';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
-import { austinOffsetFor } from '@/lib/austinTime';
+import { austinOffsetFor, austinNowParts } from '@/lib/austinTime';
 import { notifyAdminNewBooking } from '@/lib/notify';
 import { sendPushToAllAdmins } from '@/lib/pushNotifications';
 
@@ -138,7 +138,8 @@ export async function POST(req: NextRequest) {
     liveBookings.map((b) => ({
       slot_time: b.slot_time as SlotTime,
       is_ceramic: b.is_ceramic,
-    }))
+    })),
+    austinNowParts()
   );
 
   const slot = availability.slots.find((s) => s.time === body.slotTime);
@@ -147,10 +148,13 @@ export async function POST(req: NextRequest) {
   }
   const slotOk = isCeramic ? slot.availableForCeramic : slot.availableForRegular;
   if (!slotOk) {
-    return NextResponse.json(
-      { error: 'That slot just filled up. Please pick another.' },
-      { status: 409 }
-    );
+    // Distinguish past-slot from "just filled up" so the message is honest.
+    // A 9 PM customer trying to grab the 1 PM slot didn't get sniped; the
+    // slot has already started.
+    const message = slot.pastSlot
+      ? "That time has already passed. Please pick a later slot or a different day."
+      : 'That slot just filled up. Please pick another.';
+    return NextResponse.json({ error: message }, { status: 409 });
   }
 
   // Determine returning-customer status.

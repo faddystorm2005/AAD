@@ -1,18 +1,38 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
-interface Stat {
+type NumericStat = {
+  kind: 'number';
   value: number;
   suffix?: string;
   prefix?: string;
   label: string;
-}
+};
+type IconStat = {
+  kind: 'icon';
+  icon: ReactNode;
+  label: string;
+};
+type Stat = NumericStat | IconStat;
 
 const STATS: Stat[] = [
-  { value: 90, label: 'Minutes Saved Per Detail' },
-  { value: 3, suffix: '/day', label: 'Hand-Detailed, Not Rushed' },
-  { value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
+  { kind: 'number', value: 24, suffix: 'hr', label: 'Booking Confirmation' },
+  {
+    kind: 'icon',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className="mx-auto h-9 w-9 sm:h-12 sm:w-12"
+      >
+        <path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6z" />
+      </svg>
+    ),
+    label: 'Faith-Driven Service',
+  },
+  { kind: 'number', value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
 ];
 
 export default function StatsStrip() {
@@ -32,12 +52,6 @@ function StatTile({ stat }: { stat: Stat }) {
   const tileRef = useRef<HTMLLIElement>(null);
   const [active, setActive] = useState(false);
 
-  // Observer attached to the outer tile div, not the inner number span.
-  // The previous version observed the inner span, which sat inside a
-  // text-gradient-hero parent (background-clip: text, color: transparent).
-  // That combination caused inconsistent intersection rects, and the
-  // counters stayed at 0 in production. Outer div has a normal block
-  // box, threshold 0.1 fires as soon as any of it scrolls in.
   useEffect(() => {
     const el = tileRef.current;
     if (!el) return;
@@ -47,9 +61,6 @@ function StatTile({ stat }: { stat: Stat }) {
       return;
     }
 
-    // Safety fallback: if the observer never fires (rare browser bugs,
-    // odd parent stacking), check on a short timer whether the tile is
-    // already visible and trigger anyway. Belt and suspenders.
     let fallbackTimer: number | null = window.setTimeout(() => {
       const rect = el.getBoundingClientRect();
       const inView = rect.top < window.innerHeight && rect.bottom > 0;
@@ -77,15 +88,18 @@ function StatTile({ stat }: { stat: Stat }) {
   }, []);
 
   return (
-    <li
-      ref={tileRef}
-      className="text-center animate-fade-up"
-    >
+    <li ref={tileRef} className="text-center animate-fade-up">
       <div className="text-2xl font-bold sm:text-4xl">
         <span className="text-gradient-hero">
-          {stat.prefix ?? ''}
-          <CountUp target={stat.value} active={active} />
-          {stat.suffix ?? ''}
+          {stat.kind === 'number' ? (
+            <>
+              {stat.prefix ?? ''}
+              <CountUp target={stat.value} active={active} />
+              {stat.suffix ?? ''}
+            </>
+          ) : (
+            stat.icon
+          )}
         </span>
       </div>
       <div className="mt-3 text-xs uppercase tracking-[0.18em] text-gray-200 sm:text-sm sm:tracking-[0.2em]">
@@ -95,8 +109,6 @@ function StatTile({ stat }: { stat: Stat }) {
   );
 }
 
-// Animates from 0 to target once `active` flips true. Parent tile owns
-// the IntersectionObserver; this component is purely the count animation.
 function CountUp({ target, active }: { target: number; active: boolean }) {
   const [val, setVal] = useState(0);
   const startedRef = useRef(false);
@@ -115,7 +127,6 @@ function CountUp({ target, active }: { target: number; active: boolean }) {
     let raf = 0;
     const tick = (now: number) => {
       const progress = Math.min(1, (now - t0) / duration);
-      // ease-out cubic for a confident landing on the final number
       const eased = 1 - Math.pow(1 - progress, 3);
       setVal(Math.round(target * eased));
       if (progress < 1) raf = requestAnimationFrame(tick);

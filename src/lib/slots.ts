@@ -42,6 +42,8 @@ export interface SlotAvailability {
   perSlotCapacity: number;
   /** Is at least one ceramic coating booked at this slot? */
   ceramicTaken: boolean;
+  /** Slot start time has already passed in Austin local time (only true when date == today). */
+  pastSlot: boolean;
   /** Available for a NON-ceramic booking. */
   availableForRegular: boolean;
   /** Available for a CERAMIC booking. */
@@ -66,11 +68,17 @@ interface BookingRow {
  * Decide which slots are bookable on a given day, given today's bookings and
  * whether help is available. Used by both the customer booking form (display)
  * and the create-booking server route (authoritative validation).
+ *
+ * `now` is the current Austin wall-clock moment ({ date, time }). When the
+ * requested `date` matches `now.date`, any slot whose start time is at or
+ * before `now.time` is marked pastSlot=true and rendered unbookable. Pass
+ * undefined to skip the past-slot check (useful for unit tests).
  */
 export function computeAvailability(
   date: string,
   isHelpAvailable: boolean,
-  bookings: BookingRow[]
+  bookings: BookingRow[],
+  now?: { date: string; time: string }
 ): DayAvailability {
   const counts: SlotCounts = { '09:00:00': 0, '13:00:00': 0, '17:00:00': 0 };
   let ceramicBooked = false;
@@ -87,18 +95,24 @@ export function computeAvailability(
     const taken = counts[time];
     const ceramicHere =
       time === CERAMIC_SLOT && bookings.some((b) => b.slot_time === time && b.is_ceramic);
-    // Regular booking rule: slot has capacity AND no ceramic blocking it AND day not full.
+    // Past-slot check: only relevant when the requested date is today in
+    // Austin. String comparison works because both are zero-padded HH:MM:SS.
+    const pastSlot = !!now && now.date === date && time <= now.time;
+    // Regular booking rule: slot has capacity AND no ceramic blocking it AND
+    // day not full AND slot hasn't already started.
     const availableForRegular =
-      !dayFull && taken < perSlot && !(time === CERAMIC_SLOT && ceramicHere);
+      !dayFull && !pastSlot && taken < perSlot && !(time === CERAMIC_SLOT && ceramicHere);
     // Ceramic rule: only the 9 AM (first) slot, only if it's empty AND no
-    // ceramic anywhere this day.
-    const availableForCeramic = time === CERAMIC_SLOT && taken === 0 && !ceramicBooked;
+    // ceramic anywhere this day AND slot hasn't already started.
+    const availableForCeramic =
+      time === CERAMIC_SLOT && !pastSlot && taken === 0 && !ceramicBooked;
     return {
       time,
       label: SLOT_LABELS[time],
       takenCount: taken,
       perSlotCapacity: perSlot,
       ceramicTaken: ceramicHere,
+      pastSlot,
       availableForRegular,
       availableForCeramic,
     };
