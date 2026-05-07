@@ -40,7 +40,33 @@ export default function BeforeAfterSlider({
 }: BeforeAfterSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(50);
+  const [loadSrc, setLoadSrc] = useState(false);
   const dragging = useRef(false);
+
+  // Defer the background-image fetch until the slider scrolls within
+  // 200px of the viewport. The Transformations section sits below the
+  // hero on the homepage; without this, all three composite images
+  // download on hydration and compete with the hero LCP for mobile
+  // bandwidth.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setLoadSrc(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setLoadSrc(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const updateFromClientX = useCallback((clientX: number) => {
     const el = containerRef.current;
@@ -93,11 +119,13 @@ export default function BeforeAfterSlider({
         className="ba-frame relative w-full select-none overflow-hidden rounded-2xl border border-white/10 bg-zinc-900"
         style={{ aspectRatio: aspect, touchAction: 'pan-y' }}
       >
-        {/* Before layer: shows one half of the composite, full width. */}
+        {/* Before layer: shows one half of the composite, full width.
+            backgroundImage stays empty until loadSrc flips so the network
+            fetch is deferred until the slider scrolls near the viewport. */}
         <div
           className="absolute inset-0 bg-no-repeat"
           style={{
-            backgroundImage: `url(${src})`,
+            backgroundImage: loadSrc ? `url(${src})` : undefined,
             backgroundSize: '200% 100%',
             backgroundPosition: beforeBgPos,
           }}
@@ -108,7 +136,7 @@ export default function BeforeAfterSlider({
         <div
           className="absolute inset-0 bg-no-repeat"
           style={{
-            backgroundImage: `url(${src})`,
+            backgroundImage: loadSrc ? `url(${src})` : undefined,
             backgroundSize: '200% 100%',
             backgroundPosition: afterBgPos,
             clipPath: `inset(0 0 0 ${pos}%)`,
