@@ -90,6 +90,7 @@ create table if not exists bookings (
   booking_stage booking_stage not null default 'requested',
   started_at timestamp with time zone,
   completed_at timestamp with time zone,
+  review_request_sent_at timestamp with time zone,
   created_at timestamp with time zone default now()
 );
 
@@ -100,6 +101,14 @@ alter table bookings add column if not exists discount_amount numeric(7,2) not n
 alter table bookings add column if not exists slot_date date;
 alter table bookings add column if not exists slot_time time;
 alter table bookings add column if not exists is_ceramic boolean not null default false;
+alter table bookings add column if not exists review_request_sent_at timestamp with time zone;
+
+-- Partial index for the review-request cron's query path. Filters on
+-- (completed_at, status) but only over rows that haven't been emailed yet,
+-- so the index stays tiny as historical bookings accumulate.
+create index if not exists idx_bookings_review_eligible
+  on bookings (completed_at, status)
+  where review_request_sent_at is null;
 
 -- Status workflow (Phase 2): pending → approved → confirmed → in_progress → completed,
 -- with declined as a terminal branch from pending.
