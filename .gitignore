@@ -44,5 +44,10 @@ next-env.d.ts
 
 AAD-FULL-SOURCE.txt
 
-# Claude Code internal state (scheduled task locks, agent run output, etc.)
-.claude/
+# Claude Code internal state (scheduled task locks, run output, personal
+# settings, etc) is ignored, but the shared subagent definitions under
+# .claude/agents/ are checked in so any team session uses the same
+# pre-commit verifiers.
+.claude/*
+!.claude/agents/
+!.claude/agents/**
