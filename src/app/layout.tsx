@@ -21,7 +21,10 @@ const oswald = Oswald({
   display: "swap",
 });
 
-const SITE_URL = "https://www.austin-autodetail.com";
+// Canonical site URL. Non-www to match sitemap.ts and robots.ts; the
+// www subdomain redirects to apex on the live deployment, so search
+// engines should only ever see this form to keep authority unified.
+const SITE_URL = "https://austin-autodetail.com";
 const SOCIAL_TITLE = "Austin Auto Detail. Mobile Detailing in Austin, TX.";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
 // so search engines and social previews stay consistent.
@@ -45,7 +48,10 @@ const SCHEMA_LOCAL_BUSINESS = {
   url: SITE_URL,
   telephone: "+1-480-793-3782",
   email: "info@austin-autodetail.com",
-  image: `${SITE_URL}/images/aad/logo.png`,
+  // image is the rich-result preview thumbnail. Using the marketing CTA
+  // image (1200x630, OG-sized) so Google's local pack and rich results
+  // show real work, not just the logo. logo stays as the brand mark.
+  image: `${SITE_URL}/images/aad/cta-king-ranch.jpg`,
   logo: `${SITE_URL}/images/aad/logo.png`,
   priceRange: "$$",
   currenciesAccepted: "USD",
