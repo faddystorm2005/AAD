@@ -143,7 +143,7 @@ export default function DailyCapacityPanel({ session }: Props) {
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Daily Capacity</h2>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-300">
           Solo: {perDayCapacity(false)}/day, {perSlotCapacity(false)}/slot · Help:{' '}
           {perDayCapacity(true)}/day, {perSlotCapacity(true)}/slot
         </p>
@@ -165,11 +165,11 @@ export default function DailyCapacityPanel({ session }: Props) {
             >
               <div>
                 <p className="font-semibold text-white">{formatDayLabel(day.date)}</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-300">
                   {day.totalBookings}/{day.perDayCapacity} booked
                   {day.ceramicBooked && ' · ceramic'}
                 </p>
-                <div className="mt-1 flex gap-2 text-[10px] uppercase tracking-wider text-gray-500">
+                <div className="mt-1 flex gap-2 text-[10px] uppercase tracking-wider text-gray-300">
                   {SLOT_TIMES.map((t) => {
                     const slot = day.slots.find((s) => s.time === t)!;
                     return (
@@ -188,11 +188,11 @@ export default function DailyCapacityPanel({ session }: Props) {
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className={`text-xs font-semibold uppercase tracking-wider ${
-                    day.isHelpAvailable ? 'text-red-400' : 'text-gray-400'
+                    day.isHelpAvailable ? 'text-red-400' : 'text-gray-300'
                   }`}>
                     {day.isHelpAvailable ? 'Help on' : 'Solo'}
                   </p>
-                  <p className="text-[10px] text-gray-500">
+                  <p className="text-[10px] text-gray-300">
                     {day.perDayCapacity} max · {perSlotCapacity(day.isHelpAvailable)}/slot
                   </p>
                 </div>

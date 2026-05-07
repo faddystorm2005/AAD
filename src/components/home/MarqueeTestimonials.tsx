@@ -104,7 +104,7 @@ export default function MarqueeTestimonials() {
             </p>
             <p className="text-sm uppercase tracking-wider text-gray-300">
               <span className="text-red-300">{t.name}</span>
-              {t.vehicle && <span className="text-gray-400"> &middot; {t.vehicle}</span>}
+              {t.vehicle && <span className="text-gray-300"> &middot; {t.vehicle}</span>}
             </p>
           </div>
         ))}

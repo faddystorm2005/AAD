@@ -188,7 +188,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
 
           <div>
             <label htmlFor="vehicle-nickname" className="block text-base font-semibold text-white mb-2">
-              Nickname <span className="text-gray-400 text-sm font-normal">(optional)</span>
+              Nickname <span className="text-gray-300 text-sm font-normal">(optional)</span>
             </label>
             <input
               id="vehicle-nickname"

@@ -28,7 +28,7 @@ export default function ServiceCard({ icon, title, description, priceLabel }: Se
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="mt-3 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+        className="mt-3 flex items-center gap-1.5 text-sm text-gray-300 hover:text-gray-200 transition-colors"
       >
         <span className={`text-lg leading-none transition-transform duration-200 ${open ? 'rotate-45' : ''}`} aria-hidden>+</span>
         <span>{open ? 'Hide details' : 'What\'s included'}</span>

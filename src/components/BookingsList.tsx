@@ -57,7 +57,7 @@ const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending approval', className: 'animate-pulse-soft bg-yellow-900/40 text-yellow-300 border-yellow-800' },
   approved: { label: 'Approved · pay deposit', className: 'animate-pulse-soft bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
-  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-400 border-gray-700' },
+  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-300 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
   in_progress: { label: 'In progress', className: 'animate-pulse-soft bg-green-900/40 text-green-300 border-green-800' },
   completed: { label: 'Completed', className: 'bg-gray-800 text-gray-300 border-gray-700' },
@@ -100,7 +100,7 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
                   ? 'text-gray-300'
                   : status === 'current'
                     ? 'font-semibold text-red-300'
-                    : 'text-gray-500'
+                    : 'text-gray-300'
               }`}
             >
               {STAGE_LABELS[s]}
@@ -273,7 +273,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
         <div className="animate-bounce text-6xl">🚗</div>
         <div>
           <p className="text-xl font-bold text-white">No bookings yet</p>
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-gray-300">
             Your first detail is one tap away. We come to you.
           </p>
         </div>
@@ -314,7 +314,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
                 <p className="text-lg font-semibold text-white">
                   {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
                 </p>
-                <p className="text-sm text-gray-400">{b.service}</p>
+                <p className="text-sm text-gray-300">{b.service}</p>
                 <p className="mt-1 text-base text-gray-200">
                   {new Date(b.scheduled_at).toLocaleString()}
                 </p>
@@ -351,7 +351,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
 
             {showStageBar && (
               <div className="mt-3">
-                <div className="mb-1 flex justify-between text-xs text-gray-400">
+                <div className="mb-1 flex justify-between text-xs text-gray-300">
                   <span>{STAGE_LABELS[normalizeStage(b.booking_stage)]}</span>
                   {b.completed_at && b.booking_stage === 'done' && (
                     <span>Completed {new Date(b.completed_at).toLocaleString()}</span>

@@ -293,11 +293,11 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-xs text-gray-400">
+          <p className="mt-0.5 text-xs text-gray-300">
             See contact info, booking history, set per-customer discounts, promote admins.
           </p>
         </div>
-        <span className="text-gray-400">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-300">{open ? '▲' : '▼'}</span>
       </button>
 
       {flash && (
@@ -336,7 +336,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
           {loading && users.length === 0 ? (
             <div className="h-20 animate-pulse rounded-lg bg-gray-800/60" />
           ) : filtered.length === 0 ? (
-            <p className="py-6 text-center text-sm text-gray-500">
+            <p className="py-6 text-center text-sm text-gray-300">
               {query ? 'No matches.' : 'No users yet.'}
             </p>
           ) : (
@@ -360,7 +360,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="truncate font-medium text-white">
-                            {u.full_name || <span className="text-gray-500">(no name)</span>}
+                            {u.full_name || <span className="text-gray-300">(no name)</span>}
                           </p>
                           {isSelf && (
                             <span className="shrink-0 rounded-full border border-blue-700 bg-blue-900/30 px-2 py-0.5 text-[10px] font-medium text-blue-200">
@@ -378,9 +378,9 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                             </span>
                           )}
                         </div>
-                        <p className="truncate text-xs text-gray-400">{u.email}</p>
-                        {u.phone && <p className="truncate text-xs text-gray-500">{u.phone}</p>}
-                        <div className="mt-1 flex flex-wrap gap-3 text-[10px] uppercase tracking-wider text-gray-500">
+                        <p className="truncate text-xs text-gray-300">{u.email}</p>
+                        {u.phone && <p className="truncate text-xs text-gray-300">{u.phone}</p>}
+                        <div className="mt-1 flex flex-wrap gap-3 text-[10px] uppercase tracking-wider text-gray-300">
                           <span>{u.booking_count} bookings</span>
                           <span>${u.total_spent.toFixed(2)} spent</span>
                           {u.last_booking_at && (
@@ -388,7 +388,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                           )}
                         </div>
                       </div>
-                      <span className="text-xs text-gray-500">{isExpanded ? '▲' : '▼'}</span>
+                      <span className="text-xs text-gray-300">{isExpanded ? '▲' : '▼'}</span>
                     </button>
 
                     {/* Expanded panel */}
@@ -396,10 +396,10 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                       <div className="border-t border-white/10 p-3 space-y-4">
                         {/* Discount editor */}
                         <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">
+                          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Customer discount
                           </label>
-                          <p className="mt-0.5 text-xs text-gray-500">
+                          <p className="mt-0.5 text-xs text-gray-300">
                             Applies to every future booking. 0–50%. Stacks with the
                             10% returning-customer discount (system uses whichever is higher).
                           </p>
@@ -415,7 +415,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                               }
                               className="w-20 rounded-lg border border-gray-600 bg-gray-800 px-2 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none"
                             />
-                            <span className="text-sm text-gray-400">%</span>
+                            <span className="text-sm text-gray-300">%</span>
                             <button
                               type="button"
                               onClick={() => saveDiscount(u)}
@@ -442,7 +442,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
 
                         {/* Booking history */}
                         <div>
-                          <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                          <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Booking history
                           </h4>
                           {history === 'loading' ? (
@@ -450,7 +450,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                           ) : history === 'error' ? (
                             <p className="mt-2 text-xs text-red-300">Failed to load.</p>
                           ) : !history || history.length === 0 ? (
-                            <p className="mt-2 text-xs text-gray-500">No bookings yet.</p>
+                            <p className="mt-2 text-xs text-gray-300">No bookings yet.</p>
                           ) : (
                             <ul className="mt-2 max-h-72 space-y-1 overflow-y-auto pr-1">
                               {history.map((b) => (
@@ -461,7 +461,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                                   <div className="flex items-start justify-between gap-2">
                                     <div className="min-w-0 flex-1">
                                       <p className="truncate font-medium text-white">{b.service}</p>
-                                      <p className="text-gray-400">
+                                      <p className="text-gray-300">
                                         {new Date(b.scheduled_at).toLocaleString()}
                                       </p>
                                       {b.status === 'declined' && b.decline_reason && (
@@ -493,7 +493,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
 
                         {/* Admin toggle */}
                         <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-300">
                             {u.is_admin
                               ? 'Has admin access to this dashboard.'
                               : 'Standard customer - no admin access.'}
@@ -518,7 +518,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                             <p className="text-xs font-semibold uppercase tracking-wider text-red-500">
                               Danger Zone
                             </p>
-                            <p className="mt-1 text-xs text-gray-400">
+                            <p className="mt-1 text-xs text-gray-300">
                               Permanently deletes this user&apos;s account and access. Booking
                               history is orphaned. Use only for spam, duplicates, or true
                               account-removal requests.
@@ -541,7 +541,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
             </ul>
           )}
 
-          <p className="pt-1 text-xs text-gray-500">
+          <p className="pt-1 text-xs text-gray-300">
             ⚠️ Per-customer discounts require a one-time SQL migration. If saving fails with a missing-column error, you&apos;ll see the exact SQL to run.
           </p>
         </div>

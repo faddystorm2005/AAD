@@ -573,7 +573,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                             <p className="text-base font-semibold text-white">
                               {vehicle.year} {vehicle.make} {vehicle.model}
                               {vehicle.nickname && (
-                                <span className="text-gray-400"> · {vehicle.nickname}</span>
+                                <span className="text-gray-300"> · {vehicle.nickname}</span>
                               )}
                             </p>
                             <p className="text-sm text-gray-300">
@@ -637,7 +637,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
               <div>
                 <label className="block text-base font-semibold text-white mb-1">
-                  Want to add anything? <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                  Want to add anything? <span className="text-gray-300 text-sm font-normal">(optional)</span>
                 </label>
                 <p className="mb-3 text-sm text-gray-300">
                   Skip this if you just want a regular detail.
@@ -769,7 +769,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                                 ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50 ring-2 ring-red-400/40'
                                 : usable
                                 ? 'border-gray-700 bg-gray-900 text-white hover:border-gray-500'
-                                : 'border-gray-800 bg-gray-900/50 text-gray-500'
+                                : 'border-gray-800 bg-gray-900/50 text-gray-300'
                             }`}
                           >
                             <p className="text-sm font-bold sm:text-base">{slot.label}</p>
@@ -812,7 +812,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
               <div>
                 <label htmlFor="booking-unit" className="block text-base font-semibold text-white mb-2">
-                  Apt / Suite / Unit <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                  Apt / Suite / Unit <span className="text-gray-300 text-sm font-normal">(optional)</span>
                 </label>
                 <input
                   id="booking-unit"
@@ -882,7 +882,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
               <div>
                 <label htmlFor="booking-notes" className="block text-base font-semibold text-white mb-2">
-                  Anything we should know? <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                  Anything we should know? <span className="text-gray-300 text-sm font-normal">(optional)</span>
                 </label>
                 <p className="mb-3 text-sm text-gray-300">
                   Special instructions, gate codes, where to park, the friendly dog out back. Anything that helps us get to your car easily.
@@ -901,7 +901,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   placeholder="Park in the driveway, doorbell is broken, please knock loudly..."
                   className="w-full resize-none rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none disabled:opacity-50"
                 />
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-gray-300">
                   {formData.notes.length}/500 characters
                 </p>
               </div>
@@ -958,9 +958,9 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                         </>
                       ) : (
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center">
-                          <span className="text-2xl text-gray-500">+</span>
+                          <span className="text-2xl text-gray-300">+</span>
                           <p className="mt-1 text-xs font-semibold text-white">{slot.label}</p>
-                          <p className="text-[10px] text-gray-400">
+                          <p className="text-[10px] text-gray-300">
                             {slot.required ? 'Required' : 'Optional'}
                           </p>
                         </div>
@@ -981,7 +981,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
                 {formData.selectedAddOns.length > 0 && (
                   <div>
-                    <p className="text-sm uppercase tracking-wider text-gray-400">Extras</p>
+                    <p className="text-sm uppercase tracking-wider text-gray-300">Extras</p>
                     <ul className="mt-2 space-y-1">
                       {formData.selectedAddOns.map((id) => {
                         const addon = ADD_ONS.find((a) => a.id === id);
@@ -1008,7 +1008,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
                 {formData.notes.trim() && (
                   <div>
-                    <p className="text-sm uppercase tracking-wider text-gray-400">Special instructions</p>
+                    <p className="text-sm uppercase tracking-wider text-gray-300">Special instructions</p>
                     <p className="mt-1 text-base text-white whitespace-pre-wrap">
                       {formData.notes.trim()}
                     </p>
@@ -1071,7 +1071,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   ) : (
                     <div className="space-y-2">
                       <label className="block text-base font-semibold text-white">
-                        Have a promo code? <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                        Have a promo code? <span className="text-gray-300 text-sm font-normal">(optional)</span>
                       </label>
                       <div className="flex gap-2">
                         <input
@@ -1124,7 +1124,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 <div>
                   <p className="text-base font-semibold text-white">
                     Photo permission{' '}
-                    <span className="text-gray-400 text-sm font-normal">(optional)</span>
+                    <span className="text-gray-300 text-sm font-normal">(optional)</span>
                   </p>
                   <p className="mt-1 text-sm text-gray-300">
                     I allow Austin Auto Detail to use photos of my vehicle for marketing and social media.
@@ -1202,7 +1202,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 function ReviewLine({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-sm uppercase tracking-wider text-gray-400">{label}</p>
+      <p className="text-sm uppercase tracking-wider text-gray-300">{label}</p>
       <p className="mt-1 text-base font-semibold text-white">{value}</p>
     </div>
   );

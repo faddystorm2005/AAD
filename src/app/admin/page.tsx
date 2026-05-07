@@ -31,7 +31,7 @@ const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
   approved: { label: 'Approved · awaiting deposit', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
-  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-400 border-gray-700' },
+  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-300 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
   in_progress: { label: 'In progress', className: 'bg-green-900/40 text-green-300 border-green-800' },
   completed: { label: 'Completed', className: 'bg-gray-800 text-gray-300 border-gray-700' },
@@ -674,7 +674,7 @@ export default function AdminPage() {
       <main className="min-h-screen bg-black px-6 py-16 text-white">
         <div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
           <h1 className="mb-2 text-2xl font-bold">Not authorized</h1>
-          <p className="mb-6 text-sm text-gray-400">
+          <p className="mb-6 text-sm text-gray-300">
             You don&apos;t have admin access to this workspace.
           </p>
           <Link href="/dashboard" className="inline-block rounded-lg bg-red-600 px-6 py-2 hover:bg-red-700">
@@ -724,7 +724,7 @@ export default function AdminPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold uppercase tracking-[0.18em]">Admin</h1>
-            <p className="text-sm text-gray-400">{user?.email}</p>
+            <p className="text-sm text-gray-300">{user?.email}</p>
           </div>
           <div className="flex items-center gap-3">
             <Link
@@ -773,7 +773,7 @@ export default function AdminPage() {
         {/* Booking Alerts - web push for new bookings */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h2 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-300">Booking Alerts</h2>
-          <p className="mb-4 text-xs text-gray-500">
+          <p className="mb-4 text-xs text-gray-300">
             Get a push notification on this device when a new booking comes in.
             {pushState === 'unsupported' || pushState === 'denied' ? '' : ' iOS users: install the app to Home Screen first.'}
           </p>
@@ -800,7 +800,7 @@ export default function AdminPage() {
             </div>
           )}
           {pushState === 'unsupported' && (
-            <p className="text-sm text-gray-500">Push notifications are not supported on this browser.</p>
+            <p className="text-sm text-gray-300">Push notifications are not supported on this browser.</p>
           )}
           {pushState === 'denied' && (
             <p className="text-sm text-yellow-400">Notifications are blocked. Allow them in your browser settings, then reload.</p>
@@ -825,7 +825,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={handleDisablePush}
                 disabled={pushWorking}
-                className="rounded-lg border border-gray-600 px-3 py-1.5 text-xs text-gray-400 hover:bg-gray-800 disabled:opacity-50"
+                className="rounded-lg border border-gray-600 px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-50"
               >
                 {pushWorking ? 'Disabling...' : 'Disable'}
               </button>
@@ -835,7 +835,7 @@ export default function AdminPage() {
 
         {/* Search - find a customer by name, phone, email, or address */}
         <div className="relative">
-          <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
           </svg>
           <input
@@ -911,7 +911,7 @@ export default function AdminPage() {
         {loading ? (
           <div className="h-32 animate-pulse rounded-lg bg-gray-800" />
         ) : visible.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-gray-700 p-8 text-center text-gray-400">
+          <div className="rounded-lg border border-dashed border-gray-700 p-8 text-center text-gray-300">
             {filter === 'active' ? 'No active bookings.' : 'No bookings yet.'}
           </div>
         ) : (
@@ -934,16 +934,16 @@ export default function AdminPage() {
                         <p className="font-semibold text-white">
                           {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
                           {b.customer?.full_name && (
-                            <span className="ml-2 text-sm font-normal text-gray-400">
+                            <span className="ml-2 text-sm font-normal text-gray-300">
                               · {b.customer.full_name}
                             </span>
                           )}
                         </p>
-                        <p className="text-xs text-gray-500">{b.service}</p>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-xs text-gray-300">{b.service}</p>
+                        <p className="text-sm text-gray-300">
                           {new Date(b.scheduled_at).toLocaleString()}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-300">
                           {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
                         </p>
                       </div>
@@ -956,7 +956,7 @@ export default function AdminPage() {
                           {STATUS_BADGES[(b.status ?? 'pending') as Status].label}
                           {b.is_ceramic && ' · ceramic'}
                         </span>
-                        <span className="text-gray-400">
+                        <span className="text-gray-300">
                           ${Number(b.deposit_amount).toFixed(2)} of ${Number(b.total).toFixed(2)}
                         </span>
                         {b.status !== 'pending' && b.status !== 'declined' && (
@@ -964,7 +964,7 @@ export default function AdminPage() {
                             Stage: {STAGE_LABELS[normalizeStage(b.booking_stage)]}
                           </span>
                         )}
-                        <span className="text-gray-500">
+                        <span className="text-gray-300">
                           {isExpanded ? '▲ Hide' : '▼ Details'}
                         </span>
                       </div>
@@ -1008,14 +1008,14 @@ export default function AdminPage() {
                         )}
                         {photosLoadingId === b.id ? (
                           <div className="md:col-span-2">
-                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                               Customer Photos
                             </h3>
                             <div className="mt-2 h-4 w-28 animate-pulse rounded bg-gray-700" />
                           </div>
                         ) : (photosByBooking[b.id] ?? []).length > 0 ? (
                           <div className="md:col-span-2">
-                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                               Customer Photos ({photosByBooking[b.id].length})
                             </h3>
                             <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
@@ -1035,7 +1035,7 @@ export default function AdminPage() {
                                       className="h-full w-full object-cover transition group-hover:scale-105"
                                     />
                                   ) : (
-                                    <div className="flex h-full items-center justify-center text-xs text-gray-500">
+                                    <div className="flex h-full items-center justify-center text-xs text-gray-300">
                                       Failed
                                     </div>
                                   )}
@@ -1051,22 +1051,22 @@ export default function AdminPage() {
                         ) : null}
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Customer
                           </h3>
                           <p className="mt-2 text-white">
-                            {b.customer?.full_name || <span className="text-gray-500">Name not set</span>}
+                            {b.customer?.full_name || <span className="text-gray-300">Name not set</span>}
                           </p>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-gray-300">
                             {b.customer?.email || 'Email unavailable'}
                           </p>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-gray-300">
                             {b.customer?.phone || 'No phone on file'}
                           </p>
                         </div>
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Vehicle
                           </h3>
                           {b.vehicle ? (
@@ -1074,22 +1074,22 @@ export default function AdminPage() {
                               <p className="mt-2 text-white">
                                 {b.vehicle.year} {b.vehicle.make} {b.vehicle.model}
                                 {b.vehicle.nickname && (
-                                  <span className="ml-1 text-sm text-gray-400">
+                                  <span className="ml-1 text-sm text-gray-300">
                                     · {b.vehicle.nickname}
                                   </span>
                                 )}
                               </p>
-                              <p className="text-sm text-gray-400">
+                              <p className="text-sm text-gray-300">
                                 {b.vehicle.color || 'Color not set'} · {SIZE_LABELS[b.vehicle.size] ?? b.vehicle.size}
                               </p>
                             </>
                           ) : (
-                            <p className="mt-2 text-sm text-gray-500">Vehicle was deleted</p>
+                            <p className="mt-2 text-sm text-gray-300">Vehicle was deleted</p>
                           )}
                         </div>
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Scheduled
                           </h3>
                           <p className="mt-2 text-white">
@@ -1098,21 +1098,21 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Service address
                           </h3>
                           <p className="mt-2 text-white">{b.address}{b.unit ? ` ${b.unit}` : ''}</p>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-gray-300">
                             {b.city}, {b.state} {b.zip}
                           </p>
                         </div>
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Add-ons
                           </h3>
                           {addonNames.length === 0 ? (
-                            <p className="mt-2 text-sm text-gray-500">None</p>
+                            <p className="mt-2 text-sm text-gray-300">None</p>
                           ) : (
                             <ul className="mt-2 list-inside list-disc text-sm text-gray-300">
                               {addonNames.map((name, i) => (
@@ -1123,7 +1123,7 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Payment
                           </h3>
                           <p
@@ -1133,7 +1133,7 @@ export default function AdminPage() {
                           >
                             {b.deposit_paid ? 'Deposit paid' : 'Awaiting deposit'}
                           </p>
-                          <div className="mt-1 space-y-0.5 text-sm text-gray-400">
+                          <div className="mt-1 space-y-0.5 text-sm text-gray-300">
                             <div className="flex justify-between">
                               <span>Subtotal</span>
                               <span>${Number(b.subtotal).toFixed(2)}</span>
@@ -1183,20 +1183,20 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Timing
                           </h3>
                           <p className="mt-2 text-sm text-gray-300">
                             Started:{' '}
                             {b.started_at
                               ? new Date(b.started_at).toLocaleString()
-                              : <span className="text-gray-500">Not started</span>}
+                              : <span className="text-gray-300">Not started</span>}
                           </p>
                           <p className="text-sm text-gray-300">
                             Completed:{' '}
                             {b.completed_at
                               ? new Date(b.completed_at).toLocaleString()
-                              : <span className="text-gray-500">Not completed</span>}
+                              : <span className="text-gray-300">Not completed</span>}
                           </p>
                         </div>
 
@@ -1303,7 +1303,7 @@ export default function AdminPage() {
 
                         {b.status === 'pending' && (
                           <div className="md:col-span-2">
-                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                               Approval
                             </h3>
                             <p className="mt-2 text-sm text-gray-300">
@@ -1388,7 +1388,7 @@ export default function AdminPage() {
 
                         {b.status !== 'pending' && b.status !== 'declined' && (
                           <div className="md:col-span-2">
-                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                               Stage
                             </h3>
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -1421,7 +1421,7 @@ export default function AdminPage() {
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-red-500">
                             Danger zone
                           </h3>
-                          <p className="mt-2 text-xs text-gray-400">
+                          <p className="mt-2 text-xs text-gray-300">
                             Permanently deletes the booking row. Use for test data or duplicates only.
                           </p>
                           <button

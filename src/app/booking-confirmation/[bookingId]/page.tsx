@@ -271,7 +271,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
-            <p className="mt-4 text-sm text-gray-400">Loading your booking...</p>
+            <p className="mt-4 text-sm text-gray-300">Loading your booking...</p>
           </div>
         </div>
       </main>
@@ -321,8 +321,14 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   const header = STATUS_HEADER[status];
   const tone = TONE_CLASSES[header.tone];
 
+  const showStickyPay = status === 'approved' && Boolean(booking.payment_url);
+
   return (
-    <main className="min-h-screen bg-black px-6 py-16 text-white">
+    <main
+      className={`min-h-screen bg-black px-6 py-16 text-white ${
+        showStickyPay ? 'pb-32 sm:pb-16' : ''
+      }`}
+    >
       <div className="mx-auto flex w-full max-w-md flex-col gap-8">
         <div className={`glass-card animate-scale-in rounded-3xl border ${tone.border} ${tone.bg} p-8 text-center`}>
           {status === 'confirmed' && (
@@ -398,7 +404,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-white">Get notified about your booking</p>
-                  <p className="mt-0.5 text-xs text-gray-400">We&apos;ll push an alert when approved, deposit confirmed, or service complete.</p>
+                  <p className="mt-0.5 text-xs text-gray-300">We&apos;ll push an alert when approved, deposit confirmed, or service complete.</p>
                 </div>
                 <button
                   type="button"
@@ -501,6 +507,23 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           Back to dashboard
         </Link>
       </div>
+
+      {/* Sticky deposit CTA for mobile - keeps the Pay button visible
+          while customers scroll the booking details. Hidden on desktop
+          (sm and up) where the inline button at the top of the status
+          card is already in view. */}
+      {showStickyPay && (
+        <div className="confirmation-pay-sticky fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/95 backdrop-blur sm:hidden">
+          <a
+            href={booking.payment_url ?? '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="press mx-auto flex w-full max-w-md items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-900/40 hover:bg-blue-700"
+          >
+            Pay ${Number(booking.deposit_amount).toFixed(2)} deposit →
+          </a>
+        </div>
+      )}
     </main>
   );
 }

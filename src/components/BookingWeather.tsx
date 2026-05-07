@@ -55,7 +55,7 @@ export default function BookingWeather({ date, compact = false }: Props) {
 
   if (!iso || !data) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+      <span className="inline-flex items-center gap-1 text-xs text-gray-300">
         <span className="h-2 w-2 animate-pulse-soft rounded-full bg-gray-600" />
         Weather…
       </span>
@@ -66,14 +66,14 @@ export default function BookingWeather({ date, compact = false }: Props) {
     if (data.unavailable === 'past') return null; // Don't clutter past bookings.
     if (data.unavailable === 'too-far') {
       return (
-        <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+        <span className="inline-flex items-center gap-1 text-xs text-gray-300">
           🗓️ Forecast appears closer to the date
         </span>
       );
     }
     if (data.unavailable === 'api-error') {
       return (
-        <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+        <span className="inline-flex items-center gap-1 text-xs text-gray-300">
           🌡️ Weather unavailable
         </span>
       );
@@ -114,11 +114,11 @@ export default function BookingWeather({ date, compact = false }: Props) {
       <span className="font-medium">
         {f.highF}° / {f.lowF}°
       </span>
-      <span className="text-gray-400">·</span>
+      <span className="text-gray-300">·</span>
       <span>{f.label}</span>
       {f.precipChance >= 20 && (
         <>
-          <span className="text-gray-400">·</span>
+          <span className="text-gray-300">·</span>
           <span className={isWet ? "text-blue-200" : "text-gray-300"}>
             {f.precipChance}% rain
           </span>

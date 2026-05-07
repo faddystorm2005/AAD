@@ -725,6 +725,13 @@ button:disabled {
   padding-bottom: max(env(safe-area-inset-bottom), 1.5rem);
 }
 
+/* ── Booking confirmation sticky pay bar ─────────────────────────────────── */
+/* Padding accounts for the iPhone home indicator so the Pay button
+   tap target stays clear of the bottom-edge gesture bar. */
+.confirmation-pay-sticky {
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+
 /* ── Stats strip stagger ─────────────────────────────────────────────────── */
 /* Each tile has animate-fade-up. nth-child gives us a clean 80ms stagger
    without an inline style on every render. */

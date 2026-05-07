@@ -158,7 +158,7 @@ export default function InstallAppPrompt() {
                 type="button"
                 onClick={() => setShowIOSModal(false)}
                 aria-label="Close"
-                className="text-gray-400 hover:text-white text-2xl leading-none"
+                className="text-gray-300 hover:text-white text-2xl leading-none"
               >
                 ×
               </button>
@@ -230,7 +230,7 @@ export default function InstallAppPrompt() {
                   setShowIOSModal(false);
                   handleDismiss();
                 }}
-                className="w-full rounded-full bg-white/5 px-4 py-3 text-sm font-medium text-gray-400 hover:text-white transition"
+                className="w-full rounded-full bg-white/5 px-4 py-3 text-sm font-medium text-gray-300 hover:text-white transition"
               >
                 Maybe later
               </button>

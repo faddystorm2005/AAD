@@ -180,7 +180,7 @@ export default function RescheduleModal({
                       ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50'
                       : usable
                       ? 'border-gray-700 bg-gray-900 text-white hover:border-gray-500'
-                      : 'border-gray-800 bg-gray-900/50 text-gray-500'
+                      : 'border-gray-800 bg-gray-900/50 text-gray-300'
                   }`}
                 >
                   <p className="text-base font-bold">{SLOT_LABELS[time as SlotTime]}</p>

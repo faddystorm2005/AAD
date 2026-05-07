@@ -145,11 +145,11 @@ export default function ManagePromoCodes({ accessToken }: Props) {
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-xs text-gray-400">
+          <p className="mt-0.5 text-xs text-gray-300">
             Codes customers type at checkout. Set rate, optional usage cap and expiration.
           </p>
         </div>
-        <span className="text-gray-400">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-300">{open ? '▲' : '▼'}</span>
       </button>
 
       {flash && (
@@ -174,7 +174,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
             </h3>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div>
-                <label className="block text-[10px] uppercase tracking-wider text-gray-500">
+                <label className="block text-[10px] uppercase tracking-wider text-gray-300">
                   Code
                 </label>
                 <input
@@ -186,7 +186,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-wider text-gray-500">
+                <label className="block text-[10px] uppercase tracking-wider text-gray-300">
                   Discount %
                 </label>
                 <input
@@ -199,7 +199,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-wider text-gray-500">
+                <label className="block text-[10px] uppercase tracking-wider text-gray-300">
                   Max uses (optional)
                 </label>
                 <input
@@ -212,7 +212,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-wider text-gray-500">
+                <label className="block text-[10px] uppercase tracking-wider text-gray-300">
                   Expires (optional)
                 </label>
                 <input
@@ -241,7 +241,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
             {loading && promos.length === 0 ? (
               <div className="mt-2 h-12 animate-pulse rounded bg-gray-800/60" />
             ) : promos.length === 0 ? (
-              <p className="mt-2 text-xs text-gray-500">No codes yet.</p>
+              <p className="mt-2 text-xs text-gray-300">No codes yet.</p>
             ) : (
               <ul className="mt-2 space-y-2">
                 {promos.map((p) => {
@@ -253,7 +253,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                       key={p.id}
                       className={`rounded-lg border p-3 text-sm ${
                         inactive
-                          ? 'border-gray-700 bg-gray-900/30 text-gray-500'
+                          ? 'border-gray-700 bg-gray-900/30 text-gray-300'
                           : 'border-white/10 bg-gray-900/40'
                       }`}
                     >
@@ -277,7 +277,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                               </span>
                             )}
                           </div>
-                          <p className="mt-1 text-xs text-gray-400">
+                          <p className="mt-1 text-xs text-gray-300">
                             Used {p.uses_count}{p.max_uses != null ? `/${p.max_uses}` : ' (no cap)'}
                             {p.expires_at && ` · expires ${new Date(p.expires_at).toLocaleDateString()}`}
                           </p>
@@ -298,7 +298,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
             )}
           </div>
 
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-300">
             ⚠️ Requires a one-time SQL migration (see setup notes). Customers
             type the code on the booking form.
           </p>

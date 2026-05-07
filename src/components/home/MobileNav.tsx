@@ -151,7 +151,7 @@ export default function MobileNav() {
                   </Link>
                   <a
                     href="tel:+14807933782"
-                    className="block text-center text-sm text-gray-400 hover:text-red-300"
+                    className="block text-center text-sm text-gray-300 hover:text-red-300"
                   >
                     (480) 793-3782
                   </a>

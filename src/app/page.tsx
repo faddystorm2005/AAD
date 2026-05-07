@@ -499,7 +499,7 @@ export default function Home() {
                   </svg>
                   Follow @austinautodetail →
                 </span>
-                <span className="text-sm text-gray-500">Free to watch &amp; follow</span>
+                <span className="text-sm text-gray-300">Free to watch &amp; follow</span>
               </div>
             </div>
           </a>
@@ -565,7 +565,7 @@ export default function Home() {
           <p className="text-6xl font-bold sm:text-7xl">
             <HeroStatCounter />
           </p>
-          <p className="mt-2 text-sm uppercase tracking-[0.25em] text-gray-400">
+          <p className="mt-2 text-sm uppercase tracking-[0.25em] text-gray-300">
             saved per detail
           </p>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-gray-300">
@@ -622,13 +622,13 @@ export default function Home() {
               home in should feel like the one you drove off the lot.&rdquo;
             </span>
           </blockquote>
-          <p className="reveal-on-scroll mt-6 text-base leading-relaxed text-gray-400">
+          <p className="reveal-on-scroll mt-6 text-base leading-relaxed text-gray-300">
             We treat every vehicle like it&apos;s our own. That&apos;s why we
             cap at three details a day, bring everything to your door, and
             don&apos;t cut a single corner. Cars take you to the people and
             places that matter, so they should look the part.
           </p>
-          <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-500">
+          <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-300">
             Alex, Founder
           </p>
           <p className="reveal-on-scroll mt-4 text-xs italic text-gray-700">
@@ -837,7 +837,7 @@ export default function Home() {
             Available 7 days a week, by appointment.
           </p>
           <div className="mt-6">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-300">
               Service Area
             </p>
             <ServiceMapLoader />
@@ -909,7 +909,7 @@ export default function Home() {
         </div>
         <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
           <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
-          <p className="text-xs text-gray-500 italic text-center sm:text-right">
+          <p className="text-xs text-gray-300 italic text-center sm:text-right">
             <span aria-hidden className="mr-1.5 text-gray-600">✝</span>
             &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
           </p>

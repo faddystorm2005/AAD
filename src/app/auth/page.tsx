@@ -274,7 +274,7 @@ function AuthInner() {
               </div>
 
               {/* SECONDARY: subtler caption divider, no horizontal lines. */}
-              <p className="my-7 text-center text-xs uppercase tracking-[0.25em] text-gray-400">
+              <p className="my-7 text-center text-xs uppercase tracking-[0.25em] text-gray-300">
                 Or use your email
               </p>
 
@@ -308,7 +308,7 @@ function AuthInner() {
                 </button>
               </form>
 
-              <p className="mt-4 text-center text-sm text-gray-400">
+              <p className="mt-4 text-center text-sm text-gray-300">
                 We&apos;ll email a link + code. First time? Account created automatically.
               </p>
             </>

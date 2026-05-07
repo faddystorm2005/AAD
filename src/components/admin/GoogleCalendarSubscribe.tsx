@@ -119,10 +119,10 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
 
   const statusBadge =
     state === 'loading'
-      ? { text: 'Checking…', cls: 'bg-gray-800 text-gray-400 border-gray-700' }
+      ? { text: 'Checking…', cls: 'bg-gray-800 text-gray-300 border-gray-700' }
       : state === 'connected'
       ? { text: '✓ Connected', cls: 'bg-green-900/40 text-green-300 border-green-800' }
-      : { text: 'Not connected', cls: 'bg-gray-800 text-gray-400 border-gray-700' };
+      : { text: 'Not connected', cls: 'bg-gray-800 text-gray-300 border-gray-700' };
 
   return (
     <div className="rounded-xl border border-white/10 bg-gray-900/50 p-4">
@@ -140,13 +140,13 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
               {statusBadge.text}
             </span>
           </div>
-          <p className="mt-0.5 text-xs text-gray-400">
+          <p className="mt-0.5 text-xs text-gray-300">
             {state === 'connected'
               ? 'Bookings push to your Google Calendar in seconds.'
               : 'Connect to push bookings instantly, or use the read-only ICS feed.'}
           </p>
         </div>
-        <span className="text-gray-400">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-300">{open ? '▲' : '▼'}</span>
       </button>
 
       {flash && (
@@ -170,7 +170,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
               <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
                 Instant push (recommended)
               </h3>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-1 text-xs text-gray-300">
                 Approve a booking → it appears in your Google Calendar within seconds.
                 Decline → it disappears.
               </p>
@@ -200,7 +200,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
               <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
                 Or - subscribe via URL (no sign-in, ~12h delay)
               </h3>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-1 text-xs text-gray-300">
                 Read-only ICS feed Google polls on its own schedule.
               </p>
             </div>
