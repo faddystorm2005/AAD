@@ -1,8 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-// Leaflet CSS is imported once in globals.css so it doesn't block the
-// first render of any client component that loads Leaflet itself.
+// Leaflet CSS imported here (not in globals.css) so it only ships when
+// the map component is actually rendered. The map sits below the fold
+// inside the contact section, so this defers ~10 KB of CSS off the
+// initial homepage critical path. Pages that never mount ServiceMap
+// (auth, dashboard, etc) don't pay the cost at all.
+import 'leaflet/dist/leaflet.css';
 
 const NEIGHBORHOODS: { name: string; lat: number; lng: number; hq?: boolean }[] = [
   { name: 'Downtown Austin', lat: 30.267, lng: -97.743, hq: true },

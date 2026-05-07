@@ -151,35 +151,22 @@ export default function Home() {
       {/* Hero */}
       <section className="relative" id="main-content" tabIndex={-1}>
         <div className="relative h-[60vh] min-h-[480px] w-full overflow-hidden">
-          {/* Blurred backdrop layer. Same image, heavily blurred and darkened,
-              sits behind the sharp hero img to add depth and color halo
-              when the foreground pans. Aria-hidden because the foreground
-              img already has the alt text. */}
-          <div className="hero-bg-back" aria-hidden>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={DASHBOARD_BANNER.src}
-              alt=""
-              width={1920}
-              height={1080}
-              loading="eager"
-              decoding="async"
-            />
-          </div>
+          {/* Subtle radial color glow stands in for the old blurred-backdrop
+              image. Removing the duplicate <img> saved one image fetch on
+              every page load and shaved render-blocking decode work. */}
+          <div aria-hidden className="hero-bg-glow pointer-events-none absolute inset-0" />
           {/* Parallax wrapper: JS moves this div at 0.38x scroll speed.
-              The img inside keeps animate-banner-pan on a separate element
-              so the two transforms never conflict. */}
+              next/Image with fill + priority + sizes lets Next.js serve
+              an AVIF/WebP variant sized for the viewport, which is the
+              biggest LCP win on mobile. */}
           <div className="hero-parallax-wrap">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={DASHBOARD_BANNER.src}
               alt="Mobile detailing in Austin - professional auto detailing at your location"
-              width={1920}
-              height={1080}
-              fetchPriority="high"
-              loading="eager"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover animate-banner-pan"
               style={{ objectPosition: 'center 55%' }}
             />
           </div>
