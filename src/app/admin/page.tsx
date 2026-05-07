@@ -924,14 +924,14 @@ export default function AdminPage() {
                   key={b.id}
                   className="rounded-lg border border-gray-700 bg-gray-900"
                 >
-                  <div className="flex items-stretch">
+                  <div className="flex flex-col sm:flex-row sm:items-stretch">
                     <button
                       type="button"
                       onClick={() => setExpandedId(isExpanded ? null : b.id)}
-                      className="flex flex-1 flex-wrap items-start justify-between gap-3 p-5 text-left hover:bg-gray-800/40"
+                      className="flex flex-1 flex-col gap-3 p-4 text-left hover:bg-gray-800/40 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:p-5"
                     >
-                      <div>
-                        <p className="font-semibold text-white">
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words font-semibold text-white">
                           {SERVICE_TYPE_NAMES[b.service_type ?? 'full_detail']}
                           {b.customer?.full_name && (
                             <span className="ml-2 text-sm font-normal text-gray-300">
@@ -939,45 +939,48 @@ export default function AdminPage() {
                             </span>
                           )}
                         </p>
-                        <p className="text-xs text-gray-300">{b.service}</p>
+                        <p className="text-sm text-gray-300">{b.service}</p>
                         <p className="text-sm text-gray-300">
                           {new Date(b.scheduled_at).toLocaleString()}
                         </p>
-                        <p className="text-xs text-gray-300">
+                        <p className="break-words text-sm text-gray-300">
                           {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
                         </p>
                       </div>
-                      <div className="flex flex-col items-end gap-1 text-right text-xs">
+                      <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end sm:gap-1 sm:text-right">
                         <span
-                          className={`rounded-full border px-2 py-0.5 font-medium ${
+                          className={`rounded-full border px-2 py-0.5 text-sm font-medium ${
                             STATUS_BADGES[(b.status ?? 'pending') as Status].className
                           }`}
                         >
                           {STATUS_BADGES[(b.status ?? 'pending') as Status].label}
                           {b.is_ceramic && ' · ceramic'}
                         </span>
-                        <span className="text-gray-300">
+                        <span className="text-sm text-gray-300">
                           ${Number(b.deposit_amount).toFixed(2)} of ${Number(b.total).toFixed(2)}
                         </span>
                         {b.status !== 'pending' && b.status !== 'declined' && (
-                          <span className="text-red-400">
+                          <span className="text-sm text-red-400">
                             Stage: {STAGE_LABELS[normalizeStage(b.booking_stage)]}
                           </span>
                         )}
-                        <span className="text-gray-300">
+                        <span className="text-sm text-gray-300">
                           {isExpanded ? '▲ Hide' : '▼ Details'}
                         </span>
                       </div>
                     </button>
 
-                    {/* Quick-action panel: approve/decline without expanding */}
+                    {/* Quick-action panel: approve/decline without expanding.
+                        Full-width row under the booking info on mobile, side
+                        column on sm+. Buttons grow to py-3 min so tap targets
+                        meet the 44px Apple HIG minimum. */}
                     {b.status === 'pending' && (
-                      <div className="flex shrink-0 flex-col justify-center gap-2 border-l border-gray-700 px-3 py-3">
+                      <div className="flex shrink-0 gap-2 border-t border-gray-700 px-4 pb-4 pt-3 sm:flex-col sm:justify-center sm:border-l sm:border-t-0 sm:px-3 sm:py-3">
                         <button
                           type="button"
                           disabled={updatingId === b.id}
                           onClick={(e) => { e.stopPropagation(); handleApprove(b.id); }}
-                          className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                          className="flex-1 rounded-lg bg-green-600 px-4 py-3 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50 sm:flex-none"
                         >
                           {updatingId === b.id ? '…' : '✓ Approve'}
                         </button>
@@ -985,7 +988,7 @@ export default function AdminPage() {
                           type="button"
                           disabled={updatingId === b.id}
                           onClick={(e) => { e.stopPropagation(); setExpandedId(b.id); }}
-                          className="rounded-lg border border-gray-600 px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                          className="flex-1 rounded-lg border border-gray-600 px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50 sm:flex-none"
                         >
                           Decline…
                         </button>
