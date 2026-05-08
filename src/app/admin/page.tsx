@@ -17,6 +17,7 @@ import DailyCapacityPanel from '@/components/admin/DailyCapacityPanel';
 import GoogleCalendarSubscribe from '@/components/admin/GoogleCalendarSubscribe';
 import ManageAdmins from '@/components/admin/ManageAdmins';
 import ManagePromoCodes from '@/components/admin/ManagePromoCodes';
+import { ReviewRequestHealth } from '@/components/admin/ReviewRequestHealth';
 
 type Status =
   | 'pending'
@@ -751,6 +752,17 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
+
+        {/* System health: surfaces silent failures of the review-request
+            cron so Alex can spot bookings that should have had an email
+            sent but didn't. Sits above Settings & Tools so a red badge is
+            the first thing in view after the header. */}
+        <section className="space-y-3">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-300">
+            System Health
+          </h2>
+          <ReviewRequestHealth />
+        </section>
 
         {/* Settings group: calendar sync, admin management, promo codes, and
             push alerts. Things you set up once or touch occasionally, kept
