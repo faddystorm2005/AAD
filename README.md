@@ -43,7 +43,7 @@ Daily cron jobs configured in `vercel.json`. Each route is gated by an `Authoriz
 |---|---|---|
 | `/api/cron/cleanup-photos` | `0 8 * * *` (08:00 UTC daily) | Deletes uploaded customer photos older than the retention window. |
 | `/api/cron/expire-approvals` | `0 9 * * *` (09:00 UTC daily) | Marks approved-but-unpaid bookings as declined once their 24h payment window has passed and frees the slot. |
-| `/api/cron/review-requests` | `0 16 * * *` (16:00 UTC = 11 AM CDT / 10 AM CST) | Emails customers a NextDoor recommendation link 24h to 14d after a detail is marked completed. One email per booking, ever. |
+| `/api/cron/review-requests` | `0 16 * * *` (16:00 UTC = 11 AM CDT / 10 AM CST) | Two passes per run. **Initial:** emails customers a NextDoor recommendation link 24h to 14d after a detail is marked completed. **Follow-up:** softer second email 7 to 21 days after the initial landed, only if no follow-up was sent yet. One initial and at most one follow-up per booking, ever. |
 
 Manual trigger (e.g., to verify a fresh deploy):
 
@@ -52,6 +52,16 @@ curl -H "Authorization: Bearer $CRON_SECRET" \
   https://www.austin-autodetail.com/api/cron/review-requests
 ```
 
-Each route returns a JSON summary on success (`{ ok: true, found, sent, failed }`) and exits early with `{ ok: false, reason: ... }` if a required env var is missing.
+Most routes return a flat `{ ok: true, found, sent, failed }` summary. The review-requests route reports both passes separately:
 
-Updated April 26 2026
+```json
+{
+  "ok": true,
+  "initial":  { "found": N, "sent": N, "failed": 0 },
+  "followup": { "found": N, "sent": N, "failed": 0 }
+}
+```
+
+If a required env var is missing, any of the routes exits early with `{ ok: false, reason: ... }`.
+
+Updated May 8 2026

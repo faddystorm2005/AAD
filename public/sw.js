@@ -7,8 +7,9 @@
  * v1 -> v2: force-flush stale bundles after Cancel/Reschedule/Delete shipped.
  * v5 -> v6: add push notification handlers for admin + customer alerts.
  * v7 -> v8: review-request cron + admin/homepage refresh shipped.
+ * v8 -> v9: 7-day follow-up pass added to review-request cron.
  */
-const VERSION = "aad-v8";
+const VERSION = "aad-v9";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
