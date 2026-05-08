@@ -91,6 +91,7 @@ create table if not exists bookings (
   started_at timestamp with time zone,
   completed_at timestamp with time zone,
   review_request_sent_at timestamp with time zone,
+  review_request_followup_sent_at timestamp with time zone,
   created_at timestamp with time zone default now()
 );
 
@@ -102,6 +103,7 @@ alter table bookings add column if not exists slot_date date;
 alter table bookings add column if not exists slot_time time;
 alter table bookings add column if not exists is_ceramic boolean not null default false;
 alter table bookings add column if not exists review_request_sent_at timestamp with time zone;
+alter table bookings add column if not exists review_request_followup_sent_at timestamp with time zone;
 
 -- Partial index for the review-request cron's query path. Filters on
 -- (completed_at, status) but only over rows that haven't been emailed yet,
@@ -109,6 +111,15 @@ alter table bookings add column if not exists review_request_sent_at timestamp w
 create index if not exists idx_bookings_review_eligible
   on bookings (completed_at, status)
   where review_request_sent_at is null;
+
+-- Partial index for the v2 follow-up pass: rows that already got the
+-- initial review request but haven't had the 7-day follow-up sent yet.
+-- Same partial-where trick keeps the index size proportional to the
+-- live followup backlog rather than the full bookings history.
+create index if not exists idx_bookings_review_followup_eligible
+  on bookings (review_request_sent_at)
+  where review_request_sent_at is not null
+    and review_request_followup_sent_at is null;
 
 -- Status workflow (Phase 2): pending → approved → confirmed → in_progress → completed,
 -- with declined as a terminal branch from pending.
