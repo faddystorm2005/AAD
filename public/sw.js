@@ -8,8 +8,12 @@
  * v5 -> v6: add push notification handlers for admin + customer alerts.
  * v7 -> v8: review-request cron + admin/homepage refresh shipped.
  * v8 -> v9: 7-day follow-up pass added to review-request cron.
+ * v9 -> v10: stop intercepting video requests. Videos stream with Range
+ *            (partial 206) responses, which cache.put() rejects, so the
+ *            old networkFirst path stalled playback (infinite spinner,
+ *            tap-to-play flakiness). The browser now streams video natively.
  */
-const VERSION = "aad-v9";
+const VERSION = "aad-v10";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
@@ -52,6 +56,13 @@ self.addEventListener("fetch", (event) => {
     url.pathname.startsWith("/_next/webpack-hmr") ||
     url.pathname.startsWith("/_next/static/development/")
   ) {
+    return;
+  }
+
+  // Videos stream via Range requests; the Cache API cannot store partial
+  // (206) responses, so intercepting them stalls playback. Let the browser
+  // handle video natively.
+  if (req.destination === "video" || url.pathname.endsWith(".mp4")) {
     return;
   }
 
