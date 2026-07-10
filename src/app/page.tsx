@@ -26,6 +26,7 @@ import H2CinematicObserver from '@/components/home/H2CinematicObserver';
 import ScrollCardObserver from '@/components/ScrollCardObserver';
 import HeroStatCounter from '@/components/HeroStatCounter';
 import HeroParallax from '@/components/home/HeroParallax';
+import AmbientVideo from '@/components/home/AmbientVideo';
 import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
 import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
@@ -169,6 +170,9 @@ export default function Home() {
               className="object-cover animate-banner-pan"
               style={{ objectPosition: 'center 55%' }}
             />
+            {/* Cinemagraph of the same S-Class still: light sweeps across the
+                paint. Desktop only, loads after the still, still is fallback. */}
+            <AmbientVideo src="/images/aad/hero-s-class-loop.mp4" />
           </div>
           {/* Veil: lighter at the eyebrow line, darker toward the bottom so
               the text and CTAs always have enough contrast. */}
@@ -791,6 +795,8 @@ export default function Home() {
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
+          {/* Foam pre-wash cinemagraph from our own photo; still is fallback. */}
+          <AmbientVideo src="/images/aad/foam-loop.mp4" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
           <div className="relative flex flex-col items-start gap-4 p-10 sm:flex-row sm:items-center sm:justify-between">
             <div>
