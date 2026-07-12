@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
   if (secret !== SECRET) {
     return NextResponse.json({ ok: false }, { status: 403 });
   }
-  revalidateTag('cms');
+  // Next.js 16 requires a second argument. { expire: 0 } is the documented
+  // pattern for webhooks that need edits visible on the very next request
+  // (with 'max' the first visitor after an edit would still see stale content).
+  revalidateTag('cms', { expire: 0 });
   revalidatePath('/', 'layout');
   return NextResponse.json({ ok: true, revalidated: true });
 }
