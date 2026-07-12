@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getLiveContent } from '@/lib/cms';
 import Image from 'next/image';
 import {
   Sparkles,
@@ -67,7 +68,8 @@ const SERVICE_INCLUDES: Record<string, string[]> = {
  * can navigate to their account via the "My Dashboard" link in the nav
  * (rendered by HomeNavAccountLink based on their auth state).
  */
-export default function Home() {
+export default async function Home() {
+  const live = await getLiveContent();
   return (
     <main role="main" className="homepage-cinematic relative min-h-screen overflow-hidden bg-black text-white">
       <link
@@ -663,7 +665,7 @@ export default function Home() {
           </h2>
         </div>
         <div className="mt-10 space-y-4">
-          {FAQS.map((q, i) => (
+          {live.faqs.map((q, i) => (
             <details
               key={q.question}
               className="glass-card scroll-card group rounded-2xl p-5"
@@ -842,7 +844,7 @@ export default function Home() {
             . We&apos;ll confirm within 24 hours.
           </p>
           <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-red-300">
-            Available 7 days a week, by appointment.
+            {live.availability}
           </p>
           <div className="mt-6">
             <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-300">
@@ -877,7 +879,7 @@ export default function Home() {
               </a>
             </p>
             <p className="mt-2 text-sm text-gray-300">
-              Available 7 days a week, by appointment.
+              {live.availability}
             </p>
           </div>
           <nav aria-label="Services">
@@ -920,6 +922,17 @@ export default function Home() {
           <p className="text-xs text-gray-300 italic text-center sm:text-right">
             <span aria-hidden className="mr-1.5 text-gray-600">✝</span>
             &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
+          </p>
+          <p className="text-xs text-gray-400">
+            Site by{" "}
+            <a
+              href="https://www.mausandco.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 hover:text-white"
+            >
+              Maus &amp; Co.
+            </a>
           </p>
         </div>
       </footer>
@@ -1057,30 +1070,5 @@ const TRUST_PILLARS = [
   },
 ];
 
-const FAQS = [
-  {
-    question: 'Where do you offer mobile detailing in Austin?',
-    answer: 'We service Austin and surrounding areas. Our detail van is fully self-contained - we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.',
-  },
-  {
-    question: 'How long does a typical detail take?',
-    answer: 'Most interior + exterior details take 2–3 hours. Paint correction adds 1–2 hours. Ceramic coatings are a full-day job - that’s why we only book one ceramic coating per day at the 9 AM slot.',
-  },
-  {
-    question: 'Do I need to be home during the service?',
-    answer: 'Not necessarily. As long as we have access to the vehicle and the agreed location, you can be at work or running errands. We’ll send updates as we progress.',
-  },
-  {
-    question: 'How does payment work?',
-    answer: 'After we approve your booking, you pay a $30 deposit online to lock in your slot. The remaining balance is due on-site after the service is complete.',
-  },
-  {
-    question: 'What’s included in Austin car cleaning?',
-    answer: 'Our base detail covers a full exterior wash, hand-dry, vacuum, interior wipe-down, window cleaning, and tire dressing. Add-ons cover wax, paint correction, ceramic coating, engine bay cleaning, leather conditioning, stain removal, and windshield treatment.',
-  },
-  {
-    question: 'Can I cancel or reschedule?',
-    answer: 'Yes. To reschedule, open your booking and pick a new time. You can do that yourself any time before service. To cancel, tap Request Cancellation and add a quick reason. We\'ll review within 24 hours. Once approved, your $30 deposit becomes account credit toward a future booking.',
-  },
-];
+// FAQ content lives in lib/cms.ts (portal-editable with baked-in defaults).
 
