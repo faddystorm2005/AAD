@@ -41,23 +41,23 @@ interface ConfirmationBooking {
 
 const STATUS_HEADER: Record<BookingStatus, { title: string; subtitle: string; tone: 'yellow' | 'green' | 'red' | 'blue' }> = {
   pending: {
-    title: 'Pending approval',
-    subtitle: "Austin Auto Detail is reviewing your booking. We'll notify you within 24 hours. No charge yet.",
+    title: 'Request received',
+    subtitle: "Austin Auto Detail is reviewing your request. We'll text you shortly to lock in a time. No charge now.",
     tone: 'yellow',
   },
   approved: {
-    title: 'Approved - pay deposit',
-    subtitle: 'Your booking was approved. Pay the $30 deposit below to lock in your slot.',
-    tone: 'blue',
+    title: "You're approved!",
+    subtitle: "We'll text you shortly to arrange a time that works. No deposit - you pay on-site when the detail is done.",
+    tone: 'green',
   },
   declined: {
-    title: 'Booking declined',
-    subtitle: "Unfortunately we couldn't accommodate this booking.",
+    title: 'Request declined',
+    subtitle: "Unfortunately we couldn't accommodate this request.",
     tone: 'red',
   },
   confirmed: {
     title: 'Booking confirmed!',
-    subtitle: 'Deposit received. See you on the day of service.',
+    subtitle: 'See you on the day of service. You pay on-site when the detail is done.',
     tone: 'green',
   },
   in_progress: {
@@ -170,7 +170,10 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   // see "Confirmed" within ~2s instead of waiting for the first interval),
   // then poll every 3s as a safety net.
   useEffect(() => {
-    if (!booking || booking.status !== 'approved') return;
+    // Only poll for a payment capture when there's actually a payment link
+    // (legacy deposit bookings). The simplified flow has no deposit, so an
+    // approved booking with no payment_url has nothing to capture.
+    if (!booking || booking.status !== 'approved' || !booking.payment_url) return;
     let cancelled = false;
     const tick = async () => {
       // Ask PayPal directly via our server. Best-effort - failures are silent.
@@ -387,8 +390,8 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           )}
 
           {status === 'approved' && !booking.payment_url && (
-            <p className="mt-5 rounded-xl border-2 border-blue-700 bg-blue-900/40 p-4 text-base text-blue-100">
-              The payment link is being set up. Refresh in a moment, or reach out if it doesn&apos;t appear.
+            <p className="mt-5 rounded-xl border-2 border-green-700 bg-green-900/30 p-4 text-base text-green-100">
+              We&apos;ll text you shortly to lock in a time that works. No deposit needed — you pay on-site once the detail is done.
             </p>
           )}
         </div>
@@ -433,9 +436,9 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           </div>
 
           <div>
-            <p className="text-sm uppercase tracking-wider text-gray-300">Scheduled for</p>
+            <p className="text-sm uppercase tracking-wider text-gray-300">Appointment time</p>
             <p className="mt-1 text-lg font-semibold text-white">
-              {new Date(booking.scheduled_at).toLocaleString()}
+              We&apos;ll text you to arrange a time
             </p>
           </div>
 
@@ -472,21 +475,9 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
 
           <div className="rounded-xl bg-gray-800 border border-gray-700 p-4">
             <p className="text-base text-gray-100">
-              Deposit:{' '}
-              <span
-                className={`font-bold ${
-                  booking.deposit_paid ? 'text-green-300' : 'text-yellow-200'
-                }`}
-              >
-                ${Number(booking.deposit_amount).toFixed(2)}{' '}
-                {booking.deposit_paid ? '(paid)' : '(pending)'}
-              </span>
-            </p>
-            <p className="mt-2 text-base text-gray-200">
-              Balance due on-site:{' '}
-              <span className="font-bold text-white">
-                ${(Number(booking.total) - Number(booking.deposit_amount)).toFixed(2)}
-              </span>
+              No deposit needed. You pay{' '}
+              <span className="font-bold text-white">${Number(booking.total).toFixed(2)}</span>{' '}
+              on-site when the detail is done.
             </p>
           </div>
 

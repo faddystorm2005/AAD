@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { createPaymentLink as createSquarePaymentLink } from '@/lib/squarePayment';
-import { createPaymentLink as createPayPalPaymentLink } from '@/lib/paypalPayment';
-import { pushBookingToGoogle } from '@/lib/googleCalendar';
 import { sendPushToCustomer } from '@/lib/pushNotifications';
 import { notifyCustomerBookingApproved } from '@/lib/notify';
 
@@ -12,9 +9,16 @@ export const dynamic = 'force-dynamic';
 
 interface ApproveBody {
   bookingId: string;
-  origin: string; // e.g. https://abc.ngrok-free.dev
+  origin: string;
 }
 
+/**
+ * Approve a detail request. Simplified model: NO deposit and NO payment link.
+ * Approving just confirms the request; Austin Auto Detail then texts the
+ * customer to arrange a time, and the full amount is paid on-site. Because no
+ * deposit is owed, we do NOT set expires_at, so the expire-approvals cron
+ * (which only touches rows with a non-null expires_at) leaves these alone.
+ */
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
   const accessToken = authHeader?.startsWith('Bearer ')
@@ -50,13 +54,13 @@ export async function POST(req: NextRequest) {
   }
 
   const body = (await req.json().catch(() => null)) as ApproveBody | null;
-  if (!body?.bookingId || !body.origin) {
-    return NextResponse.json({ error: 'Missing bookingId or origin' }, { status: 400 });
+  if (!body?.bookingId) {
+    return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 });
   }
 
   const { data: booking, error: getErr } = await supabaseAdmin
     .from('bookings')
-    .select(`id, status, deposit_amount, service, deposit_paid,
+    .select(`id, status, service,
              customer:profiles!user_id(full_name, phone, email)`)
     .eq('id', body.bookingId)
     .single();
@@ -71,44 +75,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Kill-switch: PAYMENT_PROCESSOR env var picks the processor at request
-  // time. Defaults to "square" so existing flow keeps working until the
-  // env var is explicitly flipped to "paypal".
-  const processor = (process.env.PAYMENT_PROCESSOR || 'square').toLowerCase();
-  const createLink =
-    processor === 'paypal' ? createPayPalPaymentLink : createSquarePaymentLink;
-
-  let paymentUrl: string;
-  try {
-    const result = await createLink(
-      Math.round(Number(booking.deposit_amount) * 100),
-      `AAD Detailing Deposit - ${booking.service}`,
-      booking.id,
-      `${body.origin}/booking-confirmation/${booking.id}`
-    );
-    paymentUrl = result.url;
-  } catch (err: any) {
-    const raw = err?.message || '';
-    const hint =
-      raw.toLowerCase().includes('unauthorized') || raw.toLowerCase().includes('401')
-        ? `${processor === 'paypal' ? 'PayPal' : 'Square'} credentials rejected -- check ${processor === 'paypal' ? 'PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET / PAYPAL_ENVIRONMENT' : 'SQUARE_ACCESS_TOKEN / SQUARE_ENVIRONMENT'} in Vercel. Also confirm PAYMENT_PROCESSOR=${processor} is set. Original: ${raw}`
-        : raw || `Failed to create ${processor === 'paypal' ? 'PayPal' : 'Square'} payment link`;
-    return NextResponse.json({ error: hint }, { status: 500 });
-  }
-
-  // P0-1: stamp expires_at so the slot frees automatically if the customer
-  // never pays the deposit. The availability route filters this in real
-  // time; a daily cron flips status to 'declined' for bookkeeping.
+  // Approve outright. No payment link, no expiry. Mark deposit_paid true so any
+  // legacy logic that keys on it treats the booking as fully settled up-front
+  // (there is no deposit to collect).
   const approvedAt = new Date();
-  const expiresAt = new Date(approvedAt.getTime() + 24 * 60 * 60 * 1000);
-
   const { error: updateErr } = await supabaseAdmin
     .from('bookings')
     .update({
       status: 'approved',
-      payment_url: paymentUrl,
       approved_at: approvedAt.toISOString(),
-      expires_at: expiresAt.toISOString(),
+      deposit_paid: true,
     })
     .eq('id', body.bookingId);
 
@@ -116,14 +92,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: updateErr.message }, { status: 500 });
   }
 
-  // Push to Google Calendar (best-effort, non-blocking).
-  await pushBookingToGoogle(userData.user.id, body.bookingId);
-
   // Notify customer via push (best-effort).
   try {
     await sendPushToCustomer(body.bookingId, {
-      title: 'Booking approved',
-      body: 'Your detailing appointment has been approved. Tap to pay your deposit and lock in your slot.',
+      title: 'Request approved',
+      body: "You're approved! We'll text you shortly to lock in a time. No deposit - pay on-site.",
       url: `/booking-confirmation/${body.bookingId}`,
       tag: `booking-approved-${body.bookingId}`,
     });
@@ -131,7 +104,7 @@ export async function POST(req: NextRequest) {
     console.error('[push] customer approve notification failed', err);
   }
 
-  // SMS + email fallback so customers without push still get notified (best-effort).
+  // SMS + email fallback (best-effort).
   try {
     const customer = (booking as any).customer;
     await notifyCustomerBookingApproved({
@@ -139,12 +112,10 @@ export async function POST(req: NextRequest) {
       customerPhone: customer?.phone ?? null,
       customerEmail: customer?.email ?? null,
       service: booking.service,
-      depositAmount: Number(booking.deposit_amount),
-      paymentUrl,
     });
   } catch (err) {
     console.error('[notify] customer approve sms/email failed', err);
   }
 
-  return NextResponse.json({ ok: true, paymentUrl });
+  return NextResponse.json({ ok: true });
 }

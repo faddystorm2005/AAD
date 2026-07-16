@@ -142,7 +142,7 @@ export async function notifyAdminNewBooking(opts: {
   customerName: string | null;
   customerPhone: string | null;
   service: string;
-  scheduledAt: string;
+  scheduledAt: string | null;
   address: string;
 }): Promise<void> {
   let to = process.env.ADMIN_NOTIFY_PHONE || null;
@@ -161,17 +161,20 @@ export async function notifyAdminNewBooking(opts: {
     return;
   }
 
-  const when = new Date(opts.scheduledAt).toLocaleString('en-US', {
-    timeZone: 'America/Chicago',
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
+  // No time slot in the request model: show "needs scheduling" instead of a date.
+  const when = opts.scheduledAt
+    ? new Date(opts.scheduledAt).toLocaleString('en-US', {
+        timeZone: 'America/Chicago',
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '⏱ Needs scheduling - reach out to set a time';
 
   const body =
-    `🚗 NEW BOOKING - Austin Auto Detail\n` +
+    `🚗 NEW DETAIL REQUEST - Austin Auto Detail\n` +
     `${opts.customerName || 'Customer'}: ${opts.service}\n` +
     `${when}\n` +
     `${opts.address}\n` +
@@ -391,15 +394,12 @@ export async function notifyCustomerBookingApproved(opts: {
   customerPhone: string | null;
   customerEmail: string | null;
   service: string;
-  depositAmount: number;
-  paymentUrl: string;
 }): Promise<void> {
   const name = opts.customerName?.split(' ')[0] || 'there';
-  const deposit = opts.depositAmount.toFixed(2);
 
   const smsBody =
-    `Hi ${name}! Your ${opts.service} booking with Austin Auto Detail has been approved. ` +
-    `Pay your $${deposit} deposit to lock in your slot: ${opts.paymentUrl}`;
+    `Hi ${name}! Your ${opts.service} request with Austin Auto Detail is approved. ` +
+    `We'll text you shortly to lock in a time that works. No deposit needed - you pay on-site when the detail is done.`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
@@ -407,12 +407,10 @@ export async function notifyCustomerBookingApproved(opts: {
         <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
         <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
       </div>
-      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Booking approved!</h1>
+      <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">You're approved!</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
-      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> booking has been approved. Pay the $${deposit} deposit to lock in your slot.</p>
-      <div style="text-align: center; margin: 28px 0;">
-        <a href="${opts.paymentUrl}" style="background: #d62030; color: #fff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 16px;">Pay $${deposit} deposit</a>
-      </div>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> request has been approved. We'll reach out by text shortly to lock in a time that works for you.</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">No deposit needed - you simply pay on-site once the detail is complete.</p>
       <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
     </div>
   `;
@@ -423,7 +421,7 @@ export async function notifyCustomerBookingApproved(opts: {
     promises.push(
       sendEmail({
         to: opts.customerEmail,
-        subject: 'Booking approved - pay deposit to confirm',
+        subject: "You're approved - we'll text you to schedule",
         html: emailHtml,
         text: smsBody,
       })
