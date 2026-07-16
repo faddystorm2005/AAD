@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { getLiveContent } from '@/lib/cms';
+import { fetchLivePriceTable } from '@/lib/livePricing';
 import Image from 'next/image';
 import {
   Sparkles,
@@ -15,7 +17,7 @@ import {
   MapPin,
   Eye,
 } from 'lucide-react';
-import { SERVICE_TYPES, SERVICE_TYPE_NAMES, SERVICE_PRICES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE, DEPOSIT_AMOUNT } from '@/lib/bookingPricing';
+import { SERVICE_TYPES, SERVICE_TYPE_NAMES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE, DEPOSIT_AMOUNT } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
@@ -70,6 +72,7 @@ const SERVICE_INCLUDES: Record<string, string[]> = {
  */
 export default async function Home() {
   const live = await getLiveContent();
+  const priceTable = await fetchLivePriceTable();
   return (
     <main role="main" className="homepage-cinematic relative min-h-screen overflow-hidden bg-black text-white">
       <link
@@ -259,16 +262,23 @@ export default async function Home() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((s, i) => (
-            <div key={s.title} className="scroll-card" data-stagger-i={i}>
-              <ServiceCard
-                icon={s.icon}
-                title={s.title}
-                description={s.description}
-                priceLabel={s.priceLabel || undefined}
-              />
-            </div>
-          ))}
+          {SERVICES.map((s, i) => {
+            const liveAddon = s.addonId ? priceTable.addOns[s.addonId] : undefined;
+            const priceLabel =
+              liveAddon !== undefined
+                ? `${s.priceLabel}${typeof liveAddon === 'number' ? liveAddon : liveAddon.small}`
+                : s.priceLabel || undefined;
+            return (
+              <div key={s.title} className="scroll-card" data-stagger-i={i}>
+                <ServiceCard
+                  icon={s.icon}
+                  title={s.title}
+                  description={s.description}
+                  priceLabel={priceLabel}
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -324,15 +334,15 @@ export default async function Home() {
                     <div className={`space-y-3 ${isFeatured ? 'sm:border-l sm:border-red-500/20 sm:pl-8' : 'mt-5 border-t border-white/10 pt-4'}`}>
                       <div className="flex items-center justify-between">
                         <span className="text-base text-gray-200">Coupe / Sedan</span>
-                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${SERVICE_PRICES[type].small}</span>
+                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].small}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-base text-gray-200">SUV</span>
-                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${SERVICE_PRICES[type].suv}</span>
+                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].suv}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-base text-gray-200">Truck / 3-Row</span>
-                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${SERVICE_PRICES[type].truck}</span>
+                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].truck}</span>
                       </div>
                     </div>
                     <Link
@@ -355,9 +365,11 @@ export default async function Home() {
           </h3>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {ADD_ONS.map((addon) => {
-              const priceLabel = addon.sizePrices
-                ? `from $${addon.sizePrices.small}`
-                : `$${addon.price}`;
+              const livePrice = priceTable.addOns[addon.id];
+              const priceLabel =
+                typeof livePrice === 'number'
+                  ? `$${livePrice}`
+                  : `from $${(livePrice ?? addon.sizePrices ?? { small: addon.price }).small}`;
               return (
                 <div
                   key={addon.id}
@@ -653,7 +665,7 @@ export default async function Home() {
           </h2>
         </div>
         <div className="mt-10">
-          <MarqueeTestimonials />
+          <MarqueeTestimonials testimonials={live.reviews} />
         </div>
       </section>
 
@@ -953,7 +965,18 @@ export default async function Home() {
 // the red-accented circular badge in ServiceCard.
 const ICON_SIZE = 24;
 
-const SERVICES = [
+type ServiceCardDef = {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  priceLabel: string;
+  // When set, the trailing price on priceLabel comes from the live
+  // portal-managed price table so the card can never disagree with
+  // the pricing section below it.
+  addonId?: string;
+};
+
+const SERVICES: ServiceCardDef[] = [
   {
     icon: <Sparkles size={ICON_SIZE} aria-hidden />,
     title: 'Full Detail',
@@ -982,43 +1005,50 @@ const SERVICES = [
     icon: <Brush size={ICON_SIZE} aria-hidden />,
     title: 'Paint Correction',
     description: 'One- or two-step paint correction to remove swirl marks, oxidation, and minor scratches. Restores depth and clarity.',
-    priceLabel: 'Add-on, from $95',
+    priceLabel: 'Add-on, from $',
+    addonId: 'paint1',
   },
   {
     icon: <ShieldCheck size={ICON_SIZE} aria-hidden />,
     title: '6-Month Wax',
     description: 'Long-lasting wax application for daily protection from sun, rain, and road grime - without committing to a coating.',
-    priceLabel: 'Add-on, from $50',
+    priceLabel: 'Add-on, from $',
+    addonId: 'wax',
   },
   {
     icon: <Wrench size={ICON_SIZE} aria-hidden />,
     title: 'Engine Bay Cleaning',
     description: 'Deep degrease and dress under the hood. Brings the engine bay back to showroom clean.',
-    priceLabel: 'Add-on, from $25',
+    priceLabel: 'Add-on, from $',
+    addonId: 'engine',
   },
   {
     icon: <Droplets size={ICON_SIZE} aria-hidden />,
     title: 'Stain Removal',
     description: 'Targeted treatment for stubborn upholstery, carpet, and seat stains. Coffee, ink, pet, you name it.',
-    priceLabel: 'Add-on, from $30',
+    priceLabel: 'Add-on, from $',
+    addonId: 'stain',
   },
   {
     icon: <Lightbulb size={ICON_SIZE} aria-hidden />,
     title: 'Headlight Restoration',
     description: 'Cloudy, yellowed headlights brought back to clear like-new condition. Improves nighttime visibility and curb appeal.',
-    priceLabel: 'Standalone or add-on, $80',
+    priceLabel: 'Standalone or add-on, $',
+    addonId: 'headlight',
   },
   {
     icon: <Eye size={ICON_SIZE} aria-hidden />,
     title: 'Windshield Coating',
     description: 'Hydrophobic glass treatment that repels rain and improves visibility at highway speeds. Lasts months, not weeks.',
-    priceLabel: 'Add-on, from $40',
+    priceLabel: 'Add-on, from $',
+    addonId: 'windshield',
   },
   {
     icon: <SprayCan size={ICON_SIZE} aria-hidden />,
     title: 'Leather Conditioning',
     description: 'Deep clean and condition for leather seats and surfaces. Prevents cracking and restores that new-car softness.',
-    priceLabel: 'Add-on, from $10',
+    priceLabel: 'Add-on, from $',
+    addonId: 'leather',
   },
   {
     icon: <MapPin size={ICON_SIZE} aria-hidden />,

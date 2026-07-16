@@ -10,6 +10,7 @@ import {
   SERVICE_TYPE_DEFAULT,
   SERVICE_TYPE_NAMES,
 } from '@/lib/bookingPricing';
+import { fetchLivePriceTable } from '@/lib/livePricing';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
 import { austinOffsetFor, austinNowParts } from '@/lib/austinTime';
@@ -243,6 +244,11 @@ export async function POST(req: NextRequest) {
       ? body.notes.trim().slice(0, 500)
       : null;
 
+  // Live portal-managed prices, fetched fresh because money changes hands
+  // here. Falls back to the baked-in constants on any problem, which is
+  // exactly what the booking form showed in that case too.
+  const livePriceTable = await fetchLivePriceTable({ fresh: true });
+
   const pricing = calculatePricing(
     {
       vehicleId: body.vehicleId,
@@ -255,7 +261,7 @@ export async function POST(req: NextRequest) {
       state: body.state,
       zip: body.zip,
     },
-    { isReturning, customDiscountRate, promoDiscountRate }
+    { isReturning, customDiscountRate, promoDiscountRate, live: livePriceTable }
   );
 
   // Apply account credit toward the total (if any). debit_credit_max acquires

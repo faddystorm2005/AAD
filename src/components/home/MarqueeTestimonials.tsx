@@ -2,57 +2,7 @@
 
 import { useRef, useState, useCallback } from 'react';
 
-interface Testimonial {
-  name: string;
-  text: string;
-  vehicle?: string;
-  rating: number;
-}
-
-const TESTIMONIALS: Testimonial[] = [
-  {
-    name: 'Sarah M.',
-    vehicle: 'Tahoe',
-    rating: 5,
-    text: "Best detail I've ever had. Showed up on time and made my SUV look brand new.",
-  },
-  {
-    name: 'Mike R.',
-    vehicle: 'F-150',
-    rating: 5,
-    text: 'Booked Sunday night, got it done Monday morning. So convenient.',
-  },
-  {
-    name: 'Jen K.',
-    vehicle: 'Civic',
-    rating: 5,
-    text: 'Quality over quantity is right. He took his time and did it right.',
-  },
-  {
-    name: 'Carlos V.',
-    vehicle: 'Tacoma',
-    rating: 5,
-    text: 'Ceramic coating was worth every penny. Water just rolls off now.',
-  },
-  {
-    name: 'Ashley T.',
-    vehicle: 'Model 3',
-    rating: 5,
-    text: "I'll never go to a brick-and-mortar place again. He brings everything to my driveway.",
-  },
-  {
-    name: 'Jordan B.',
-    vehicle: 'Mustang',
-    rating: 5,
-    text: "Worth every dollar. My paint has never looked this good. Like driving off the lot again.",
-  },
-  {
-    name: 'Priya S.',
-    vehicle: 'RAV4',
-    rating: 5,
-    text: "Super professional, no mess, and it smelled amazing when I got in. Already booked again.",
-  },
-];
+import { DEFAULT_TESTIMONIALS, type Testimonial } from '@/lib/testimonialData';
 
 function StarRating({ count }: { count: number }) {
   return (
@@ -66,8 +16,15 @@ function StarRating({ count }: { count: number }) {
   );
 }
 
-export default function MarqueeTestimonials() {
-  const items = [...TESTIMONIALS, ...TESTIMONIALS];
+export default function MarqueeTestimonials({
+  testimonials,
+}: {
+  // Live reviews from the client portal; falls back to the baked-in set.
+  testimonials?: Testimonial[];
+}) {
+  const source =
+    testimonials && testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
+  const items = [...source, ...source];
   const [touchPaused, setTouchPaused] = useState(false);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 

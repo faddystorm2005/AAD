@@ -44,6 +44,24 @@ export const SERVICES = {
   },
 };
 
+// ---------------------------------------------------------------
+// Live pricing (Maus & Co. client portal)
+//
+// Alex can edit his prices at mausandco.com/portal. A resolved,
+// validated price table (see lib/livePricing.ts) can be passed into
+// calculatePricing and getAddOnPrice; when absent, the constants
+// above apply. Every portal value is numerically validated before it
+// ever reaches this file, so a typo in the portal can never produce
+// a wrong charge - it just falls back to the baked-in price.
+// ---------------------------------------------------------------
+
+export type SizePriceMap = { small: number; suv: number; truck: number };
+
+export type LivePriceTable = {
+  services: Record<ServiceType, SizePriceMap>;
+  addOns: Record<string, number | SizePriceMap>;
+};
+
 export const CERAMIC_ADDON_ID = 'ceramic';
 
 export interface AddOn {
@@ -96,7 +114,11 @@ export const ADD_ONS: AddOn[] = [
 export function getAddOnPrice(
   addon: AddOn,
   serviceSize: 'small' | 'suv' | 'truck',
+  live?: LivePriceTable,
 ): number {
+  const override = live?.addOns[addon.id];
+  if (typeof override === 'number') return override;
+  if (override && typeof override === 'object') return override[serviceSize];
   if (addon.sizePrices) {
     return addon.sizePrices[serviceSize];
   }
@@ -138,14 +160,16 @@ export function calculatePricing(
     isReturning?: boolean;
     customDiscountRate?: number;
     promoDiscountRate?: number;
+    /** Portal-managed prices. When present, display and charge both use it. */
+    live?: LivePriceTable;
   } = {}
 ): PricingBreakdown {
   const serviceType = data.serviceType ?? SERVICE_TYPE_DEFAULT;
-  const basePrice = SERVICE_PRICES[serviceType][data.serviceSize];
+  const basePrice = (opts.live?.services ?? SERVICE_PRICES)[serviceType][data.serviceSize];
   const addOnsTotal = data.selectedAddOns.reduce((total, addonId) => {
     const addon = ADD_ONS.find((a) => a.id === addonId);
     if (!addon) return total;
-    return total + getAddOnPrice(addon, data.serviceSize);
+    return total + getAddOnPrice(addon, data.serviceSize, opts.live);
   }, 0);
 
   const subtotal = basePrice + addOnsTotal;

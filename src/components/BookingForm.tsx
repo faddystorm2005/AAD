@@ -14,7 +14,9 @@ import {
   SERVICE_TYPE_DEFAULT,
   SERVICE_PRICES,
   getAddOnPrice,
+  type LivePriceTable,
 } from '@/lib/bookingPricing';
+import { fetchLivePriceTable } from '@/lib/livePricing';
 import { supabase } from '@/lib/supabaseClient';
 import {
   SLOT_LABELS,
@@ -280,10 +282,25 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     };
   }, []);
 
+  // Live prices from the client portal. Until the fetch lands (or if it
+  // fails) the baked-in constants apply, and the server recalculates with
+  // the same table at charge time, so the two can never disagree.
+  const [livePrices, setLivePrices] = useState<LivePriceTable | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetchLivePriceTable().then((table) => {
+      if (!cancelled) setLivePrices(table);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectedVehicle = vehicles.find((v) => v.id === formData.vehicleId);
   const pricing = calculatePricing({ ...formData, serviceType }, {
     isReturning,
     promoDiscountRate: appliedPromo?.rate ?? 0,
+    live: livePrices ?? undefined,
   });
 
   const handleVehicleChange = (vehicleId: string) => {
@@ -626,7 +643,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                     {SERVICE_TYPE_NAMES[serviceType]}
                   </p>
                   <p className="mt-1 text-3xl font-bold text-red-400">
-                    ${SERVICE_PRICES[serviceType][formData.serviceSize]}
+                    ${(livePrices?.services ?? SERVICE_PRICES)[serviceType][formData.serviceSize]}
                   </p>
                   <p className="mt-2 text-sm text-red-200/80">
                     Sized for your {selectedVehicle.year} {selectedVehicle.make}{' '}
@@ -667,7 +684,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                               {addon.name}
                             </span>
                             <span className="text-base font-semibold text-red-300">
-                              +${getAddOnPrice(addon, formData.serviceSize)}
+                              +${getAddOnPrice(addon, formData.serviceSize, livePrices ?? undefined)}
                             </span>
                           </div>
                           {addon.description && (

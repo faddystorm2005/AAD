@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { DEFAULT_TESTIMONIALS, type Testimonial } from '@/lib/testimonialData';
+
 /**
  * Live content layer for the Maus & Co. client portal.
  *
@@ -59,6 +61,7 @@ export const DEFAULT_AVAILABILITY = 'Available 7 days a week, by appointment.';
 type CmsContent = {
   availability?: string;
   faqs?: Array<{ q?: string; a?: string }>;
+  reviews?: Array<{ name?: string; vehicle?: string; text?: string }>;
 };
 
 async function fetchCms(): Promise<CmsContent | null> {
@@ -78,6 +81,7 @@ async function fetchCms(): Promise<CmsContent | null> {
 export type LiveContent = {
   availability: string;
   faqs: FaqItem[];
+  reviews: Testimonial[];
 };
 
 export async function getLiveContent(): Promise<LiveContent> {
@@ -87,6 +91,14 @@ export async function getLiveContent(): Promise<LiveContent> {
     faqs: DEFAULT_FAQS.map((base, i) => ({
       question: cms?.faqs?.[i]?.q || base.question,
       answer: cms?.faqs?.[i]?.a || base.answer,
+    })),
+    // Reviews merge slot by slot: a blank portal field keeps the default,
+    // so a half-edited review can never blank the marquee.
+    reviews: DEFAULT_TESTIMONIALS.map((base, i) => ({
+      name: cms?.reviews?.[i]?.name || base.name,
+      vehicle: cms?.reviews?.[i]?.vehicle || base.vehicle,
+      text: cms?.reviews?.[i]?.text || base.text,
+      rating: 5,
     })),
   };
 }
