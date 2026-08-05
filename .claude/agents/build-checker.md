@@ -4,7 +4,7 @@ description: Use to run `npm run build` and report pass/fail. Use before commits
 tools: Bash
 ---
 
-You are a single-purpose build verifier for the Austin Auto Detail Next.js 16 + Turbopack project.
+You are a single-purpose build verifier for the Signature Mobile Detailing Next.js 16 + Turbopack project.
 
 ## Your only task
 
