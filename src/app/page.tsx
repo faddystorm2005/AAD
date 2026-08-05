@@ -91,29 +91,29 @@ export default async function Home() {
           <Link
             href="/"
             className="flex shrink-0 items-center gap-2"
-            aria-label="Austin Auto Detail home"
+            aria-label="Signature Mobile Detailing home"
           >
             <Image
               src="/images/aad/logo.png"
-              alt="Austin Auto Detail"
-              width={180}
-              height={48}
+              alt="Signature Mobile Detailing"
+              width={512}
+              height={512}
               priority
-              className="h-9 w-auto sm:h-11"
+              className="h-12 w-12 sm:h-14 sm:w-14"
             />
           </Link>
           <ul className="hidden list-none items-center gap-6 p-0 text-base font-medium text-gray-100 sm:flex">
-            <li><a href="#services" className="hover:text-red-300">Services</a></li>
-            <li><a href="#pricing" className="hover:text-red-300">Pricing</a></li>
-            <li><a href="#recent-work" className="hover:text-red-300">Work</a></li>
-            <li><a href="#how-it-works" className="hover:text-red-300">How It Works</a></li>
-            <li><a href="#faq" className="hover:text-red-300">FAQ</a></li>
-            <li><a href="#contact" className="hover:text-red-300">Contact</a></li>
+            <li><a href="#services" className="hover:text-gold-300">Services</a></li>
+            <li><a href="#pricing" className="hover:text-gold-300">Pricing</a></li>
+            <li><a href="#recent-work" className="hover:text-gold-300">Work</a></li>
+            <li><a href="#how-it-works" className="hover:text-gold-300">How It Works</a></li>
+            <li><a href="#faq" className="hover:text-gold-300">FAQ</a></li>
+            <li><a href="#contact" className="hover:text-gold-300">Contact</a></li>
           </ul>
           <div className="flex items-center gap-3 sm:gap-4">
             <a
               href="tel:+14807933782"
-              className="flex items-center gap-1.5 font-semibold text-red-300 hover:text-red-200"
+              className="flex items-center gap-1.5 font-semibold text-gold-300 hover:text-gold-200"
               aria-label="Call us at (480) 793-3782"
             >
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -142,7 +142,7 @@ export default async function Home() {
         className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[600px]"
         style={{
           background:
-            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(214, 32, 48, 0.18), transparent 70%)',
+            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 162, 76, 0.18), transparent 70%)',
         }}
       />
       <div
@@ -150,7 +150,7 @@ export default async function Home() {
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-0 h-[300px]"
         style={{
           background:
-            'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(214, 32, 48, 0.08), transparent 70%)',
+            'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(212, 162, 76, 0.08), transparent 70%)',
         }}
       />
 
@@ -168,7 +168,7 @@ export default async function Home() {
           <div className="hero-parallax-wrap">
             <Image
               src={DASHBOARD_BANNER.src}
-              alt="Mobile detailing in Austin - professional auto detailing at your location"
+              alt="Mobile detailing in Phoenix, AZ - professional auto detailing at your driveway"
               fill
               priority
               sizes="100vw"
@@ -188,7 +188,7 @@ export default async function Home() {
           {/* Soft red glow that follows the cursor for premium polish. */}
           <HeroSpotlight />
           <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end px-6 pb-12">
-            <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.4em] text-red-400 sm:text-base">
+            <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.4em] text-gold-400 sm:text-base">
               Quality Over Quantity
             </p>
             <h1
@@ -197,13 +197,13 @@ export default async function Home() {
             >
               Mobile Detailing
               <br />
-              in Austin
+              in Phoenix
             </h1>
             <p
               className="animate-fade-up mt-5 max-w-xl text-lg text-gray-100 sm:text-xl"
               style={{ animationDelay: '160ms' }}
             >
-              Professional detailing brought right to your driveway, office, or garage. We bring everything we need. You don&apos;t lift a finger.
+              Professional detailing brought right to your driveway, office, or garage across Phoenix, Scottsdale, Tempe, Mesa, Chandler, and Gilbert. We bring everything we need. You don&apos;t lift a finger.
             </p>
             <div
               className="animate-fade-up mt-8 flex flex-wrap gap-3"
@@ -226,7 +226,7 @@ export default async function Home() {
               className="animate-fade-up mt-3 text-sm text-gray-300"
               style={{ animationDelay: '320ms' }}
             >
-              Prefer to call? <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">(480) 793-3782</a>
+              Prefer to call? <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">(480) 793-3782</a>
             </p>
           </div>
         </div>
@@ -250,11 +250,11 @@ export default async function Home() {
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
             Every package is tailored to your vehicle. We come to you for{' '}
-            <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
-              Austin car cleaning
+            <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
+              Phoenix car detailing
             </Link>
             ,{' '}
-            <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
+            <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
               auto detailing services
             </Link>
             , and ceramic coatings. No driving across town, no waiting rooms.
@@ -306,13 +306,13 @@ export default async function Home() {
                 key={type}
                 className={`scroll-card relative overflow-hidden rounded-2xl p-6 transition-transform duration-500 ${
                   isFeatured
-                    ? 'sm:col-span-2 border border-red-500/50 bg-gradient-to-b from-red-500/[0.08] via-zinc-950 to-black px-6 py-8 sm:p-10 shadow-[0_0_60px_-10px_rgba(214,32,48,0.35)]'
+                    ? 'sm:col-span-2 border border-gold-500/50 bg-gradient-to-b from-gold-500/[0.08] via-zinc-950 to-black px-6 py-8 sm:p-10 shadow-[0_0_60px_-10px_rgba(212,162,76,0.35)]'
                     : 'glass-card lift-hover'
                 }`}
                 data-stagger-i={i}
               >
                 {isFeatured && (
-                  <span className="absolute left-1/2 top-0 -translate-x-1/2 rounded-b-lg bg-red-600 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white shadow-[0_4px_14px_rgba(214,32,48,0.4)]">
+                  <span className="absolute left-1/2 top-0 -translate-x-1/2 rounded-b-lg bg-gold-600 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black shadow-[0_4px_14px_rgba(212,162,76,0.4)]">
                     Most Popular
                   </span>
                 )}
@@ -324,30 +324,30 @@ export default async function Home() {
                     <ul className="mt-4 space-y-1.5">
                       {SERVICE_INCLUDES[type].map((item) => (
                         <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
-                          <svg className="h-3.5 w-3.5 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg>
+                          <svg className="h-3.5 w-3.5 shrink-0 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg>
                           {item}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div className={isFeatured ? 'mt-6 sm:mt-0 sm:flex sm:flex-col sm:justify-center' : ''}>
-                    <div className={`space-y-3 ${isFeatured ? 'sm:border-l sm:border-red-500/20 sm:pl-8' : 'mt-5 border-t border-white/10 pt-4'}`}>
+                    <div className={`space-y-3 ${isFeatured ? 'sm:border-l sm:border-gold-500/20 sm:pl-8' : 'mt-5 border-t border-white/10 pt-4'}`}>
                       <div className="flex items-center justify-between">
                         <span className="text-base text-gray-200">Coupe / Sedan</span>
-                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].small}</span>
+                        <span className={`font-bold text-gold-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].small}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-base text-gray-200">SUV</span>
-                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].suv}</span>
+                        <span className={`font-bold text-gold-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].suv}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-base text-gray-200">Truck / 3-Row</span>
-                        <span className={`font-bold text-red-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].truck}</span>
+                        <span className={`font-bold text-gold-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].truck}</span>
                       </div>
                     </div>
                     <Link
                       href="/auth"
-                      className={`mt-5 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200 ${isFeatured ? 'sm:pl-8' : ''}`}
+                      className={`mt-5 inline-flex text-sm font-semibold uppercase tracking-wider text-gold-300 hover:text-gold-200 ${isFeatured ? 'sm:pl-8' : ''}`}
                     >
                       Book {SERVICE_TYPE_NAMES[type]} →
                     </Link>
@@ -360,7 +360,7 @@ export default async function Home() {
 
         {/* Add-ons section */}
         <div className="reveal-on-scroll mt-12">
-          <h3 className="text-base font-semibold uppercase tracking-[0.25em] text-red-400">
+          <h3 className="text-base font-semibold uppercase tracking-[0.25em] text-gold-400">
             Add-On Services
           </h3>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -376,7 +376,7 @@ export default async function Home() {
                   className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3"
                 >
                   <span className="text-base text-gray-100">{addon.name}</span>
-                  <span className="text-base font-semibold text-red-300">{priceLabel}</span>
+                  <span className="text-base font-semibold text-gold-300">{priceLabel}</span>
                 </div>
               );
             })}
@@ -386,7 +386,7 @@ export default async function Home() {
         {/* Returning customer banner: full-width dark card with a solid
             red accent bar on the left, matching the cinematic preview. */}
         <div className="reveal-on-scroll relative mt-8 flex items-start gap-4 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/80 px-5 py-5 pl-6 sm:items-center">
-          <span aria-hidden className="absolute left-0 top-0 h-full w-1 bg-red-500" />
+          <span aria-hidden className="absolute left-0 top-0 h-full w-1 bg-gold-500" />
           <span className="mt-0.5 shrink-0 text-2xl sm:mt-0" aria-hidden>🔁</span>
           <div>
             <p className="font-semibold uppercase tracking-wider text-white">
@@ -435,13 +435,13 @@ export default async function Home() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
-                alt={`${vehicle}, ${service} by Austin Auto Detail`}
+                alt={`${vehicle}, ${service} by Signature Mobile Detailing`}
                 loading="lazy"
                 className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3">
                 <p className="text-xs font-semibold text-white">{vehicle}</p>
-                <p className="text-xs text-red-300">{service}</p>
+                <p className="text-xs text-gold-300">{service}</p>
               </div>
             </div>
           ))}
@@ -456,11 +456,11 @@ export default async function Home() {
       >
         <div className="reveal-on-scroll">
           <a
-            href="https://www.tiktok.com/@austinautodetail"
+            href="https://www.tiktok.com/@__TIKTOK_TBD__"
             target="_blank"
             rel="noopener noreferrer"
             className="lift-hover group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 sm:flex-row"
-            aria-label="Follow Austin Auto Detail on TikTok - watch before and afters"
+            aria-label="Follow Signature Mobile Detailing on TikTok - watch before and afters"
           >
             {/* Ambient glow + base background */}
             <div aria-hidden className="tiktok-card-bg pointer-events-none absolute inset-0" />
@@ -468,7 +468,7 @@ export default async function Home() {
                 small TikTok glyph overlays the bottom-right corner so the
                 card still reads as "TikTok" at a glance. */}
             <div className="relative flex shrink-0 items-center justify-center border-b border-white/5 bg-black/40 p-4 sm:border-b-0 sm:border-r sm:border-white/5 sm:p-6">
-              <div className="relative aspect-[9/16] w-40 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-all duration-500 group-hover:ring-red-500/60 group-hover:shadow-[0_0_28px_rgba(214,32,48,0.4)] sm:w-44">
+              <div className="relative aspect-[9/16] w-40 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-all duration-500 group-hover:ring-gold-500/60 group-hover:shadow-[0_0_28px_rgba(212,162,76,0.4)] sm:w-44">
                 <LazyVideo
                   src="/images/aad/tiktok-mercedes.mp4"
                   ariaLabel="Mercedes detail TikTok preview"
@@ -490,7 +490,7 @@ export default async function Home() {
             </div>
             {/* Content panel */}
             <div className="relative flex flex-1 flex-col justify-center p-8 sm:p-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
                 Behind the Scenes
               </p>
               <h2 className="mt-2 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
@@ -499,11 +499,11 @@ export default async function Home() {
               <p className="mt-3 max-w-lg text-base leading-relaxed text-gray-300">
                 Before and afters. Deep-clean transformations. The
                 satisfying moments most customers never see. Real cars,
-                real Austin drivers. Follow along and see what
+                real Phoenix drivers. Follow along and see what
                 yours could look like.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 group-hover:bg-red-500">
+                <span className="inline-flex items-center gap-2 rounded-xl bg-gold-600 px-5 py-2.5 text-sm font-semibold text-black transition-colors duration-200 group-hover:bg-gold-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -513,7 +513,7 @@ export default async function Home() {
                   >
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
                   </svg>
-                  Follow @austinautodetail →
+                  Follow @__TIKTOK_TBD__ →
                 </span>
                 <span className="text-sm text-gray-300">Free to watch &amp; follow</span>
               </div>
@@ -529,7 +529,7 @@ export default async function Home() {
             How It Works
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Booking mobile detailing in Austin takes about a minute. Here&apos;s how it goes:
+            Booking mobile detailing in Phoenix takes about a minute. Here&apos;s how it goes:
           </p>
         </div>
         <div className="mt-12">
@@ -541,7 +541,7 @@ export default async function Home() {
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Why Austin Auto Detail
+            Why Signature Mobile Detailing
           </h2>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -551,7 +551,7 @@ export default async function Home() {
               className="glass-card scroll-card rounded-2xl p-6"
               data-stagger-i={i}
             >
-              <p className="text-2xl font-bold text-red-400 sm:text-3xl">{r.headline}</p>
+              <p className="text-2xl font-bold text-gold-400 sm:text-3xl">{r.headline}</p>
               <h3 className="mt-3 text-lg font-bold text-white">{r.title}</h3>
               <p className="mt-2 text-base text-gray-200">{r.description}</p>
             </div>
@@ -568,7 +568,7 @@ export default async function Home() {
         className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16"
       >
         <div className="reveal-on-scroll text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
             The Real Value
           </p>
           <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
@@ -595,7 +595,7 @@ export default async function Home() {
           {TRUST_PILLARS.map((p, i) => (
             <div key={p.title} className="scroll-card" data-stagger-i={i}>
             <TiltCard className="glass-card rounded-2xl p-6 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-2xl">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/40 bg-gold-500/10 text-2xl">
                 {p.icon}
               </div>
               <h3 className="mt-4 text-lg font-bold text-white">
@@ -627,7 +627,7 @@ export default async function Home() {
           </svg>
         </div>
         <div className="relative mx-auto w-full max-w-3xl px-6 text-center">
-          <p className="reveal-on-scroll text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+          <p className="reveal-on-scroll text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
             Our Mission
           </p>
           <blockquote
@@ -657,7 +657,7 @@ export default async function Home() {
           pauses on hover (desktop) and touch-hold (mobile). */}
       <section aria-label="Customer reviews" className="relative z-10 py-16 overflow-hidden">
         <div className="reveal-on-scroll mx-auto w-full max-w-5xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-red-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
             What Customers Say
           </p>
           <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
@@ -685,7 +685,7 @@ export default async function Home() {
             >
               <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-lg font-semibold text-white">
                 <span>{q.question}</span>
-                <span className="text-2xl text-red-400 transition-transform group-open:rotate-45">+</span>
+                <span className="text-2xl text-gold-400 transition-transform group-open:rotate-45">+</span>
               </summary>
               <p className="mt-3 text-base leading-relaxed text-gray-200">{q.answer}</p>
             </details>
@@ -693,11 +693,11 @@ export default async function Home() {
         </div>
         <p className="mt-8 text-center text-base text-gray-200">
           Still have questions?{' '}
-          <a href="#contact" className="text-red-300 underline-offset-4 hover:underline">
+          <a href="#contact" className="text-gold-300 underline-offset-4 hover:underline">
             Contact us
           </a>{' '}
           or{' '}
-          <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
+          <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
             book a detail
           </Link>{' '}
           to get started.
@@ -767,28 +767,28 @@ export default async function Home() {
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/garage.mp4"
-                ariaLabel="Austin Auto Detail garage"
+                ariaLabel="Signature Mobile Detailing garage"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/van.mp4"
-                ariaLabel="Austin Auto Detail mobile detailing van"
+                ariaLabel="Signature Mobile Detailing mobile detailing van"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/6158118-hd_1920_1080_30fps.mp4"
-                ariaLabel="Austin Auto Detail at work"
+                ariaLabel="Signature Mobile Detailing at work"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/6159205-hd_1920_1080_30fps.mp4"
-                ariaLabel="Austin Auto Detail at work"
+                ariaLabel="Signature Mobile Detailing at work"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
@@ -802,7 +802,7 @@ export default async function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={BOOK_CTA_IMAGE.src}
-            alt="Book mobile detailing in Austin - professional on-site car cleaning"
+            alt="Book mobile detailing in Phoenix, AZ - on-site car detailing at your home or office"
             width={1920}
             height={1080}
             loading="lazy"
@@ -814,11 +814,11 @@ export default async function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
           <div className="relative flex flex-col items-start gap-4 p-10 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-red-400">
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-gold-400">
                 Ready when you are
               </p>
               <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
-                Mobile Detailing in Austin
+                Mobile Detailing in Phoenix
               </h3>
               <p className="mt-2 max-w-xl text-base text-gray-100 sm:text-lg">
                 Quality on-site detailing brought to you. Pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit when we approve; the rest on-site.
@@ -838,24 +838,24 @@ export default async function Home() {
       <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Contact Austin Auto Detail
+            Contact Signature Mobile Detailing
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Mobile detailing across Austin and the surrounding area. Call or text{' '}
-            <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
+            Mobile detailing across Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale, and Peoria. Call or text{' '}
+            <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
               (480) 793-3782
             </a>
             , email{' '}
-            <a href="mailto:info@austin-autodetail.com" className="font-semibold text-red-300 underline-offset-4 hover:underline">
-              info@austin-autodetail.com
+            <a href="mailto:info@__DOMAIN_TBD__" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              info@__DOMAIN_TBD__
             </a>
             , or{' '}
-            <Link href="/auth" className="text-red-300 underline-offset-4 hover:underline">
+            <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
               book online
             </Link>
             . We&apos;ll confirm within 24 hours.
           </p>
-          <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-red-300">
+          <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-gold-300">
             {live.availability}
           </p>
           <div className="mt-6">
@@ -872,22 +872,22 @@ export default async function Home() {
         <div className="mx-auto grid w-full max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
-              Austin Auto Detail
+              Signature Mobile Detailing
             </p>
             <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-600 italic">
               <span aria-hidden>✝</span> Faith-driven, owner-operated
             </p>
             <p className="mt-3 text-base text-gray-200">
-              Mobile detailing in Austin. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
+              Mobile detailing in Phoenix, AZ and across the valley. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
             </p>
             <p className="mt-4 text-base text-gray-200">
-              <a href="tel:+14807933782" className="font-semibold text-red-300 underline-offset-4 hover:underline">
+              <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
                 (480) 793-3782
               </a>
             </p>
             <p className="mt-2 text-base text-gray-200">
-              <a href="mailto:info@austin-autodetail.com" className="font-semibold text-red-300 underline-offset-4 hover:underline">
-                info@austin-autodetail.com
+              <a href="mailto:info@__DOMAIN_TBD__" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+                info@__DOMAIN_TBD__
               </a>
             </p>
             <p className="mt-2 text-sm text-gray-300">
@@ -930,7 +930,7 @@ export default async function Home() {
           </nav>
         </div>
         <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
-          <p>© {new Date().getFullYear()} Austin Auto Detail. Mobile detailing in Austin, TX.</p>
+          <p>© {new Date().getFullYear()} Signature Mobile Detailing. Mobile detailing in Phoenix, AZ.</p>
           <p className="text-xs text-gray-300 italic text-center sm:text-right">
             <span aria-hidden className="mr-1.5 text-gray-600">✝</span>
             &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
@@ -1053,7 +1053,7 @@ const SERVICES: ServiceCardDef[] = [
   {
     icon: <MapPin size={ICON_SIZE} aria-hidden />,
     title: 'Mobile - We Come To You',
-    description: 'Driveway, office parking lot, garage - anywhere in the Austin area. Three slots a day so you get our full attention.',
+    description: 'Driveway, office parking lot, garage - anywhere in the Phoenix valley. Three slots a day so you get our full attention.',
     priceLabel: '',
   },
 ];

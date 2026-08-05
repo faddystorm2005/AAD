@@ -2,10 +2,10 @@
  * Weather forecasting via Open-Meteo (free, no API key).
  * https://open-meteo.com/en/docs
  *
- * Coordinates default to Austin, TX. Forecast horizon is ~16 days.
+ * Coordinates default to Phoenix, AZ. Forecast horizon is ~16 days.
  */
 
-const AUSTIN = { lat: 30.2672, lon: -97.7431, tz: "America/Chicago" } as const;
+const PHOENIX = { lat: 33.4484, lon: -112.0740, tz: "America/Phoenix" } as const;
 
 export interface DailyWeather {
   date: string; // YYYY-MM-DD
@@ -45,23 +45,23 @@ function describeCode(code: number): { label: string; emoji: string } {
 }
 
 /**
- * Fetch a single-day forecast for Austin. Returns `outOfRange` when the date
+ * Fetch a single-day forecast for Phoenix. Returns `outOfRange` when the date
  * is past Open-Meteo's 16-day window (or in the past).
  *
  * Cached for 1h via Next's fetch revalidation - many bookings can share dates
  * without hammering the API.
  */
-export async function getAustinForecast(date: string): Promise<WeatherResult> {
+export async function getPhoenixForecast(date: string): Promise<WeatherResult> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return { date, unavailable: 'invalid-date' };
   }
 
-  // Compute "today" in Austin (Central) time, not UTC, so a late-night UTC
+  // Compute "today" in Phoenix time, not UTC, so a late-night UTC
   // server doesn't think tomorrow already started.
-  const todayCentral = new Date(
-    new Date().toLocaleString('en-US', { timeZone: AUSTIN.tz })
+  const todayPhoenix = new Date(
+    new Date().toLocaleString('en-US', { timeZone: PHOENIX.tz })
   );
-  const today = `${todayCentral.getFullYear()}-${String(todayCentral.getMonth() + 1).padStart(2, '0')}-${String(todayCentral.getDate()).padStart(2, '0')}`;
+  const today = `${todayPhoenix.getFullYear()}-${String(todayPhoenix.getMonth() + 1).padStart(2, '0')}-${String(todayPhoenix.getDate()).padStart(2, '0')}`;
 
   const requested = new Date(date + 'T00:00:00Z');
   const todayDate = new Date(today + 'T00:00:00Z');
@@ -74,10 +74,10 @@ export async function getAustinForecast(date: string): Promise<WeatherResult> {
 
   const url =
     `https://api.open-meteo.com/v1/forecast` +
-    `?latitude=${AUSTIN.lat}&longitude=${AUSTIN.lon}` +
+    `?latitude=${PHOENIX.lat}&longitude=${PHOENIX.lon}` +
     `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode` +
     `&temperature_unit=fahrenheit` +
-    `&timezone=${encodeURIComponent(AUSTIN.tz)}` +
+    `&timezone=${encodeURIComponent(PHOENIX.tz)}` +
     `&start_date=${date}&end_date=${date}`;
 
   const res = await fetch(url, { next: { revalidate: 3600 } });

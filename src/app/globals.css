@@ -3,11 +3,25 @@
 :root {
   --background: #000000;
   --foreground: #f8f8f8;
-  --accent: #d62030;
+  --accent: #d4a24c;
   --surface: rgba(255, 255, 255, 0.05);
 }
 
 @theme inline {
+  /* Brand gold, sampled from the Signature Mobile Detailing badge.
+     600 is the main mark; 300/400 are the highlight tones; 800 is the
+     deep engraved edge. Black stays the page background. */
+  --color-gold-50: #fefaef;
+  --color-gold-100: #fdf1cf;
+  --color-gold-200: #fbe4a6;
+  --color-gold-300: #f6d379;
+  --color-gold-400: #ecc269;
+  --color-gold-500: #e0b160;
+  --color-gold-600: #d4a24c;
+  --color-gold-700: #b8863c;
+  --color-gold-800: #8a5f31;
+  --color-gold-900: #5a3d20;
+  --color-gold-950: #2e1f10;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
@@ -108,7 +122,7 @@ h6 {
 
 /* Selection color matches the brand. */
 ::selection {
-  background: rgba(214, 32, 48, 0.4);
+  background: rgba(212, 162, 76, 0.4);
   color: #fff;
 }
 
@@ -187,8 +201,8 @@ h6 {
 }
 .lift-hover:hover {
   transform: translateY(-2px);
-  border-color: rgba(214, 32, 48, 0.45);
-  box-shadow: 0 10px 30px -12px rgba(214, 32, 48, 0.35);
+  border-color: rgba(212, 162, 76, 0.45);
+  box-shadow: 0 10px 30px -12px rgba(212, 162, 76, 0.35);
 }
 
 /* Auto-scrolling marquee for testimonials. The element being animated must
@@ -259,7 +273,7 @@ h6 {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: rgba(214, 32, 48, 0.55);
+  background: rgba(212, 162, 76, 0.55);
   animation: aad-cta-ring 2.2s ease-in-out infinite;
   will-change: transform, opacity;
   z-index: -1;
@@ -292,30 +306,30 @@ h6 {
   transition: border-color 240ms ease, box-shadow 240ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .glass-card:hover {
-  border-color: rgba(214, 32, 48, 0.35);
+  border-color: rgba(212, 162, 76, 0.35);
   box-shadow:
     0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
-    0 18px 50px -14px rgba(214, 32, 48, 0.18),
+    0 18px 50px -14px rgba(212, 162, 76, 0.18),
     0 12px 40px -16px rgba(0, 0, 0, 0.8);
 }
 
-/* Solid red CTA. Flat treatment, color-shift on hover. Motion comes from .press. */
+/* Solid gold CTA. Flat treatment, color-shift on hover. Motion comes from .press. */
 .btn-primary {
-  background: #d62030;
-  color: #fff;
+  background: #d4a24c;
+  color: #0a0a0a;
   border: 1px solid transparent;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   transition: background-color 180ms ease, box-shadow 180ms ease;
 }
 .btn-primary:hover {
-  background: #b81a28;
+  background: #b8863c;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 .btn-primary:active {
-  background: #9a161f;
+  background: #8a5f31;
 }
 
-/* Animated red accent line that grows under section headings on first reveal.
+/* Animated gold accent line that grows under section headings on first reveal.
    Use as: <h2 className="h-accent">Section Title</h2> */
 .h-accent {
   position: relative;
@@ -328,7 +342,7 @@ h6 {
   bottom: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), rgba(214, 32, 48, 0.0));
+  background: linear-gradient(90deg, var(--accent), rgba(212, 162, 76, 0.0));
   border-radius: 2px;
   animation: aad-accent-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
 }
@@ -352,13 +366,13 @@ h6 {
 @keyframes aad-glow-pulse {
   0%, 100% {
     box-shadow:
-      0 0 0 0 rgba(214, 32, 48, 0.45),
-      0 0 0 0 rgba(214, 32, 48, 0.0);
+      0 0 0 0 rgba(212, 162, 76, 0.45),
+      0 0 0 0 rgba(212, 162, 76, 0.0);
   }
   50% {
     box-shadow:
-      0 0 0 4px rgba(214, 32, 48, 0.18),
-      0 0 24px 4px rgba(214, 32, 48, 0.35);
+      0 0 0 4px rgba(212, 162, 76, 0.18),
+      0 0 24px 4px rgba(212, 162, 76, 0.35);
   }
 }
 .animate-glow-pulse {
@@ -366,9 +380,9 @@ h6 {
 }
 
 /* Gradient hero text - pairs with Oswald headings for a premium feel.
-   Goes from off-white at the top to a faint red wash at the bottom. */
+   Goes from off-white at the top to a faint gold wash at the bottom. */
 .text-gradient-hero {
-  background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 60%, #ff6b78 130%);
+  background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 60%, #f6d379 130%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -456,7 +470,7 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  box-shadow: 0 0 0 3px rgba(214, 32, 48, 0.18);
+  box-shadow: 0 0 0 3px rgba(212, 162, 76, 0.18);
 }
 
 /* Button polish - applies a uniform cursor + disabled state. Doesn't
@@ -533,8 +547,8 @@ button:disabled {
    gives the hero a faint warm glow behind the panning foreground. */
 .hero-bg-glow {
   background:
-    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(214, 32, 48, 0.18), transparent 70%),
-    radial-gradient(ellipse 50% 50% at 50% 80%, rgba(255, 80, 100, 0.06), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(212, 162, 76, 0.18), transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 80%, rgba(246, 211, 121, 0.06), transparent 70%),
     #050505;
   z-index: 0;
 }
@@ -571,7 +585,7 @@ button:disabled {
   background: linear-gradient(
     90deg,
     var(--accent) 0%,
-    rgba(214, 32, 48, 0.6) 100%
+    rgba(212, 162, 76, 0.6) 100%
   );
   transform: scaleX(0);
   transform-origin: left center;
@@ -592,7 +606,7 @@ button:disabled {
   background: linear-gradient(
     180deg,
     var(--accent) 0%,
-    rgba(214, 32, 48, 0.6) 100%
+    rgba(212, 162, 76, 0.6) 100%
   );
   transform: scaleY(0);
   transform-origin: top center;
@@ -616,7 +630,7 @@ button:disabled {
     background: linear-gradient(
       90deg,
       var(--accent) 0%,
-      rgba(214, 32, 48, 0.6) 100%
+      rgba(212, 162, 76, 0.6) 100%
     );
     transform: scaleX(0);
     transform-origin: left center;
@@ -631,7 +645,7 @@ button:disabled {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
-  box-shadow: 0 0 0 4px rgba(214, 32, 48, 0.18);
+  box-shadow: 0 0 0 4px rgba(212, 162, 76, 0.18);
 }
 
 /* ---------------------------------------------------------------
@@ -654,11 +668,11 @@ button:disabled {
   filter: saturate(1.22) contrast(1.05) brightness(1.04);
 }
 
-/* TikTok card ambient background - red glow from the left, dark gradient base. */
+/* TikTok card ambient background - gold glow from the left, dark gradient base. */
 .tiktok-card-bg {
   background:
-    radial-gradient(ellipse 70% 80% at 10% 50%, rgba(214,32,48,0.13), transparent 65%),
-    linear-gradient(135deg, #111 0%, #000 55%, #140505 100%);
+    radial-gradient(ellipse 70% 80% at 10% 50%, rgba(212,162,76,0.13), transparent 65%),
+    linear-gradient(135deg, #111 0%, #000 55%, #141008 100%);
 }
 
 /* Respect users who prefer reduced motion - disable all decorative animations. */
@@ -786,7 +800,7 @@ button:disabled {
   inset: 0;
   background: radial-gradient(
     400px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(214, 32, 48, 0.07),
+    rgba(212, 162, 76, 0.07),
     transparent 60%
   );
   opacity: 0;
@@ -800,7 +814,7 @@ button:disabled {
 
 /* ── Active nav link highlight ───────────────────────────────────────────── */
 header nav a.nav-active {
-  color: #fca5a5; /* red-300 */
+  color: #f6d379; /* gold-300 */
 }
 header nav a.nav-active::after {
   content: '';
@@ -810,7 +824,7 @@ header nav a.nav-active::after {
   left: 0;
   right: 0;
   height: 2px;
-  background: #d62030;
+  background: #d4a24c;
   border-radius: 1px;
 }
 header nav a {

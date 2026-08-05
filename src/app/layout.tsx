@@ -22,34 +22,34 @@ const oswald = Oswald({
 });
 
 // Canonical site URL. The Vercel domain config serves www as the live
-// address and redirects apex (austin-autodetail.com) -> www, so the
+// address and redirects apex (__DOMAIN_TBD__) -> www, so the
 // canonical must match what the customer actually hits in the browser.
 // If the redirect direction is ever flipped to www -> apex, change
 // this AND sitemap.ts AND robots.ts in the same commit.
-const SITE_URL = "https://www.austin-autodetail.com";
-const SOCIAL_TITLE = "Austin Auto Detail. Mobile Detailing in Austin, TX.";
+const SITE_URL = "https://www.__DOMAIN_TBD__";
+const SOCIAL_TITLE = "Mobile Car Detailing in Phoenix, AZ | Signature Mobile Detailing";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
 // so search engines and social previews stay consistent.
 const SOCIAL_DESCRIPTION =
-  "Professional mobile car detailing in Austin. Interior, exterior, ceramic coatings, and paint correction. We bring everything to your driveway, office, or garage. Quality over quantity.";
+  "Mobile car detailing in Phoenix, Scottsdale, Tempe, Mesa and Chandler. Interior, exterior, ceramic coating and paint correction at your driveway or office.";
 
 const BUSINESS_ID = `${SITE_URL}/#business`;
 
 // Six JSON-LD blocks for local SEO + rich results. Google reads these to
-// surface AAD in the local pack, FAQ rich result, and Service rich cards.
+// surface the business in the local pack, FAQ rich result, and Service rich cards.
 // Prices match `src/lib/bookingPricing.ts` exactly. FAQ answers must match
 // the on-page FAQ copy verbatim (Google flags inconsistencies).
 const SCHEMA_LOCAL_BUSINESS = {
   "@context": "https://schema.org",
   "@type": ["LocalBusiness", "AutomotiveBusiness"],
   "@id": BUSINESS_ID,
-  name: "Austin Auto Detail",
-  alternateName: "AAD",
+  name: "Signature Mobile Detailing",
+  alternateName: "Signature Detailing Phoenix",
   description:
-    "Professional mobile car detailing service in Austin, Texas. We come to your driveway, office, or garage with everything we need. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, three details a day max.",
+    "Mobile car detailing serving Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale and Peoria, Arizona. We come to your driveway, office, or garage with everything we need, including our own water and power. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, three details a day max.",
   url: SITE_URL,
   telephone: "+1-480-793-3782",
-  email: "info@austin-autodetail.com",
+  email: "info@__DOMAIN_TBD__",
   // image is the rich-result preview thumbnail. Using the marketing CTA
   // image (1200x630, OG-sized) so Google's local pack and rich results
   // show real work, not just the logo. logo stays as the brand mark.
@@ -60,30 +60,41 @@ const SCHEMA_LOCAL_BUSINESS = {
   paymentAccepted: "Credit Card, Debit Card",
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Austin",
-    addressRegion: "TX",
+    addressLocality: "Phoenix",
+    addressRegion: "AZ",
     addressCountry: "US",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 30.2672,
-    longitude: -97.7431,
+    latitude: 33.4484,
+    longitude: -112.0740,
+  },
+  // Service-area business: no storefront to visit, so declare the radius we
+  // actually cover. This must match the Google Business Profile service area.
+  serviceArea: {
+    "@type": "GeoCircle",
+    geoMidpoint: {
+      "@type": "GeoCoordinates",
+      latitude: 33.4484,
+      longitude: -112.0740,
+    },
+    geoRadius: "40000",
   },
   areaServed: [
-    "Austin",
-    "Round Rock",
-    "Cedar Park",
-    "Georgetown",
-    "Pflugerville",
-    "Lakeway",
-    "West Lake Hills",
-    "Buda",
-    "Kyle",
-    "Dripping Springs",
+    "Phoenix",
+    "Scottsdale",
+    "Tempe",
+    "Mesa",
+    "Chandler",
+    "Gilbert",
+    "Glendale",
+    "Peoria",
+    "Paradise Valley",
+    "Ahwatukee",
   ].map((name) => ({
     "@type": "City",
     name,
-    containedInPlace: { "@type": "State", name: "Texas" },
+    containedInPlace: { "@type": "State", name: "Arizona" },
   })),
   openingHoursSpecification: [
     {
@@ -102,7 +113,7 @@ const SCHEMA_LOCAL_BUSINESS = {
       description: "Outside posted hours, available by appointment.",
     },
   ],
-  sameAs: ["https://www.tiktok.com/@austinautodetail"],
+  sameAs: ["https://www.tiktok.com/@__TIKTOK_TBD__"],
   knowsAbout: [
     "Mobile Car Detailing",
     "Ceramic Coating",
@@ -112,7 +123,7 @@ const SCHEMA_LOCAL_BUSINESS = {
     "Car Wash",
     "Auto Detailing",
   ],
-  slogan: "Quality over quantity. Mobile detailing in Austin.",
+  slogan: "Quality over quantity. Mobile detailing across the Phoenix valley.",
   makesOffer: [
     {
       "@type": "Offer",
@@ -152,9 +163,9 @@ const SCHEMA_WEBSITE = {
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   url: SITE_URL,
-  name: "Austin Auto Detail",
+  name: "Signature Mobile Detailing",
   description:
-    "Mobile car detailing in Austin, TX. Quality over quantity, owner-operated, comes to you.",
+    "Mobile car detailing in Phoenix, AZ and the surrounding valley. Quality over quantity, owner-operated, comes to you.",
   publisher: { "@id": BUSINESS_ID },
   inLanguage: "en-US",
 };
@@ -174,7 +185,7 @@ function serviceSchema(args: {
     name: args.name,
     description: args.description,
     provider: { "@id": BUSINESS_ID },
-    areaServed: { "@type": "City", name: "Austin" },
+    areaServed: { "@type": "City", name: "Phoenix" },
     offers: args.prices.map((p) => ({
       "@type": "Offer",
       name: p.name,
@@ -232,10 +243,10 @@ const SCHEMA_FAQ = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Where do you offer mobile detailing in Austin?",
+      name: "Where do you offer mobile detailing in Phoenix?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "We service Austin and surrounding areas. Our detail van is fully self-contained: we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.",
+        text: "We service Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale, and Peoria. Our detail van is fully self-contained: we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.",
       },
     },
     {
@@ -264,7 +275,7 @@ const SCHEMA_FAQ = {
     },
     {
       "@type": "Question",
-      name: "What's included in Austin car cleaning?",
+      name: "What's included in a Phoenix car detail?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Our base detail covers a full exterior wash, hand-dry, vacuum, interior wipe-down, window cleaning, and tire dressing. Add-ons cover wax, paint correction, ceramic coating, engine bay cleaning, leather conditioning, stain removal, and windshield treatment.",
@@ -297,23 +308,29 @@ export const metadata: Metadata = {
   },
   title: {
     default: SOCIAL_TITLE,
-    template: "%s · Austin Auto Detail",
+    template: "%s · Signature Mobile Detailing",
   },
   description: SOCIAL_DESCRIPTION,
-  applicationName: "AAD",
+  applicationName: "Signature Mobile Detailing",
   keywords: [
-    "mobile detailing Austin",
-    "Austin auto detail",
-    "car detailing Austin TX",
-    "ceramic coating Austin",
-    "paint correction Austin",
-    "mobile car wash Austin",
+    "mobile detailing Phoenix",
+    "mobile car detailing Phoenix AZ",
+    "Phoenix auto detail",
+    "car detailing Phoenix AZ",
+    "ceramic coating Phoenix",
+    "paint correction Phoenix",
+    "mobile car wash Phoenix",
+    "mobile detailing Scottsdale",
+    "mobile detailing Tempe",
+    "mobile detailing Mesa",
+    "mobile detailing Chandler",
+    "mobile detailing Gilbert",
   ],
-  authors: [{ name: "Austin Auto Detail" }],
+  authors: [{ name: "Signature Mobile Detailing" }],
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "AAD",
+    title: "Signature",
   },
   manifest: "/manifest.json",
   formatDetection: {
@@ -328,7 +345,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: "Austin Auto Detail",
+    siteName: "Signature Mobile Detailing",
     title: SOCIAL_TITLE,
     description: SOCIAL_DESCRIPTION,
     url: SITE_URL + "/",
@@ -338,7 +355,7 @@ export const metadata: Metadata = {
         url: "/images/aad/cta-king-ranch.jpg",
         width: 1200,
         height: 630,
-        alt: "Ford F-150 King Ranch interior detailed by Austin Auto Detail",
+        alt: "Ford F-150 King Ranch interior detailed by Signature Mobile Detailing",
       },
     ],
   },
@@ -361,7 +378,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#d62030",
+  themeColor: "#000000",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -388,7 +405,7 @@ export default function RootLayout({
             and jump straight to page content. WCAG 2.4.1 (Bypass Blocks). */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-red-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-gold-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black focus:shadow-lg"
         >
           Skip to main content
         </a>

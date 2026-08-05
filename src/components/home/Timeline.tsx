@@ -22,7 +22,7 @@ const STEPS: Step[] = [
     title: 'We confirm',
     icon: 'clipboard',
     description:
-      'Austin Auto Detail reviews your booking within 24 hours. No charge until we approve.',
+      'Signature Mobile Detailing reviews your booking within 24 hours. No charge until we approve.',
   },
   {
     number: 'Step 3',
@@ -128,10 +128,10 @@ export default function Timeline() {
           {i < STEPS.length - 1 && (
             <span className="aad-connector pointer-events-none absolute hidden sm:block" aria-hidden />
           )}
-          <div className="aad-step-icon relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-red-500/40 bg-zinc-950 text-red-400 transition-colors duration-500">
+          <div className="aad-step-icon relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-gold-500/40 bg-zinc-950 text-gold-400 transition-colors duration-500">
             <StepIcon name={step.icon} />
           </div>
-          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.25em] text-red-400">
+          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.25em] text-gold-400">
             {step.number}
           </p>
           <h3 className="mt-2 text-lg font-bold text-white sm:text-xl">{step.title}</h3>

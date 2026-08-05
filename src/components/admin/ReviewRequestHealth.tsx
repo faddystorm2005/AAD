@@ -110,7 +110,7 @@ export function ReviewRequestHealth() {
                   {new Date(b.completed_at).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
-                    timeZone: 'America/Chicago',
+                    timeZone: 'America/Phoenix',
                   })}
                 </span>
                 <span>

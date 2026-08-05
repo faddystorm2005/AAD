@@ -180,7 +180,7 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
                 type="button"
                 onClick={handleDisconnect}
                 disabled={busy}
-                className="press rounded-lg border border-red-600 px-4 py-2 text-xs font-semibold text-red-300 hover:bg-red-900/20 disabled:opacity-50"
+                className="press rounded-lg border border-gold-600 px-4 py-2 text-xs font-semibold text-gold-300 hover:bg-gold-900/20 disabled:opacity-50"
               >
                 {busy ? 'Disconnecting…' : 'Disconnect Google Calendar'}
               </button>

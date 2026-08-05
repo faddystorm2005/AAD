@@ -121,7 +121,7 @@ export default function LazyVideo({ src, poster, className = '', ariaLabel }: La
           className="absolute inset-0 flex items-center justify-center bg-black/40 text-white"
           aria-label="Play video"
         >
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-red-600 shadow-lg">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold-600 shadow-lg">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M8 5v14l11-7z" />
             </svg>

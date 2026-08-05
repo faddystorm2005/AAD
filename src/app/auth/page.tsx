@@ -23,7 +23,7 @@ function AuthFallback() {
   return (
     <main className="min-h-screen bg-black px-6 py-16 text-white">
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-600 border-t-transparent" />
       </div>
     </main>
   );
@@ -176,9 +176,9 @@ function AuthInner() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black" />
         <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
           <h1 className="text-4xl font-bold uppercase tracking-[0.18em] text-white sm:text-5xl">
-            Austin Auto Detail
+            Signature Mobile Detailing
           </h1>
-          <p className="mt-3 text-sm uppercase tracking-[0.35em] text-red-500">
+          <p className="mt-3 text-sm uppercase tracking-[0.35em] text-gold-500">
             Quality Over Quantity
           </p>
         </div>
@@ -188,7 +188,7 @@ function AuthInner() {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-xl">
           <div className="mb-6 text-center">
             <h2 className="text-xl font-semibold text-white sm:text-2xl">
-              Sign in to Austin Auto Detail
+              Sign in to Signature Mobile Detailing
             </h2>
             <p className="mt-2 text-sm text-gray-300">
               The fastest way is your Google account. Email also works.
@@ -234,7 +234,7 @@ function AuthInner() {
                         setCode(e.target.value.replace(/\D/g, '').slice(0, 10));
                         if (error) setError('');
                       }}
-                      className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-center text-2xl font-mono font-bold tracking-[0.3em] text-white placeholder-gray-600 focus:border-red-500 focus:outline-none"
+                      className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-center text-2xl font-mono font-bold tracking-[0.3em] text-white placeholder-gray-600 focus:border-gold-500 focus:outline-none"
                     />
                     <button
                       type="submit"
@@ -265,7 +265,7 @@ function AuthInner() {
               {/* PRIMARY: Google. Bigger, brighter, ringed, with a small
                   'Recommended' pill above to draw the eye. */}
               <div className="space-y-2">
-                <p className="text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-red-400">
+                <p className="text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-400">
                   Recommended
                 </p>
                 <button

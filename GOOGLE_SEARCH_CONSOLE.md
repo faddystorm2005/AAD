@@ -22,14 +22,14 @@ Click **Add property** in the top-left dropdown.
 
 You'll see two choices:
 
-- **Domain** (DNS verification). Covers `austin-autodetail.com` and every
+- **Domain** (DNS verification). Covers `__DOMAIN_TBD__` and every
   subdomain (`www.`, `m.`, etc) in one go.
 - **URL prefix** (HTML file or meta tag). Covers ONLY the exact URL form
-  you enter. If you pick this and verify `https://austin-autodetail.com`,
+  you enter. If you pick this and verify `https://__DOMAIN_TBD__`,
   the `www.` form is treated as a separate property.
 
 **Pick Domain.** It is one extra step (DNS) but it future-proofs against
-any subdomain confusion. Type `austin-autodetail.com` (no `https://`, no
+any subdomain confusion. Type `__DOMAIN_TBD__` (no `https://`, no
 `www.`) and click Continue.
 
 ## Step 3. Verify DNS ownership
@@ -43,7 +43,7 @@ google-site-verification=abc123XYZ...
 You add that record to your DNS in Vercel:
 
 1. Go to https://vercel.com → your AAD project → **Settings** → **Domains**
-2. Click the row for `austin-autodetail.com` and find the DNS records section
+2. Click the row for `__DOMAIN_TBD__` and find the DNS records section
 3. Click **Add** → record type **TXT**, name `@` (or leave blank), value =
    the entire `google-site-verification=...` string from Google
 4. Save.
@@ -66,7 +66,7 @@ sitemap.xml
 domain). Click Submit.
 
 You should see "Success" within a few seconds. Google will then start
-crawling pages listed in `austin-autodetail.com/sitemap.xml`. Currently
+crawling pages listed in `__DOMAIN_TBD__/sitemap.xml`. Currently
 that is just the homepage `/`, which is correct: every other page on the
 site is gated behind sign-in and has no SEO value.
 
@@ -76,7 +76,7 @@ Don't wait for Google to find the homepage on its own. In the **URL
 inspection** field at the top, paste:
 
 ```
-https://austin-autodetail.com/
+https://__DOMAIN_TBD__/
 ```
 
 After it loads, click **Request indexing**. Google adds it to the priority
@@ -116,8 +116,8 @@ me the error text and I'll fix it.
 
 ## What if I picked URL prefix instead?
 
-If you went with **URL prefix** and verified `https://austin-autodetail.com`,
-add a SECOND property for `https://www.austin-autodetail.com` and verify
+If you went with **URL prefix** and verified `https://__DOMAIN_TBD__`,
+add a SECOND property for `https://www.__DOMAIN_TBD__` and verify
 that too. Otherwise Google may think the `www` form is unverified and
 treat it as a different site. Both forms point to the same content via
 the canonical tag, but Search Console treats them as separate properties

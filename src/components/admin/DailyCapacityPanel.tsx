@@ -10,7 +10,7 @@ import {
   SLOT_LABELS,
   SLOT_TIMES,
 } from '@/lib/slots';
-import { todayAustinDateString } from '@/lib/austinTime';
+import { todayPhoenixDateString } from '@/lib/phoenixTime';
 
 interface Props {
   session: Session | null;
@@ -19,10 +19,10 @@ interface Props {
 const DAYS_AHEAD = 14;
 
 function formatDayLabel(date: string): string {
-  // Noon UTC is always the same calendar date in Austin (6am or 7am local).
+  // Noon UTC is always the same calendar date in Phoenix (6am or 7am local).
   const d = new Date(date + 'T12:00:00Z');
   return d.toLocaleDateString(undefined, {
-    timeZone: 'America/Chicago',
+    timeZone: 'America/Phoenix',
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -35,7 +35,7 @@ export default function DailyCapacityPanel({ session }: Props) {
   const [updatingDay, setUpdatingDay] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const today = todayAustinDateString();
+  const today = todayPhoenixDateString();
   const endDate = (() => {
     const d = new Date(today + 'T00:00:00Z');
     d.setUTCDate(d.getUTCDate() + DAYS_AHEAD - 1);
@@ -176,7 +176,7 @@ export default function DailyCapacityPanel({ session }: Props) {
                       <span
                         key={t}
                         className={`rounded px-1.5 py-0.5 ${
-                          slot.takenCount > 0 ? 'bg-red-900/60 text-red-300' : 'bg-gray-800'
+                          slot.takenCount > 0 ? 'bg-gold-900/60 text-gold-300' : 'bg-gray-800'
                         }`}
                       >
                         {SLOT_LABELS[t]} {slot.takenCount}/{slot.perSlotCapacity}
@@ -188,7 +188,7 @@ export default function DailyCapacityPanel({ session }: Props) {
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className={`text-xs font-semibold uppercase tracking-wider ${
-                    day.isHelpAvailable ? 'text-red-400' : 'text-gray-300'
+                    day.isHelpAvailable ? 'text-gold-400' : 'text-gray-300'
                   }`}>
                     {day.isHelpAvailable ? 'Help on' : 'Solo'}
                   </p>
@@ -201,7 +201,7 @@ export default function DailyCapacityPanel({ session }: Props) {
                   disabled={isUpdating}
                   onClick={() => toggleDay(day.date, day.isHelpAvailable)}
                   className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors disabled:opacity-50 ${
-                    day.isHelpAvailable ? 'bg-red-600' : 'bg-gray-700'
+                    day.isHelpAvailable ? 'bg-gold-600' : 'bg-gray-700'
                   }`}
                   aria-pressed={day.isHelpAvailable}
                   aria-label={`Help available on ${day.date}`}

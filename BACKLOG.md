@@ -1,4 +1,4 @@
-# Austin Auto Detail Backlog
+# Signature Mobile Detailing Backlog
 
 Living document capturing parked work, deferred features, and known issues.
 Updated as items get picked up or new items surface.
@@ -64,10 +64,10 @@ Need Alex to decide the offer structure first ("$25 off first detail",
 "15% off first booking", "free add-on with first detail"). Then implement
 in `bookingPricing.ts` and surface on homepage as a value proposition.
 
-### Set up Gmail "Send Mail As" for info@austin-autodetail.com
-Currently info@ forwards to austinautodetailingmobile@gmail.com via ImprovMX,
+### Set up Gmail "Send Mail As" for info@__DOMAIN_TBD__
+Currently info@ forwards to __TIKTOK_TBD__ingmobile@gmail.com via ImprovMX,
 but Alex replies from his gmail address. Set up Gmail's "Send Mail As" so he
-can send replies from `info@austin-autodetail.com` and look more professional.
+can send replies from `info@__DOMAIN_TBD__` and look more professional.
 Requires SMTP credentials, ImprovMX free tier may not include this. Worth
 checking ImprovMX premium ($9/mo) if it matters.
 
@@ -110,7 +110,7 @@ Open Graph tags, Twitter Card tags, schema.org LocalBusiness structured data
 sitemap.xml, robots.txt. Do this before any "rank in search" effort.
 
 ### Google Business Profile + reviews
-Set up Google Business Profile for Austin Auto Detail. Add real photos,
+Set up Google Business Profile for Signature Mobile Detailing. Add real photos,
 hours (or "by appointment"), service area. Ask happy customers to leave
 reviews on the GBP listing. This drives local Google search ranking
 more than anything else. Multi-month effort.
@@ -160,8 +160,8 @@ deployment pipeline eventually.
 
 ## Competitor research notes (autodetailingtx.com)
 
-Reviewed Auto Detailing Austin LLC (autodetailingtx.com), a brick-and-mortar
-competitor in Austin since 2012. Different business model than AAD (fixed
+Reviewed Auto Detailing Phoenix LLC (autodetailingtx.com), a brick-and-mortar
+competitor in Phoenix since 2012. Different business model than AAD (fixed
 location vs mobile), but has several SEO foundations AAD lacks. Three
 takeaways worth pursuing in future sessions, in priority order:
 
@@ -169,7 +169,7 @@ takeaways worth pursuing in future sessions, in priority order:
 They have dedicated pages for each service: /interior-detailing,
 /exterior-detailing, /ceramic-coating, /paint-correction, /headlight-restoration.
 Each page can rank independently in Google for its own keywords ("ceramic
-coating Austin", "paint correction Austin", etc). AAD currently has all
+coating Phoenix", "paint correction Phoenix", etc). AAD currently has all
 services on one homepage, which forces them to compete with each other for
 the same page ranking. Multi-hour project per page if done right (unique
 content, FAQs, photos, structured data). Each completed page is a permanent
@@ -177,7 +177,7 @@ rankings asset.
 
 ### Start a blog for long-tail SEO
 Posts like "How long does ceramic coating last in Texas heat?", "Best time
-of year to detail in Austin", "DIY vs professional headlight restoration"
+of year to detail in Phoenix", "DIY vs professional headlight restoration"
 drive organic search traffic over time. Multi-week effort to launch one
 with real content. Slow burn but compounds.
 

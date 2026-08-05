@@ -1,4 +1,4 @@
-/* AAD Detailing service worker - offline support + web push notifications.
+/* Signature Mobile Detailing service worker - offline support + web push notifications.
  *
  * BUMP THE VERSION every time you ship code that needs all clients to refresh.
  * The activate handler purges any cache that doesn't match the new version
@@ -140,10 +140,10 @@ self.addEventListener("push", (event) => {
   try {
     data = event.data ? event.data.json() : {};
   } catch {
-    data = { title: "Austin Auto Detail", body: event.data ? event.data.text() : "" };
+    data = { title: "Signature Mobile Detailing", body: event.data ? event.data.text() : "" };
   }
 
-  const title = data.title || "Austin Auto Detail";
+  const title = data.title || "Signature Mobile Detailing";
   const options = {
     body: data.body || "",
     icon: "/apple-touch-icon.png",

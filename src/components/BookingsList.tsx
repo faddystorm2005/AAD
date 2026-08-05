@@ -87,9 +87,9 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
             <div
               className={`h-1.5 w-full rounded-full ${
                 status === 'done'
-                  ? 'bg-red-600'
+                  ? 'bg-gold-600'
                   : status === 'current'
-                    ? 'animate-pulse-soft bg-red-600'
+                    ? 'animate-pulse-soft bg-gold-600'
                     : 'bg-gray-700'
               }`}
               aria-hidden="true"
@@ -99,7 +99,7 @@ function StageProgress({ stage, addons }: { stage: Stage; addons: string[] | nul
                 status === 'done'
                   ? 'text-gray-300'
                   : status === 'current'
-                    ? 'font-semibold text-red-300'
+                    ? 'font-semibold text-gold-300'
                     : 'text-gray-300'
               }`}
             >
@@ -281,7 +281,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
           <button
             type="button"
             onClick={onBook}
-            className="btn-primary press rounded-full px-8 py-3 text-base font-semibold shadow-lg shadow-red-900/40"
+            className="btn-primary press rounded-full px-8 py-3 text-base font-semibold shadow-lg shadow-gold-900/40"
           >
             Book Your First Detail →
           </button>
@@ -391,7 +391,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
                       type="button"
                       onClick={() => handleRequestCancellation(b.id)}
                       disabled={cancellingId === b.id}
-                      className="press rounded-lg border-2 border-gray-600 bg-gray-900 px-4 py-2 text-sm font-semibold text-gray-200 hover:border-red-500/60 hover:text-red-200 disabled:opacity-50"
+                      className="press rounded-lg border-2 border-gray-600 bg-gray-900 px-4 py-2 text-sm font-semibold text-gray-200 hover:border-gold-500/60 hover:text-gold-200 disabled:opacity-50"
                     >
                       {cancellingId === b.id
                         ? 'Submitting…'
@@ -404,7 +404,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
                     type="button"
                     onClick={() => handleDelete(b.id)}
                     disabled={isDeleting}
-                    className="press rounded-lg border border-gray-700 px-3 py-2 text-sm font-medium text-gray-300 hover:text-red-300 disabled:opacity-50"
+                    className="press rounded-lg border border-gray-700 px-3 py-2 text-sm font-medium text-gray-300 hover:text-gold-300 disabled:opacity-50"
                   >
                     {isDeleting ? 'Removing…' : 'Remove from history'}
                   </button>

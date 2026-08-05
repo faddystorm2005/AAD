@@ -1,4 +1,4 @@
-# Austin Auto Detail — Project Context
+# Signature Mobile Detailing — Project Context
 
 **Drop this file into a new Claude / AI chat to bring it up to speed on the codebase.**
 
@@ -6,9 +6,9 @@
 
 ## What the app is
 
-A booking site for **Austin Auto Detail** — a one-person mobile detailing business in Austin, TX run by Alex. Customers pick a slot, the owner approves it, customer pays a $30 deposit to lock it in, the rest is paid on-site. Three details per day max ("quality over quantity").
+A booking site for **Signature Mobile Detailing** — a one-person mobile detailing business in Phoenix, AZ run by Alex. Customers pick a slot, the owner approves it, customer pays a $30 deposit to lock it in, the rest is paid on-site. Three details per day max ("quality over quantity").
 
-Live at: **austin-autodetail.com** (deployed on Vercel)
+Live at: **__DOMAIN_TBD__** (deployed on Vercel)
 
 ---
 
@@ -48,7 +48,7 @@ From `AGENTS.md` / `CLAUDE.md`:
 
 ## Timezones
 
-- **Code says Phoenix UTC-7**, business is in **Austin (Central, observes DST)**. There's an `austinOffsetFor(date)` helper in `src/lib/austinTime.ts` that returns the correct offset for a given date. Use it when constructing TIMESTAMPTZ for `scheduled_at`.
+- **Code says Phoenix UTC-7**, business is in **Phoenix (Central, observes DST)**. There's an `phoenixOffsetFor(date)` helper in `src/lib/phoenixTime.ts` that returns the correct offset for a given date. Use it when constructing TIMESTAMPTZ for `scheduled_at`.
 
 ---
 
@@ -155,7 +155,7 @@ PAYPAL_WEBHOOK_ID
 
 # Notifications
 RESEND_API_KEY
-NOTIFY_FROM_EMAIL                # notifications@austin-autodetail.com
+NOTIFY_FROM_EMAIL                # notifications@__DOMAIN_TBD__
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_FROM_NUMBER

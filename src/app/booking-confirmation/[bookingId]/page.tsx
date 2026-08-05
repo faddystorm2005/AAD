@@ -42,7 +42,7 @@ interface ConfirmationBooking {
 const STATUS_HEADER: Record<BookingStatus, { title: string; subtitle: string; tone: 'yellow' | 'green' | 'red' | 'blue' }> = {
   pending: {
     title: 'Request received',
-    subtitle: "Austin Auto Detail is reviewing your request. We'll text you shortly to lock in a time. No charge now.",
+    subtitle: "Signature Mobile Detailing is reviewing your request. We'll text you shortly to lock in a time. No charge now.",
     tone: 'yellow',
   },
   approved: {
@@ -62,7 +62,7 @@ const STATUS_HEADER: Record<BookingStatus, { title: string; subtitle: string; to
   },
   in_progress: {
     title: 'Service in progress',
-    subtitle: "Austin Auto Detail is working on your car right now.",
+    subtitle: "Signature Mobile Detailing is working on your car right now.",
     tone: 'green',
   },
   completed: {
@@ -86,10 +86,10 @@ const TONE_CLASSES: Record<'yellow' | 'green' | 'red' | 'blue', { border: string
     sub: 'text-green-200',
   },
   red: {
-    border: 'border-red-700',
-    bg: 'bg-red-900/20',
-    title: 'text-red-400',
-    sub: 'text-red-200',
+    border: 'border-gold-700',
+    bg: 'bg-gold-900/20',
+    title: 'text-gold-400',
+    sub: 'text-gold-200',
   },
   blue: {
     border: 'border-blue-700',
@@ -273,7 +273,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
       <main className="min-h-screen bg-black px-6 py-16 text-white">
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">
-            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gold-600 border-t-transparent"></div>
             <p className="mt-4 text-sm text-gray-300">Loading your booking...</p>
           </div>
         </div>
@@ -303,7 +303,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
                     setLoading(false);
                   });
                 }}
-                className="inline-block rounded-lg bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700"
+                className="inline-block rounded-lg bg-gold-600 px-6 py-3 font-semibold text-black hover:bg-gold-700"
               >
                 Try again
               </button>
@@ -413,7 +413,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
                   type="button"
                   onClick={handleEnablePush}
                   disabled={pushState === 'working'}
-                  className="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                  className="shrink-0 rounded-lg bg-gold-600 px-4 py-2 text-sm font-semibold text-black hover:bg-gold-700 disabled:opacity-50"
                 >
                   {pushState === 'working' ? 'Enabling...' : 'Allow notifications'}
                 </button>
@@ -485,7 +485,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
             <p className="text-sm uppercase tracking-wider text-gray-300">Photo Permission</p>
             <p className="mt-1 text-base text-white">
               {booking.photo_permission
-                ? 'Granted - Austin Auto Detail may use photos for marketing'
+                ? 'Granted - Signature Mobile Detailing may use photos for marketing'
                 : 'Not granted'}
             </p>
           </div>

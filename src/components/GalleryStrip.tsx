@@ -5,7 +5,7 @@ import { AAD_GALLERY } from '@/lib/siteImages';
 export default function GalleryStrip() {
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-red-500">
+      <h2 className="text-sm font-semibold uppercase tracking-[0.35em] text-gold-500">
         Detailing We Love
       </h2>
       <p className="max-w-2xl text-sm text-gray-300">

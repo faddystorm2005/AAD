@@ -169,7 +169,7 @@ export default function Dashboard() {
         className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[600px]"
         style={{
           background:
-            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(214, 32, 48, 0.18), transparent 70%)',
+            'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212, 162, 76, 0.18), transparent 70%)',
         }}
       />
       {/* Bottom subtle gradient so the page edge feels intentional. */}
@@ -178,7 +178,7 @@ export default function Dashboard() {
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-0 h-[300px]"
         style={{
           background:
-            'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(214, 32, 48, 0.08), transparent 70%)',
+            'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(212, 162, 76, 0.08), transparent 70%)',
         }}
       />
 
@@ -200,7 +200,7 @@ export default function Dashboard() {
         <HeroSpotlight />
         <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end gap-3 px-6 pb-6 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
           <div className="animate-fade-up">
-            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-red-400">
+            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-gold-400">
               {greeting}
             </p>
             <h1 className="text-gradient-hero mt-2 text-3xl font-bold capitalize tracking-[0.04em] sm:text-4xl">
@@ -219,7 +219,7 @@ export default function Dashboard() {
             {isAdmin && (
               <Link
                 href="/admin"
-                className="press rounded-lg bg-red-600 px-4 py-2.5 text-base font-semibold text-white hover:bg-red-700"
+                className="press rounded-lg bg-gold-600 px-4 py-2.5 text-base font-semibold text-black hover:bg-gold-700"
               >
                 Admin
               </Link>
@@ -286,7 +286,7 @@ export default function Dashboard() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
           <div className="relative flex flex-col items-start gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-red-500">
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-gold-500">
                 Quality Over Quantity
               </p>
               <h3 className="mt-2 text-2xl font-bold text-white">

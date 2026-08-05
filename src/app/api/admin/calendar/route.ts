@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
       'Content-Type': 'text/calendar; charset=utf-8',
       // Google polls every few hours; tell it to revalidate within 1h.
       'Cache-Control': 'public, max-age=300, s-maxage=300',
-      'Content-Disposition': 'inline; filename="austin-auto-detail.ics"',
+      'Content-Disposition': 'inline; filename="phoenix-auto-detail.ics"',
     },
   });
 }

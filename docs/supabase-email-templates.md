@@ -1,4 +1,4 @@
-# Supabase Email Templates - Austin Auto Detail
+# Supabase Email Templates - Signature Mobile Detailing
 
 These templates live in the Supabase Dashboard, not in this repo. This file is
 just a record of what to paste so you can re-apply if Supabase ever loses them.
@@ -13,7 +13,7 @@ pick the template name → paste the Subject + HTML body → Save.
 ### Subject
 
 ```
-Welcome to Austin Auto Detail - Confirm your email
+Welcome to Signature Mobile Detailing - Confirm your email
 ```
 
 ### HTML body
@@ -36,9 +36,9 @@ Welcome to Austin Auto Detail - Confirm your email
             <!-- Body -->
             <tr>
               <td style="padding:32px 28px 8px;">
-                <h1 style="margin:0;font-size:22px;font-weight:600;color:#fff;">Welcome to Austin Auto Detail</h1>
+                <h1 style="margin:0;font-size:22px;font-weight:600;color:#fff;">Welcome to Signature Mobile Detailing</h1>
                 <p style="margin:16px 0 0;color:#c8c8c8;line-height:1.6;font-size:15px;">
-                  Thanks for signing up. Click the button below to confirm your email and start booking mobile detailing in Austin.
+                  Thanks for signing up. Click the button below to confirm your email and start booking mobile detailing in Phoenix.
                 </p>
               </td>
             </tr>
@@ -63,7 +63,7 @@ Welcome to Austin Auto Detail - Confirm your email
             <tr>
               <td style="padding:24px 28px 32px;">
                 <p style="margin:0;color:#666;font-size:11px;line-height:1.6;">
-                  If you didn't sign up for Austin Auto Detail, you can safely ignore this email.
+                  If you didn't sign up for Signature Mobile Detailing, you can safely ignore this email.
                 </p>
               </td>
             </tr>
@@ -71,9 +71,9 @@ Welcome to Austin Auto Detail - Confirm your email
             <tr>
               <td align="center" style="padding:20px 24px;border-top:1px solid rgba(255,255,255,0.08);background:#0b0b0d;">
                 <p style="margin:0;color:#666;font-size:11px;letter-spacing:0.04em;">
-                  Austin Auto Detail · <a href="https://austin-autodetail.com" style="color:#888;text-decoration:none;">austin-autodetail.com</a>
+                  Signature Mobile Detailing · <a href="https://__DOMAIN_TBD__" style="color:#888;text-decoration:none;">__DOMAIN_TBD__</a>
                 </p>
-                <p style="margin:6px 0 0;color:#555;font-size:10px;">Quality Over Quantity · Mobile detailing in Austin, TX</p>
+                <p style="margin:6px 0 0;color:#555;font-size:10px;">Quality Over Quantity · Mobile detailing in Phoenix, AZ</p>
               </td>
             </tr>
           </table>
@@ -90,7 +90,7 @@ Welcome to Austin Auto Detail - Confirm your email
 
 If/when we enable passwordless sign-in, use the same template with these tweaks:
 
-- **Subject:** `Sign in to Austin Auto Detail`
+- **Subject:** `Sign in to Signature Mobile Detailing`
 - **Heading:** `Sign in to your account`
 - **CTA label:** `Sign In →`
 
@@ -98,7 +98,7 @@ If/when we enable passwordless sign-in, use the same template with these tweaks:
 
 ## Reset Password (optional, future)
 
-- **Subject:** `Reset your Austin Auto Detail password`
+- **Subject:** `Reset your Signature Mobile Detailing password`
 - **Heading:** `Reset your password`
 - **Body copy:** `Click the button below to set a new password. The link expires in 1 hour.`
 - **CTA label:** `Reset Password →`
@@ -109,7 +109,7 @@ If/when we enable passwordless sign-in, use the same template with these tweaks:
 
 Right now Supabase sends from `noreply@mail.app.supabase.io` which often hits
 spam. Switch to your own domain via Resend so emails arrive from
-`notifications@austin-autodetail.com`:
+`notifications@__DOMAIN_TBD__`:
 
 1. Supabase Dashboard → Project Settings → Authentication → SMTP Settings →
    **Enable Custom SMTP**
@@ -119,11 +119,11 @@ spam. Switch to your own domain via Resend so emails arrive from
    - **User:** `resend`
    - **Pass:** a Resend API key (create a new one separate from the existing
      `RESEND_API_KEY` if you want isolation)
-   - **Sender email:** `notifications@austin-autodetail.com`
-   - **Sender name:** `Austin Auto Detail`
+   - **Sender email:** `notifications@__DOMAIN_TBD__`
+   - **Sender name:** `Signature Mobile Detailing`
 3. Save.
 
-The domain `austin-autodetail.com` must already be verified in Resend (DKIM/SPF
+The domain `__DOMAIN_TBD__` must already be verified in Resend (DKIM/SPF
 records on the DNS side). If you set up Resend earlier with this domain, that's
 already done.
 
@@ -134,11 +134,11 @@ already done.
 Required Supabase Dashboard config for the email-confirmation flow to work:
 
 1. **Authentication → URL Configuration:**
-   - **Site URL:** `https://austin-autodetail.com`
+   - **Site URL:** `https://__DOMAIN_TBD__`
    - **Redirect URLs (allow-list):** include
-     - `https://austin-autodetail.com/auth/callback`
-     - `https://austin-autodetail.com/**`
-     - `https://austinautodetail.vercel.app/**` (keep as fallback during transition)
+     - `https://__DOMAIN_TBD__/auth/callback`
+     - `https://__DOMAIN_TBD__/**`
+     - `https://__TIKTOK_TBD__.vercel.app/**` (keep as fallback during transition)
 
 2. **Email Templates → Confirm signup:** paste the Subject + HTML above.
 

@@ -122,7 +122,7 @@ export async function createPaymentLink(
           returnUrl,
           cancelUrl,
           userAction: OrderApplicationContextUserAction.PayNow,
-          brandName: 'Austin Auto Detail',
+          brandName: 'Signature Mobile Detailing',
           shippingPreference:
             // No shipping for a service booking. Use the enum-equivalent string.
             'NO_SHIPPING' as never,

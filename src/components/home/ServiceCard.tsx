@@ -16,12 +16,12 @@ export default function ServiceCard({ icon, title, description, priceLabel }: Se
 
   return (
     <TiltCard className="glass-card rounded-2xl p-6">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 text-red-300">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/40 bg-gold-500/10 text-gold-300">
         {icon}
       </div>
       <h3 className="mt-4 text-lg font-bold text-white">{title}</h3>
       {priceLabel ? (
-        <p className="mt-1.5 text-sm font-semibold uppercase tracking-wider text-red-300">
+        <p className="mt-1.5 text-sm font-semibold uppercase tracking-wider text-gold-300">
           {priceLabel}
         </p>
       ) : null}
@@ -38,7 +38,7 @@ export default function ServiceCard({ icon, title, description, priceLabel }: Se
       )}
       <Link
         href="/auth"
-        className="mt-4 inline-flex text-sm font-semibold uppercase tracking-wider text-red-300 hover:text-red-200"
+        className="mt-4 inline-flex text-sm font-semibold uppercase tracking-wider text-gold-300 hover:text-gold-200"
       >
         Book this service →
       </Link>

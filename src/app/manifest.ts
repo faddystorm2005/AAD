@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Austin Auto Detail",
-    short_name: "AAD",
+    name: "Signature Mobile Detailing",
+    short_name: "Signature",
     description:
-      "Premium mobile detailing in Austin. Book a wash, track your appointment, and pay your deposit - all in one place.",
+      "Premium mobile detailing in Phoenix. Book a wash, track your appointment, and pay your deposit - all in one place.",
     start_url: "/",
     scope: "/",
     display: "standalone",

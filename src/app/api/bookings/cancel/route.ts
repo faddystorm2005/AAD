@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
         error: `Cannot cancel a booking in status "${booking.status}". ${
           isAdmin
             ? 'Use the danger-zone delete instead.'
-            : 'Contact Austin Auto Detail if you need to make a change.'
+            : 'Contact Signature Mobile Detailing if you need to make a change.'
         }`,
       },
       { status: 409 }

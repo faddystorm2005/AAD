@@ -25,9 +25,9 @@ export type FaqItem = { question: string; answer: string };
 // these render, exactly as the site shipped.
 export const DEFAULT_FAQS: FaqItem[] = [
   {
-    question: 'Where do you offer mobile detailing in Austin?',
+    question: 'Where do you offer mobile detailing in Phoenix?',
     answer:
-      'We service Austin and surrounding areas. Our detail van is fully self-contained - we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.',
+      'We service Phoenix and surrounding areas. Our detail van is fully self-contained - we bring our own water and power, so all you need is a spot for the vehicle. Driveway, office parking lot, or garage all work.',
   },
   {
     question: 'How long does a typical detail take?',
@@ -45,7 +45,7 @@ export const DEFAULT_FAQS: FaqItem[] = [
       'After we approve your booking, you pay a $30 deposit online to lock in your slot. The remaining balance is due on-site after the service is complete.',
   },
   {
-    question: 'What’s included in Austin car cleaning?',
+    question: 'What’s included in Phoenix car cleaning?',
     answer:
       'Our base detail covers a full exterior wash, hand-dry, vacuum, interior wipe-down, window cleaning, and tire dressing. Add-ons cover wax, paint correction, ceramic coating, engine bay cleaning, leather conditioning, stain removal, and windshield treatment.',
   },

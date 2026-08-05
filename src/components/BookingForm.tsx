@@ -24,7 +24,7 @@ interface BookingFormProps {
 }
 
 // Simplified booking: no time slot, no deposit, no photos. The customer picks
-// their car + service + extras and where to come; Austin Auto Detail texts them
+// their car + service + extras and where to come; Signature Mobile Detailing texts them
 // to arrange a time, and payment is on-site when the detail is done.
 type SimpleFormData = Pick<
   BookingData,
@@ -250,7 +250,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   };
 
   const inputCls =
-    'w-full rounded-xl border border-gray-700 bg-gray-900/60 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none';
+    'w-full rounded-xl border border-gray-700 bg-gray-900/60 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none';
 
   const stepHeadings: Record<number, { title: string; caption: string }> = {
     1: {
@@ -273,7 +273,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
       <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-gold-500">
               Step {step} of 2
             </p>
             <h2 className="mt-1 text-2xl sm:text-3xl font-bold text-white">
@@ -295,7 +295,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           {[1, 2].map((s) => (
             <div
               key={s}
-              className={`h-2 flex-1 rounded-full ${s <= step ? 'bg-red-600' : 'bg-gray-700'}`}
+              className={`h-2 flex-1 rounded-full ${s <= step ? 'bg-gold-600' : 'bg-gray-700'}`}
             />
           ))}
         </div>
@@ -306,7 +306,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
             <div className="space-y-8">
               <div>
                 <label className="block text-base font-semibold text-white mb-3">
-                  Which car? <span className="text-red-500">*</span>
+                  Which car? <span className="text-gold-500">*</span>
                 </label>
                 <div className="space-y-3">
                   {vehiclesLoading ? (
@@ -324,7 +324,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                           key={vehicle.id}
                           className={`flex items-center gap-4 rounded-xl border-2 p-4 transition-colors ${
                             checked
-                              ? 'border-red-500 bg-red-950/40'
+                              ? 'border-gold-500 bg-gold-950/40'
                               : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
                           } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
@@ -335,7 +335,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                             checked={checked}
                             onChange={() => handleVehicleChange(vehicle.id)}
                             disabled={isProcessing}
-                            className="w-5 h-5 accent-red-600"
+                            className="w-5 h-5 accent-gold-600"
                           />
                           <div className="flex-1">
                             <p className="text-base font-semibold text-white">
@@ -366,7 +366,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                         key={type}
                         className={`flex cursor-pointer items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
                           serviceType === type
-                            ? 'border-red-500 bg-red-500/10 text-white'
+                            ? 'border-gold-500 bg-gold-500/10 text-white'
                             : 'border-white/10 bg-white/5 text-gray-200 hover:border-white/20'
                         }`}
                       >
@@ -386,15 +386,15 @@ export default function BookingForm({ onClose }: BookingFormProps) {
               )}
 
               {selectedVehicle && (
-                <div className="rounded-xl bg-red-950/40 border border-red-700/60 p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-red-300">Base Detail Price</p>
+                <div className="rounded-xl bg-gold-950/40 border border-gold-700/60 p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gold-300">Base Detail Price</p>
                   <p className="mt-2 text-base font-semibold text-white">
                     {SERVICE_TYPE_NAMES[serviceType]}
                   </p>
-                  <p className="mt-1 text-3xl font-bold text-red-400">
+                  <p className="mt-1 text-3xl font-bold text-gold-400">
                     ${(livePrices?.services ?? SERVICE_PRICES)[serviceType][formData.serviceSize]}
                   </p>
-                  <p className="mt-2 text-sm text-red-200/80">
+                  <p className="mt-2 text-sm text-gold-200/80">
                     Sized for your {selectedVehicle.year} {selectedVehicle.make}{' '}
                     {selectedVehicle.model}.
                   </p>
@@ -419,7 +419,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                         key={addon.id}
                         className={`flex items-start gap-3 rounded-xl border-2 p-3 transition-colors ${
                           checked
-                            ? 'border-red-500 bg-red-950/30'
+                            ? 'border-gold-500 bg-gold-950/30'
                             : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
                         } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                       >
@@ -428,12 +428,12 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                           checked={checked}
                           onChange={() => handleAddOnToggle(addon.id)}
                           disabled={isProcessing}
-                          className="mt-1 w-5 h-5 accent-red-600"
+                          className="mt-1 w-5 h-5 accent-gold-600"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between gap-3">
                             <span className="text-base font-semibold text-white">{addon.name}</span>
-                            <span className="text-base font-semibold text-red-300">
+                            <span className="text-base font-semibold text-gold-300">
                               +${getAddOnPrice(addon, formData.serviceSize, livePrices ?? undefined)}
                             </span>
                           </div>
@@ -465,7 +465,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
               <div className="space-y-4">
                 <div>
                   <label className="block text-base font-semibold text-white mb-2">
-                    Street address <span className="text-red-500">*</span>
+                    Street address <span className="text-gold-500">*</span>
                   </label>
                   <input
                     name="address"
@@ -491,13 +491,13 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-white mb-2">
-                      City <span className="text-red-500">*</span>
+                      City <span className="text-gold-500">*</span>
                     </label>
                     <input
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                      placeholder="Austin"
+                      placeholder="Phoenix"
                       className={inputCls}
                     />
                   </div>
@@ -514,7 +514,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-white mb-2">
-                      ZIP <span className="text-red-500">*</span>
+                      ZIP <span className="text-gold-500">*</span>
                     </label>
                     <input
                       name="zip"
@@ -592,7 +592,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-red-700/50 bg-red-950/30 p-4 text-sm text-red-100 leading-relaxed">
+              <div className="rounded-xl border border-gold-700/50 bg-gold-950/30 p-4 text-sm text-gold-100 leading-relaxed">
                 No deposit and no payment now. Submit your request and we&apos;ll text you to lock in
                 a time that works. You pay the total above on-site once the detail is done.
               </div>
@@ -600,7 +600,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           )}
 
           {error && (
-            <p className="mt-6 rounded-xl border border-red-600/50 bg-red-950/40 px-4 py-3 text-base text-red-200">
+            <p className="mt-6 rounded-xl border border-gold-600/50 bg-gold-950/40 px-4 py-3 text-base text-gold-200">
               {error}
             </p>
           )}
@@ -620,7 +620,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex-1 rounded-xl bg-red-600 py-4 text-base font-bold text-white hover:bg-red-500"
+                className="flex-1 rounded-xl bg-gold-600 py-4 text-base font-bold text-black hover:bg-gold-500"
               >
                 Next
               </button>
@@ -628,7 +628,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
               <button
                 type="submit"
                 disabled={isProcessing || vehicles.length === 0}
-                className="flex-1 rounded-xl bg-red-600 py-4 text-base font-bold text-white hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-gold-600 py-4 text-base font-bold text-black hover:bg-gold-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessing ? 'Sending...' : 'Book my detail'}
               </button>

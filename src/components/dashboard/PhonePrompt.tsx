@@ -168,7 +168,7 @@ export default function PhonePrompt({ forceExpanded, onComplete }: PhonePromptPr
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              placeholder="(512) 555-0123"
+              placeholder="(480) 555-0123"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required

@@ -34,7 +34,7 @@ export default function MobileBottomBar() {
     >
       <a
         href="tel:+14807933782"
-        aria-label="Call Austin Auto Detail"
+        aria-label="Call Signature Mobile Detailing"
         className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 py-3 text-sm font-semibold text-white"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

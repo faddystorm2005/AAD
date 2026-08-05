@@ -15,8 +15,8 @@ function toIsoDate(input: string): string | null {
   if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
   const d = new Date(input);
   if (Number.isNaN(d.getTime())) return null;
-  // Use the date in Central time (Austin) to avoid off-by-one for late-night UTC values.
-  const central = new Date(d.toLocaleString("en-US", { timeZone: "America/Chicago" }));
+  // Use the date in Phoenix time to avoid off-by-one for late-night UTC values.
+  const central = new Date(d.toLocaleString("en-US", { timeZone: "America/Phoenix" }));
   const yyyy = central.getFullYear();
   const mm = String(central.getMonth() + 1).padStart(2, "0");
   const dd = String(central.getDate()).padStart(2, "0");
@@ -106,7 +106,7 @@ export default function BookingWeather({ date, compact = false }: Props) {
           ? "border-blue-700/60 bg-blue-900/30 text-blue-100"
           : "border-gray-600 bg-gray-800/60 text-gray-200"
       }`}
-      title={`${f.label} in Austin`}
+      title={`${f.label} in Phoenix`}
     >
       <span aria-hidden className="text-sm leading-none">
         {f.emoji}

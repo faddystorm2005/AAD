@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
-import { austinOffsetFor, austinNowParts } from '@/lib/austinTime';
+import { phoenixOffsetFor, phoenixNowParts } from '@/lib/phoenixTime';
 import { pushBookingToGoogle, findAdminUserId } from '@/lib/googleCalendar';
 
 export const runtime = 'nodejs';
@@ -157,7 +157,7 @@ export async function POST(req: NextRequest) {
       slot_time: b.slot_time as SlotTime,
       is_ceramic: b.is_ceramic,
     })),
-    austinNowParts()
+    phoenixNowParts()
   );
 
   const slot = availability.slots.find((s) => s.time === slotTime);
@@ -172,7 +172,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 409 });
   }
 
-  const scheduledAt = `${slotDate}T${slotTime}${austinOffsetFor(slotDate)}`;
+  const scheduledAt = `${slotDate}T${slotTime}${phoenixOffsetFor(slotDate)}`;
 
   const { error: updateErr } = await supabaseAdmin
     .from('bookings')

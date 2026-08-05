@@ -665,7 +665,7 @@ export default function AdminPage() {
     return (
       <main className="min-h-screen bg-black px-6 py-16 text-white">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-600 border-t-transparent" />
         </div>
       </main>
     );
@@ -679,7 +679,7 @@ export default function AdminPage() {
           <p className="mb-6 text-sm text-gray-300">
             You don&apos;t have admin access to this workspace.
           </p>
-          <Link href="/dashboard" className="inline-block rounded-lg bg-red-600 px-6 py-3 text-base font-semibold hover:bg-red-700">
+          <Link href="/dashboard" className="inline-block rounded-lg bg-gold-600 px-6 py-3 text-base font-semibold hover:bg-gold-700">
             Back to Dashboard
           </Link>
         </div>
@@ -798,22 +798,22 @@ export default function AdminPage() {
             {pushState === 'unsupported' || pushState === 'denied' ? '' : ' iOS users: install the app to Home Screen first.'}
           </p>
           {pushState === 'checking' && (
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-gold-600 border-t-transparent" />
           )}
           {pushState === 'needs-install' && (
             <div className="space-y-3">
               <p className="text-sm font-semibold text-yellow-400">Install the app first to enable alerts on iPhone.</p>
               <ol className="space-y-2 text-sm text-gray-300">
                 <li className="flex items-start gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">1</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-600 text-xs font-bold text-black">1</span>
                   Tap the <strong>Share</strong> button at the bottom of Safari
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">2</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-600 text-xs font-bold text-black">2</span>
                   Tap <strong>Add to Home Screen</strong>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">3</span>
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-600 text-xs font-bold text-black">3</span>
                   Open the app from your Home Screen, then come back here
                 </li>
               </ol>
@@ -830,7 +830,7 @@ export default function AdminPage() {
               type="button"
               onClick={handleEnablePush}
               disabled={pushWorking}
-              className="rounded-lg bg-red-600 px-4 py-3 text-base font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              className="rounded-lg bg-gold-600 px-4 py-3 text-base font-semibold text-black hover:bg-gold-700 disabled:opacity-50"
             >
               {pushWorking ? 'Enabling...' : 'Enable booking alerts on this device'}
             </button>
@@ -864,7 +864,7 @@ export default function AdminPage() {
             placeholder="Search by name, phone, email, or address"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-3 pl-10 pr-4 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-3 pl-10 pr-4 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none"
           />
         </div>
 
@@ -872,7 +872,7 @@ export default function AdminPage() {
           <button
             onClick={() => setFilter('pending')}
             className={`rounded-full px-4 py-3 text-sm ${
-              filter === 'pending' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'
+              filter === 'pending' ? 'bg-gold-600 text-black' : 'bg-gray-800 text-gray-300'
             }`}
           >
             Pending {pendingCount > 0 && `(${pendingCount})`}
@@ -892,7 +892,7 @@ export default function AdminPage() {
           <button
             onClick={() => setFilter('active')}
             className={`rounded-full px-4 py-3 text-sm ${
-              filter === 'active' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'
+              filter === 'active' ? 'bg-gold-600 text-black' : 'bg-gray-800 text-gray-300'
             }`}
           >
             Active
@@ -900,7 +900,7 @@ export default function AdminPage() {
           <button
             onClick={() => setFilter('all')}
             className={`rounded-full px-4 py-3 text-sm ${
-              filter === 'all' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'
+              filter === 'all' ? 'bg-gold-600 text-black' : 'bg-gray-800 text-gray-300'
             }`}
           >
             All
@@ -981,7 +981,7 @@ export default function AdminPage() {
                           ${Number(b.deposit_amount).toFixed(2)} of ${Number(b.total).toFixed(2)}
                         </span>
                         {b.status !== 'pending' && b.status !== 'declined' && (
-                          <span className="text-sm text-red-400">
+                          <span className="text-sm text-gold-400">
                             Stage: {STAGE_LABELS[normalizeStage(b.booking_stage)]}
                           </span>
                         )}
@@ -1344,7 +1344,7 @@ export default function AdminPage() {
                               }
                               placeholder="Optional decline reason (only sent if you decline)"
                               rows={2}
-                              className="mt-3 w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none sm:max-w-md"
+                              className="mt-3 w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none sm:max-w-md"
                               onClick={(e) => e.stopPropagation()}
                             />
                             <div className="mt-3 flex flex-wrap gap-2">
@@ -1366,7 +1366,7 @@ export default function AdminPage() {
                                   e.stopPropagation();
                                   handleDecline(b.id);
                                 }}
-                                className="flex-1 rounded-lg border border-red-600 px-4 py-3 text-base font-semibold text-red-400 hover:bg-red-900/30 disabled:opacity-50 sm:flex-none"
+                                className="flex-1 rounded-lg border border-gold-600 px-4 py-3 text-base font-semibold text-gold-400 hover:bg-gold-900/30 disabled:opacity-50 sm:flex-none"
                               >
                                 {updatingId === b.id ? 'Declining…' : 'Decline'}
                               </button>
@@ -1378,12 +1378,12 @@ export default function AdminPage() {
                           <div className="md:col-span-2 rounded-lg border border-red-700 bg-red-900/20 p-4">
                             <p className="text-sm font-semibold text-red-300">Declined</p>
                             {b.decline_reason && (
-                              <p className="mt-1 text-sm text-red-200">
+                              <p className="mt-1 text-sm text-gold-200">
                                 Reason: {b.decline_reason}
                               </p>
                             )}
                             {b.declined_at && (
-                              <p className="mt-1 text-xs text-red-300/80">
+                              <p className="mt-1 text-xs text-gold-300/80">
                                 {new Date(b.declined_at).toLocaleString()}
                               </p>
                             )}
@@ -1429,7 +1429,7 @@ export default function AdminPage() {
                                     }}
                                     className={`rounded-full px-3 py-1 text-xs transition-colors ${
                                       isCurrent
-                                        ? 'bg-red-600 text-white'
+                                        ? 'bg-gold-600 text-black'
                                         : 'border border-gray-600 text-gray-300 hover:bg-gray-800'
                                     } disabled:opacity-50`}
                                   >
@@ -1442,7 +1442,7 @@ export default function AdminPage() {
                         )}
 
                         <div className="md:col-span-2 mt-2 border-t border-gray-800 pt-4">
-                          <h3 className="text-xs font-semibold uppercase tracking-wider text-red-500">
+                          <h3 className="text-xs font-semibold uppercase tracking-wider text-gold-500">
                             Danger zone
                           </h3>
                           <p className="mt-2 text-xs text-gray-300">
@@ -1455,7 +1455,7 @@ export default function AdminPage() {
                               e.stopPropagation();
                               handleDelete(b.id);
                             }}
-                            className="mt-3 rounded-lg border border-red-700 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                            className="mt-3 rounded-lg border border-gold-700 px-4 py-3 text-sm font-medium text-gold-400 hover:bg-gold-900/30 disabled:opacity-50"
                           >
                             {updatingId === b.id ? 'Deleting…' : 'Delete booking'}
                           </button>

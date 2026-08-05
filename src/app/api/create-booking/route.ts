@@ -19,7 +19,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 // Simplified request model: the customer books their car + service + address,
-// with NO time slot and NO deposit. The appointment time is arranged by Austin
+// with NO time slot and NO deposit. The appointment time is arranged by Phoenix
 // Auto Detail afterward (text/call), and the full amount is paid on-site.
 interface CreateBookingPayload extends BookingData {
   origin: string;

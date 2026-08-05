@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
   const CUSTOMER_STAGE_PUSH: Partial<Record<string, { title: string; body: string }>> = {
     exterior: {
       title: 'Exterior detail started',
-      body: 'Austin Auto Detail is working on your car\'s exterior right now.',
+      body: 'Signature Mobile Detailing is working on your car\'s exterior right now.',
     },
     paint_correction: {
       title: 'Paint correction underway',

@@ -47,7 +47,7 @@ export default function VehicleList({ onSelectVehicle }: VehicleListProps) {
                   {vehicle.year} {vehicle.make} {vehicle.model}
                 </h3>
                 {vehicle.nickname && (
-                  <span className="text-xs font-semibold uppercase tracking-wider bg-red-600 text-white px-2.5 py-1 rounded-full">
+                  <span className="text-xs font-semibold uppercase tracking-wider bg-gold-600 text-black px-2.5 py-1 rounded-full">
                     {vehicle.nickname}
                   </span>
                 )}
@@ -76,7 +76,7 @@ export default function VehicleList({ onSelectVehicle }: VehicleListProps) {
                   });
                   if (ok) deleteVehicle(vehicle.id);
                 }}
-                className="press rounded-lg border-2 border-red-600/60 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-900/30"
+                className="press rounded-lg border-2 border-gold-600/60 px-4 py-2 text-sm font-semibold text-gold-300 hover:bg-gold-900/30"
               >
                 Remove
               </button>

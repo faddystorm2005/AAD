@@ -1,6 +1,6 @@
-// All slot times are stored as "wall clock" Austin-local times (America/Chicago).
-// Austin observes DST, so see src/lib/austinTime.ts for the helpers that
-// resolve the correct UTC offset for a given calendar date.
+// All slot times are stored as "wall clock" Phoenix-local times (America/Phoenix).
+// Arizona does not observe DST, so Phoenix is MST (UTC-7) year round. See
+// src/lib/phoenixTime.ts for the helper that resolves the UTC offset.
 
 export type SlotTime = '09:00:00' | '13:00:00' | '17:00:00';
 
@@ -42,7 +42,7 @@ export interface SlotAvailability {
   perSlotCapacity: number;
   /** Is at least one ceramic coating booked at this slot? */
   ceramicTaken: boolean;
-  /** Slot start time has already passed in Austin local time (only true when date == today). */
+  /** Slot start time has already passed in Phoenix local time (only true when date == today). */
   pastSlot: boolean;
   /** Available for a NON-ceramic booking. */
   availableForRegular: boolean;
@@ -69,7 +69,7 @@ interface BookingRow {
  * whether help is available. Used by both the customer booking form (display)
  * and the create-booking server route (authoritative validation).
  *
- * `now` is the current Austin wall-clock moment ({ date, time }). When the
+ * `now` is the current Phoenix wall-clock moment ({ date, time }). When the
  * requested `date` matches `now.date`, any slot whose start time is at or
  * before `now.time` is marked pastSlot=true and rendered unbookable. Pass
  * undefined to skip the past-slot check (useful for unit tests).
@@ -96,7 +96,7 @@ export function computeAvailability(
     const ceramicHere =
       time === CERAMIC_SLOT && bookings.some((b) => b.slot_time === time && b.is_ceramic);
     // Past-slot check: only relevant when the requested date is today in
-    // Austin. String comparison works because both are zero-padded HH:MM:SS.
+    // Phoenix. String comparison works because both are zero-padded HH:MM:SS.
     const pastSlot = !!now && now.date === date && time <= now.time;
     // Regular booking rule: slot has capacity AND no ceramic blocking it AND
     // day not full AND slot hasn't already started.

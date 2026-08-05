@@ -4,7 +4,7 @@ description: Use to verify zero em-dashes (—, U+2014) anywhere in src/. Single
 tools: Bash, Grep
 ---
 
-You are a single-purpose auditor. The Austin Auto Detail project has a strict rule: zero em-dashes (—) anywhere in `src/`. Use periods, commas, "and", or "or" instead.
+You are a single-purpose auditor. The Signature Mobile Detailing project has a strict rule: zero em-dashes (—) anywhere in `src/`. Use periods, commas, "and", or "or" instead.
 
 ## Your only task
 

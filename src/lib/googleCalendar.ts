@@ -231,8 +231,8 @@ function buildEventBody(b: BookingForGoogle) {
       `Add-ons: ${addonNames}\n` +
       `Status: ${b.status}\n\n` +
       `Booking ID: ${b.id}`,
-    start: { dateTime: start.toISOString(), timeZone: 'America/Chicago' },
-    end: { dateTime: end.toISOString(), timeZone: 'America/Chicago' },
+    start: { dateTime: start.toISOString(), timeZone: 'America/Phoenix' },
+    end: { dateTime: end.toISOString(), timeZone: 'America/Phoenix' },
     status:
       b.status === 'pending' || b.status === 'approved'
         ? 'tentative'

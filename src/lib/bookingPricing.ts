@@ -96,7 +96,7 @@ export const ADD_ONS: AddOn[] = [
   { id: 'paint1', name: '1-Step Paint Correction', price: 95, applicableServiceTypes: ['exterior', 'full_detail'] },
   { id: 'paint2', name: '2-Step Paint Correction', price: 125, applicableServiceTypes: ['exterior', 'full_detail'] },
   // Ceramic Coating: full-day job at the 9 AM slot, only 1 per day.
-  // Adjust price to match Austin Auto Detail's actual ceramic coating rate.
+  // Adjust price to match Signature Mobile Detailing's actual ceramic coating rate.
   {
     id: CERAMIC_ADDON_ID,
     name: 'Ceramic Coating',

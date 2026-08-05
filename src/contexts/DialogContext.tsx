@@ -179,7 +179,7 @@ function DialogModal({
             onClick={onConfirm}
             className={`rounded-lg px-5 py-3 text-base font-semibold focus:outline-none focus:ring-2 ${
               danger
-                ? 'bg-red-600 text-white hover:bg-red-500 focus:ring-red-300'
+                ? 'bg-gold-600 text-black hover:bg-gold-500 focus:ring-gold-300'
                 : 'bg-white text-black hover:bg-gray-100 focus:ring-white/40'
             }`}
           >

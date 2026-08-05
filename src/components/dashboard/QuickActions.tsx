@@ -66,7 +66,7 @@ export default function QuickActions({ onBook, onAddVehicle }: Props) {
 function ActionTile({ action, delayMs }: { action: Action; delayMs: number }) {
   const isRed = action.accent === 'red';
   const baseClasses = `glass-card lift-hover animate-fade-up group relative overflow-hidden rounded-2xl p-5 text-left transition-all ${
-    isRed ? 'ring-1 ring-red-500/30' : ''
+    isRed ? 'ring-1 ring-gold-500/30' : ''
   }`;
   const inner = (
     <>
@@ -74,7 +74,7 @@ function ActionTile({ action, delayMs }: { action: Action; delayMs: number }) {
       <div
         aria-hidden
         className={`pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl transition-opacity duration-300 ${
-          isRed ? 'bg-red-500/30' : 'bg-white/10'
+          isRed ? 'bg-gold-500/30' : 'bg-white/10'
         } opacity-50 group-hover:opacity-90`}
       />
       <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/40 text-2xl shadow-inner transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
@@ -84,7 +84,7 @@ function ActionTile({ action, delayMs }: { action: Action; delayMs: number }) {
         {action.label}
       </div>
       <div className="relative mt-1 text-sm text-gray-300">{action.description}</div>
-      <div className="relative mt-4 inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-red-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+      <div className="relative mt-4 inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-gold-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         Open <span className="transition-transform group-hover:translate-x-0.5">→</span>
       </div>
     </>

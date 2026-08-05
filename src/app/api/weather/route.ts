@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAustinForecast } from "@/lib/weather";
+import { getPhoenixForecast } from "@/lib/weather";
 
 export const runtime = "nodejs";
 
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "date required (YYYY-MM-DD)" }, { status: 400 });
   }
 
-  const result = await getAustinForecast(date);
+  const result = await getPhoenixForecast(date);
   return NextResponse.json(result, {
     headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
   });

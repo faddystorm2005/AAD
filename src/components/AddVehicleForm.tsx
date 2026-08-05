@@ -14,7 +14,7 @@ interface AddVehicleFormProps {
 }
 
 const FIELD_CLASSES =
-  'w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none';
+  'w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-gold-500 focus:outline-none';
 const FIELD_CLASSES_PLACEHOLDER = `${FIELD_CLASSES} placeholder-gray-500`;
 const FIELD_CLASSES_DISABLED = `${FIELD_CLASSES} disabled:cursor-not-allowed disabled:opacity-50`;
 
@@ -86,7 +86,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
       <div className="w-full max-w-md rounded-3xl border border-white/10 bg-black p-6 sm:p-8 animate-scale-in">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-gold-500">
               Add a car
             </p>
             <h2 className="mt-1 text-2xl sm:text-3xl font-bold text-white">
@@ -109,7 +109,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label htmlFor="vehicle-year" className="block text-base font-semibold text-white mb-2">
-              Year <span className="text-red-500">*</span>
+              Year <span className="text-gold-500">*</span>
             </label>
             <select
               id="vehicle-year"
@@ -129,7 +129,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
 
           <div>
             <label htmlFor="vehicle-make" className="block text-base font-semibold text-white mb-2">
-              Make <span className="text-red-500">*</span>
+              Make <span className="text-gold-500">*</span>
             </label>
             <select
               id="vehicle-make"
@@ -149,7 +149,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
 
           <div>
             <label htmlFor="vehicle-model" className="block text-base font-semibold text-white mb-2">
-              Model <span className="text-red-500">*</span>
+              Model <span className="text-gold-500">*</span>
             </label>
             <select
               id="vehicle-model"
@@ -172,7 +172,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
 
           <div>
             <label htmlFor="vehicle-color" className="block text-base font-semibold text-white mb-2">
-              Color <span className="text-red-500">*</span>
+              Color <span className="text-gold-500">*</span>
             </label>
             <input
               id="vehicle-color"

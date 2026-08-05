@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { todayAustinDateString } from '@/lib/austinTime';
+import { todayPhoenixDateString } from '@/lib/phoenixTime';
 import { SLOT_TIMES, SLOT_LABELS, SlotTime, CERAMIC_SLOT, DayAvailability } from '@/lib/slots';
 import BookingWeather from '@/components/BookingWeather';
 
@@ -29,7 +29,7 @@ export default function RescheduleModal({
   onRescheduled,
 }: Props) {
   const { session } = useAuth();
-  const [slotDate, setSlotDate] = useState(currentSlotDate || todayAustinDateString());
+  const [slotDate, setSlotDate] = useState(currentSlotDate || todayPhoenixDateString());
   const [slotTime, setSlotTime] = useState<string>(currentSlotTime || '');
   const [availability, setAvailability] = useState<DayAvailability | null>(null);
   const [loadingAvail, setLoadingAvail] = useState(false);
@@ -104,7 +104,7 @@ export default function RescheduleModal({
       <div className="glass-card animate-scale-in w-full max-w-md rounded-3xl p-6 sm:p-7">
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-gold-500">
               Move it
             </p>
             <h2 id="reschedule-title" className="mt-1 text-2xl font-bold text-white">
@@ -129,7 +129,7 @@ export default function RescheduleModal({
         <input
           id="reschedule-date"
           type="date"
-          min={todayAustinDateString()}
+          min={todayPhoenixDateString()}
           value={slotDate}
           onChange={(e) => {
             setSlotDate(e.target.value);
@@ -137,7 +137,7 @@ export default function RescheduleModal({
             setError(null);
           }}
           disabled={submitting}
-          className="mt-2 w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-red-500 focus:outline-none disabled:opacity-50"
+          className="mt-2 w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-gold-500 focus:outline-none disabled:opacity-50"
         />
         {slotDate && (
           <div className="mt-3">
@@ -177,7 +177,7 @@ export default function RescheduleModal({
                   }}
                   className={`rounded-xl border-2 px-3 py-4 text-base transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                     isSelected
-                      ? 'border-red-500 bg-red-600 text-white shadow-lg shadow-red-900/50'
+                      ? 'border-gold-500 bg-gold-600 text-black shadow-lg shadow-gold-900/50'
                       : usable
                       ? 'border-gray-700 bg-gray-900 text-white hover:border-gray-500'
                       : 'border-gray-800 bg-gray-900/50 text-gray-300'

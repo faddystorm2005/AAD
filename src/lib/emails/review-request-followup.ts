@@ -26,10 +26,10 @@ export function renderReviewRequestFollowupEmail(input: ReviewRequestFollowupInp
               <p style="margin:0 0 16px;">Alex again. Hope ${vehiclePhrase} still looks sharp.</p>
               <p style="margin:0 0 24px;">No pressure, but if you have 30 seconds, a NextDoor recommendation is genuinely the single biggest thing that helps neighbors find us. We're a small operation, so every recommendation moves the needle.</p>
               <p style="margin:0 0 32px;text-align:center;">
-                <a href="${input.nextdoorUrl}" style="display:inline-block;background:#d62030;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:600;font-size:16px;">Recommend us on NextDoor</a>
+                <a href="${input.nextdoorUrl}" style="display:inline-block;background:#d4a24c;color:#0a0a0a;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:600;font-size:16px;">Recommend us on NextDoor</a>
               </p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;">Already left one? Thank you, ignore this. Or hit reply if you'd rather share your thoughts directly.</p>
-              <p style="margin:24px 0 0;">Thanks,<br>Alex<br>Austin Auto Detail<br>(480) 793-3782</p>
+              <p style="margin:24px 0 0;">Thanks,<br>Alex<br>Signature Mobile Detailing<br>(480) 793-3782</p>
             </td>
           </tr>
         </table>
@@ -52,7 +52,7 @@ Already left one? Thank you, ignore this. Or hit reply if you'd rather share you
 
 Thanks,
 Alex
-Austin Auto Detail
+Signature Mobile Detailing
 (480) 793-3782`;
 
   return { subject, html, text };

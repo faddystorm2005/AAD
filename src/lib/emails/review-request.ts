@@ -36,10 +36,10 @@ export function renderReviewRequestEmail(input: ReviewRequestInput): {
               <p style="margin:0 0 16px;">Alex here. Thanks for trusting us with ${vehiclePhrase} on ${input.serviceDateFormatted}.</p>
               <p style="margin:0 0 24px;">If we earned it, would you drop us a quick recommendation on NextDoor? It's the biggest thing that helps neighbors find us, and it takes about 30 seconds.</p>
               <p style="margin:0 0 32px;text-align:center;">
-                <a href="${input.nextdoorUrl}" style="display:inline-block;background:#d62030;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:600;font-size:16px;">Recommend us on NextDoor</a>
+                <a href="${input.nextdoorUrl}" style="display:inline-block;background:#d4a24c;color:#0a0a0a;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:600;font-size:16px;">Recommend us on NextDoor</a>
               </p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;">Not on NextDoor? Just reply to this email with your thoughts. We'd love to feature you on the site.</p>
-              <p style="margin:24px 0 0;">Thanks,<br>Alex<br>Austin Auto Detail<br>(480) 793-3782</p>
+              <p style="margin:24px 0 0;">Thanks,<br>Alex<br>Signature Mobile Detailing<br>(480) 793-3782</p>
               ${photoPS}
             </td>
           </tr>
@@ -63,7 +63,7 @@ Not on NextDoor? Just reply to this email with your thoughts. We'd love to featu
 
 Thanks,
 Alex
-Austin Auto Detail
+Signature Mobile Detailing
 (480) 793-3782${photoPSText}`;
 
   return { subject, html, text };

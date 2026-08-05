@@ -288,7 +288,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
               {users.length || '–'} total
             </span>
             {adminCount > 0 && (
-              <span className="rounded-full border border-red-800 bg-red-900/40 px-2 py-0.5 text-[10px] font-medium text-red-300">
+              <span className="rounded-full border border-gold-800 bg-gold-900/40 px-2 py-0.5 text-[10px] font-medium text-gold-300">
                 {adminCount} {adminCount === 1 ? 'admin' : 'admins'}
               </span>
             )}
@@ -321,7 +321,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name, email, or phone…"
-              className="flex-1 rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none"
             />
             <button
               type="button"
@@ -368,7 +368,7 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                             </span>
                           )}
                           {u.is_admin && (
-                            <span className="shrink-0 rounded-full border border-red-800 bg-red-900/40 px-2 py-0.5 text-[10px] font-medium text-red-300">
+                            <span className="shrink-0 rounded-full border border-gold-800 bg-gold-900/40 px-2 py-0.5 text-[10px] font-medium text-gold-300">
                               Admin
                             </span>
                           )}
@@ -413,14 +413,14 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                               onChange={(e) =>
                                 setDiscountDraft((d) => ({ ...d, [u.id]: e.target.value }))
                               }
-                              className="w-20 rounded-lg border border-gray-600 bg-gray-800 px-2 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none"
+                              className="w-20 rounded-lg border border-gray-600 bg-gray-800 px-2 py-1.5 text-sm text-white focus:border-gold-500 focus:outline-none"
                             />
                             <span className="text-sm text-gray-300">%</span>
                             <button
                               type="button"
                               onClick={() => saveDiscount(u)}
                               disabled={savingDiscount === u.id}
-                              className="press rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                              className="press rounded-lg bg-gold-600 px-3 py-1.5 text-xs font-medium text-black hover:bg-gold-700 disabled:opacity-50"
                             >
                               {savingDiscount === u.id ? 'Saving…' : 'Save'}
                             </button>
@@ -504,8 +504,8 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
                             onClick={() => toggleAdmin(u)}
                             className={`press shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors disabled:opacity-50 ${
                               u.is_admin
-                                ? 'border border-red-600 text-red-300 hover:bg-red-900/20'
-                                : 'bg-red-600 text-white hover:bg-red-700'
+                                ? 'border border-gold-600 text-gold-300 hover:bg-gold-900/20'
+                                : 'bg-gold-600 text-black hover:bg-gold-700'
                             }`}
                           >
                             {isUpdating ? '…' : u.is_admin ? 'Remove admin' : 'Make admin'}

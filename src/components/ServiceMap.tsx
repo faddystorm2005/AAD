@@ -9,18 +9,18 @@ import { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 const NEIGHBORHOODS: { name: string; lat: number; lng: number; hq?: boolean }[] = [
-  { name: 'Downtown Austin', lat: 30.267, lng: -97.743, hq: true },
-  { name: 'South Austin',    lat: 30.225, lng: -97.775 },
-  { name: 'East Austin',     lat: 30.263, lng: -97.718 },
-  { name: 'North Austin',    lat: 30.348, lng: -97.736 },
-  { name: 'The Domain',      lat: 30.402, lng: -97.722 },
-  { name: 'Round Rock',      lat: 30.508, lng: -97.679 },
-  { name: 'Cedar Park',      lat: 30.505, lng: -97.820 },
-  { name: 'Georgetown',      lat: 30.633, lng: -97.677 },
-  { name: 'Pflugerville',    lat: 30.439, lng: -97.600 },
-  { name: 'Buda / Kyle',     lat: 30.082, lng: -97.840 },
-  { name: 'Lakeway / Westlake', lat: 30.370, lng: -97.984 },
-  { name: 'Dripping Springs', lat: 30.190, lng: -98.086 },
+  { name: 'Downtown Phoenix',  lat: 33.4484, lng: -112.0740, hq: true },
+  { name: 'Scottsdale',        lat: 33.4942, lng: -111.9261 },
+  { name: 'Old Town Scottsdale', lat: 33.4936, lng: -111.9256 },
+  { name: 'Paradise Valley',   lat: 33.5312, lng: -111.9426 },
+  { name: 'Tempe',             lat: 33.4255, lng: -111.9400 },
+  { name: 'Mesa',              lat: 33.4152, lng: -111.8315 },
+  { name: 'Chandler',          lat: 33.3062, lng: -111.8413 },
+  { name: 'Gilbert',           lat: 33.3528, lng: -111.7890 },
+  { name: 'Ahwatukee',         lat: 33.3167, lng: -111.9840 },
+  { name: 'Glendale',          lat: 33.5387, lng: -112.1860 },
+  { name: 'Peoria',            lat: 33.5806, lng: -112.2374 },
+  { name: 'Arcadia / Biltmore', lat: 33.5030, lng: -111.9760 },
 ];
 
 export default function ServiceMap() {
@@ -37,7 +37,7 @@ export default function ServiceMap() {
       if (!containerRef.current) return;
 
       map = L.map(containerRef.current, {
-        center: [30.30, -97.78],
+        center: [33.44, -111.97],
         zoom: 10,
         scrollWheelZoom: false,
         zoomControl: true,
@@ -62,12 +62,12 @@ export default function ServiceMap() {
       map.attributionControl.setPrefix('');
 
       // Service area circle (38 km radius)
-      L.circle([30.30, -97.78], {
+      L.circle([33.44, -111.97], {
         radius: 38000,
-        color: '#d62030',
+        color: '#d4a24c',
         weight: 2,
         dashArray: '6 6',
-        fillColor: '#d62030',
+        fillColor: '#d4a24c',
         fillOpacity: 0.06,
       }).addTo(map);
 
@@ -77,10 +77,10 @@ export default function ServiceMap() {
           className: '',
           html: hq
             ? `<div style="position:relative;width:16px;height:16px;">
-                 <div style="position:absolute;inset:0;border-radius:50%;background:rgba(214,32,48,0.5);animation:map-pulse 1.8s ease-in-out infinite;"></div>
-                 <div style="position:absolute;inset:2px;border-radius:50%;background:#d62030;border:2px solid #fff;"></div>
+                 <div style="position:absolute;inset:0;border-radius:50%;background:rgba(212,162,76,0.5);animation:map-pulse 1.8s ease-in-out infinite;"></div>
+                 <div style="position:absolute;inset:2px;border-radius:50%;background:#d4a24c;border:2px solid #fff;"></div>
                </div>`
-            : `<div style="width:10px;height:10px;border-radius:50%;background:#d62030;border:2px solid #fff;"></div>`,
+            : `<div style="width:10px;height:10px;border-radius:50%;background:#d4a24c;border:2px solid #fff;"></div>`,
           iconSize: hq ? [16, 16] : [10, 10],
           iconAnchor: hq ? [8, 8] : [5, 5],
         });
@@ -102,7 +102,7 @@ export default function ServiceMap() {
     <div
       ref={containerRef}
       className="h-80 w-full overflow-hidden rounded-2xl border border-white/10 sm:h-96"
-      aria-label="Austin Auto Detail service area map"
+      aria-label="Signature Mobile Detailing service area map"
     />
   );
 }

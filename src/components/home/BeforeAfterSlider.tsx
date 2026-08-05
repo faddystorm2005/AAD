@@ -158,10 +158,10 @@ export default function BeforeAfterSlider({
             (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
             updateFromClientX(e.clientX);
           }}
-          className="absolute top-0 z-10 h-full w-0.5 cursor-ew-resize bg-white shadow-[0_0_18px_rgba(214,32,48,0.55)]"
+          className="absolute top-0 z-10 h-full w-0.5 cursor-ew-resize bg-white shadow-[0_0_18px_rgba(212,162,76,0.55)]"
           style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}
         >
-          <div className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-red-600 text-white shadow-[0_4px_18px_rgba(214,32,48,0.55)]">
+          <div className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-gold-600 text-black shadow-[0_4px_18px_rgba(212,162,76,0.55)]">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M9 6l-6 6 6 6" />
               <path d="M15 6l6 6-6 6" />
@@ -172,7 +172,7 @@ export default function BeforeAfterSlider({
         <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
           Before
         </span>
-        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+        <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-gold-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-black">
           After
         </span>
       </div>

@@ -100,13 +100,13 @@ export default function MobileNav() {
               role="dialog"
               aria-modal="true"
               aria-label="Navigation menu"
-              className={`fixed right-0 top-0 z-[101] flex h-full w-[min(360px,90vw)] flex-col border-l-2 border-red-600/60 bg-zinc-900 shadow-[-8px_0_40px_rgba(0,0,0,0.8)] transition-transform duration-300 motion-reduce:transition-none ${
+              className={`fixed right-0 top-0 z-[101] flex h-full w-[min(360px,90vw)] flex-col border-l-2 border-gold-600/60 bg-zinc-900 shadow-[-8px_0_40px_rgba(0,0,0,0.8)] transition-transform duration-300 motion-reduce:transition-none ${
                 open ? 'translate-x-0' : 'translate-x-full'
               }`}
             >
               {/* Drawer header */}
               <div className="flex items-center justify-between border-b border-white/10 bg-zinc-950 px-5 py-4">
-                <span className="text-sm font-semibold uppercase tracking-[0.2em] text-red-400">
+                <span className="text-sm font-semibold uppercase tracking-[0.2em] text-gold-400">
                   Menu
                 </span>
                 <button
@@ -130,7 +130,7 @@ export default function MobileNav() {
                       <a
                         href={href}
                         onClick={close}
-                        className="block rounded-xl px-4 py-3.5 text-base font-medium text-gray-100 transition-colors hover:bg-white/10 hover:text-red-300 active:bg-white/15"
+                        className="block rounded-xl px-4 py-3.5 text-base font-medium text-gray-100 transition-colors hover:bg-white/10 hover:text-gold-300 active:bg-white/15"
                       >
                         {label}
                       </a>
@@ -151,7 +151,7 @@ export default function MobileNav() {
                   </Link>
                   <a
                     href="tel:+14807933782"
-                    className="block text-center text-sm text-gray-300 hover:text-red-300"
+                    className="block text-center text-sm text-gray-300 hover:text-gold-300"
                   >
                     (480) 793-3782
                   </a>

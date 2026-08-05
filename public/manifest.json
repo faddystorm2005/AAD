@@ -1,7 +1,7 @@
 {
-  "name": "Austin Auto Detail",
-  "short_name": "AAD",
-  "description": "Austin's premier mobile auto detailing service",
+  "name": "Signature Mobile Detailing",
+  "short_name": "Signature",
+  "description": "Phoenix's premier mobile auto detailing service",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

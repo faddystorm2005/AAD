@@ -138,7 +138,7 @@ export default function SettingsPage() {
     return (
       <main className="min-h-screen bg-black px-6 py-16 text-white">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-600 border-t-transparent" />
         </div>
       </main>
     );
@@ -198,7 +198,7 @@ export default function SettingsPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none"
                 />
               </div>
 
@@ -213,8 +213,8 @@ export default function SettingsPage() {
                   inputMode="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="(512) 555-0123"
-                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-red-500 focus:outline-none"
+                  placeholder="(480) 555-0123"
+                  className="w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none"
                 />
               </div>
 
@@ -247,7 +247,7 @@ export default function SettingsPage() {
                   <span
                     role={profileMessage.type === 'error' ? 'alert' : 'status'}
                     className={`text-base font-semibold ${
-                      profileMessage.type === 'success' ? 'text-green-300' : 'text-red-300'
+                      profileMessage.type === 'success' ? 'text-green-300' : 'text-gold-300'
                     }`}
                   >
                     {profileMessage.text}

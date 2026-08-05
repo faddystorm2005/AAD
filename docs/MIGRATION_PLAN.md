@@ -1,8 +1,8 @@
-# Austin Auto Detail Migration Plan
+# Signature Mobile Detailing Migration Plan
 
 **Repo:** `github.com/faddystorm2005/AAD` (push to `master`)
 **Stack:** Next.js 16 + Turbopack, Tailwind v4, Supabase, PayPal v2, Twilio, Resend
-**Live site:** `austin-autodetail.com`
+**Live site:** `__DOMAIN_TBD__`
 **Source of truth for new design:** `homepage-preview.html`
 
 This plan ports everything in the preview into the production codebase, one commit at a time. Each commit must build clean (`npm run build`), deploy green to Vercel (`npx vercel ls`), and pass a quick eyeball test before you move to the next one.
@@ -48,27 +48,27 @@ Repeat for the other 5 schemas: WebSite, Service Full, Service Interior, Service
 
 ```tsx
 export const metadata: Metadata = {
-  title: "Austin Auto Detail. Mobile Detailing in Austin, TX.",
-  description: "Professional mobile car detailing in Austin...",
-  metadataBase: new URL("https://www.austin-autodetail.com"),
+  title: "Signature Mobile Detailing. Mobile Detailing in Phoenix, AZ.",
+  description: "Professional mobile car detailing in Phoenix...",
+  metadataBase: new URL("https://www.__DOMAIN_TBD__"),
   alternates: { canonical: "/" },
   themeColor: "#d62030",
   openGraph: {
     type: "website",
-    siteName: "Austin Auto Detail",
-    url: "https://www.austin-autodetail.com/",
-    title: "Austin Auto Detail. Mobile Detailing in Austin, TX.",
-    description: "Professional mobile car detailing in Austin...",
+    siteName: "Signature Mobile Detailing",
+    url: "https://www.__DOMAIN_TBD__/",
+    title: "Signature Mobile Detailing. Mobile Detailing in Phoenix, AZ.",
+    description: "Professional mobile car detailing in Phoenix...",
     images: [{
       url: "/images/aad/cta-king-ranch.jpg",
       width: 1200, height: 630,
-      alt: "Ford F-150 King Ranch interior detailed by Austin Auto Detail"
+      alt: "Ford F-150 King Ranch interior detailed by Signature Mobile Detailing"
     }],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Austin Auto Detail. Mobile Detailing in Austin, TX.",
+    title: "Signature Mobile Detailing. Mobile Detailing in Phoenix, AZ.",
     description: "Professional mobile car detailing...",
     images: ["/images/aad/cta-king-ranch.jpg"],
   },
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
 
 **Copy (verbatim, no em-dashes):**
 - Eyebrow: `Quality Over Quantity`
-- H1: `Mobile Detailing in Austin`
+- H1: `Mobile Detailing in Phoenix`
 - Subhead: `Professional detailing brought right to your driveway, office, or garage. We bring everything we need. You don't lift a finger.`
 
 **Hero image path:** `/images/aad/hero-s-class.jpg` is what `siteImages.ts` references via `DASHBOARD_BANNER`. Don't change the path. If Alex wants the Bentley version, he swaps the image file at that path. Same goes for `/images/aad/cta-king-ranch.jpg` for the Book CTA.
@@ -187,7 +187,7 @@ export const metadata: Metadata = {
 
 **Step copy (verbatim, no em-dashes):**
 1. Step 1 / Pick a slot / "9 AM, 1 PM, or 5 PM, any day. Real-time availability. No calls, no back-and-forth."
-2. Step 2 / We confirm / "Austin Auto Detail reviews your booking within 24 hours. No charge until we approve."
+2. Step 2 / We confirm / "Signature Mobile Detailing reviews your booking within 24 hours. No charge until we approve."
 3. Step 3 / We come to you / "On the day of service, our team arrives at your address with everything we need. Our van is fully self-contained: we bring our own water and power. You don't move a thing."
 
 ---
@@ -260,7 +260,7 @@ const ServiceMap = dynamic(() => import('@/components/ServiceMap'), { ssr: false
 - Tile layer: Esri World Imagery
 - Reference labels overlay
 - 12 neighborhood markers with custom red pin divIcons
-- Pulsing HQ pin for Downtown Austin
+- Pulsing HQ pin for Downtown Phoenix
 - Service area dashed circle (38km radius)
 - Call `map.attributionControl.setPrefix('')` to remove the Ukrainian flag
 

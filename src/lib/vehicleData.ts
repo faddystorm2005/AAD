@@ -2,7 +2,7 @@
  * Curated vehicle make/model dataset for the Add Vehicle form.
  *
  * Coverage target: 90%+ of vehicles likely to belong to AAD customers
- * in the Austin/Texas market. Heavy emphasis on trucks and large SUVs
+ * in the Phoenix metro market. Heavy emphasis on trucks and large SUVs
  * since they're disproportionately common locally.
  *
  * Models within each make are listed in rough order of US sales volume,

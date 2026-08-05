@@ -182,7 +182,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
                   placeholder="SPRING25"
-                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm font-mono text-white focus:border-red-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm font-mono text-white focus:border-gold-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -195,7 +195,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                   max={50}
                   value={rate}
                   onChange={(e) => setRate(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white focus:border-gold-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -208,7 +208,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                   value={maxUses}
                   onChange={(e) => setMaxUses(e.target.value)}
                   placeholder="∞"
-                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white focus:border-gold-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -219,7 +219,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                   type="date"
                   value={expiresAt}
                   onChange={(e) => setExpiresAt(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none"
+                  className="mt-1 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white focus:border-gold-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -227,7 +227,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
               type="button"
               onClick={handleCreate}
               disabled={creating}
-              className="press w-full rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              className="press w-full rounded-lg bg-gold-600 px-3 py-2 text-sm font-medium text-black hover:bg-gold-700 disabled:opacity-50"
             >
               {creating ? 'Creating…' : 'Create code'}
             </button>
@@ -267,12 +267,12 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                               {p.discount_rate}% off
                             </span>
                             {expired && (
-                              <span className="rounded-full border border-red-800 bg-red-900/30 px-2 py-0.5 text-[10px] font-medium text-red-300">
+                              <span className="rounded-full border border-gold-800 bg-gold-900/30 px-2 py-0.5 text-[10px] font-medium text-gold-300">
                                 Expired
                               </span>
                             )}
                             {usedUp && (
-                              <span className="rounded-full border border-red-800 bg-red-900/30 px-2 py-0.5 text-[10px] font-medium text-red-300">
+                              <span className="rounded-full border border-gold-800 bg-gold-900/30 px-2 py-0.5 text-[10px] font-medium text-gold-300">
                                 Used up
                               </span>
                             )}
@@ -286,7 +286,7 @@ export default function ManagePromoCodes({ accessToken }: Props) {
                           type="button"
                           disabled={busyId === p.id}
                           onClick={() => handleDelete(p)}
-                          className="press shrink-0 rounded-lg border border-red-600 px-2 py-1 text-[10px] font-medium text-red-300 hover:bg-red-900/20 disabled:opacity-50"
+                          className="press shrink-0 rounded-lg border border-gold-600 px-2 py-1 text-[10px] font-medium text-gold-300 hover:bg-gold-900/20 disabled:opacity-50"
                         >
                           Delete
                         </button>

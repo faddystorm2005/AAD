@@ -134,7 +134,7 @@ export default function InstallAppPrompt() {
         <button
           type="button"
           onClick={handleInstall}
-          className="rounded-full bg-white/10 px-5 py-3 backdrop-blur-md ring-1 ring-white/20 shadow-2xl text-sm font-semibold uppercase tracking-wider text-white hover:bg-white/15 hover:text-red-300 transition"
+          className="rounded-full bg-white/10 px-5 py-3 backdrop-blur-md ring-1 ring-white/20 shadow-2xl text-sm font-semibold uppercase tracking-wider text-white hover:bg-white/15 hover:text-gold-300 transition"
         >
           Install app
         </button>
@@ -170,7 +170,7 @@ export default function InstallAppPrompt() {
 
             <ol className="mt-6 space-y-4">
               <li className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold-600 text-sm font-bold text-black">
                   1
                 </span>
                 <div className="flex-1">
@@ -198,7 +198,7 @@ export default function InstallAppPrompt() {
               </li>
 
               <li className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold-600 text-sm font-bold text-black">
                   2
                 </span>
                 <p className="flex-1 text-sm text-white">
@@ -207,7 +207,7 @@ export default function InstallAppPrompt() {
               </li>
 
               <li className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold-600 text-sm font-bold text-black">
                   3
                 </span>
                 <p className="flex-1 text-sm text-white">
@@ -220,7 +220,7 @@ export default function InstallAppPrompt() {
               <button
                 type="button"
                 onClick={() => setShowIOSModal(false)}
-                className="w-full rounded-full bg-red-600 px-4 py-3 text-sm font-semibold uppercase tracking-wider text-white hover:bg-red-500 transition"
+                className="w-full rounded-full bg-gold-600 px-4 py-3 text-sm font-semibold uppercase tracking-wider text-black hover:bg-gold-500 transition"
               >
                 Got it, I will install
               </button>

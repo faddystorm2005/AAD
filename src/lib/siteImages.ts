@@ -7,7 +7,7 @@ export interface SitePhoto {
 }
 
 export const AAD_GALLERY: SitePhoto[] = [
-  { src: '/images/aad/gallery-ford-super-duty.jpg',      alt: 'Ford Super Duty full interior detail by Austin Auto Detail' },
+  { src: '/images/aad/gallery-ford-super-duty.jpg',      alt: 'Ford Super Duty full interior detail by Signature Mobile Detailing' },
   { src: '/images/aad/gallery-mercedes-gle-interior.jpg', alt: 'Mercedes GLE interior deep clean' },
   { src: '/images/aad/gallery-audi-s4-red-leather.jpg',  alt: 'Audi S4 leather conditioning' },
   { src: '/images/aad/gallery-toyota-tundra-console.jpg', alt: 'Toyota Tundra interior detail' },
@@ -33,9 +33,9 @@ export const AAD_GALLERY: SitePhoto[] = [
 export const HERO_IMAGE: SitePhoto = AAD_GALLERY[4]; // 05.jpg - Porsche GT3 RS
 export const DASHBOARD_BANNER: SitePhoto = {
   src: '/images/aad/hero-s-class.jpg',
-  alt: 'Mercedes S-Class detailed by Austin Auto Detail',
+  alt: 'Mercedes S-Class detailed by Signature Mobile Detailing',
 };
 export const BOOK_CTA_IMAGE: SitePhoto = {
   src: '/images/aad/cta-king-ranch.jpg',
-  alt: 'Ford F-150 King Ranch interior detailed by Austin Auto Detail',
+  alt: 'Ford F-150 King Ranch interior detailed by Signature Mobile Detailing',
 };

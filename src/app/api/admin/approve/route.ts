@@ -14,7 +14,7 @@ interface ApproveBody {
 
 /**
  * Approve a detail request. Simplified model: NO deposit and NO payment link.
- * Approving just confirms the request; Austin Auto Detail then texts the
+ * Approving just confirms the request; Signature Mobile Detailing then texts the
  * customer to arrange a time, and the full amount is paid on-site. Because no
  * deposit is owed, we do NOT set expires_at, so the expire-approvals cron
  * (which only touches rows with a non-null expires_at) leaves these alone.

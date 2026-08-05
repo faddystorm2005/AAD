@@ -39,7 +39,7 @@ export default function StatsStrip() {
   return (
     <ul
       className="stats-strip grid list-none grid-cols-3 gap-4 p-0 sm:gap-6"
-      aria-label="Austin Auto Detail by the numbers"
+      aria-label="Signature Mobile Detailing by the numbers"
     >
       {STATS.map((s) => (
         <StatTile key={s.label} stat={s} />

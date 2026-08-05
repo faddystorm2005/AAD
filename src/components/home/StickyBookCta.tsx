@@ -29,7 +29,7 @@ export default function StickyBookCta() {
       <Link
         href="/auth"
         aria-label="Book mobile detailing"
-        className="book-cta-pill btn-primary relative flex items-center gap-2 rounded-full px-6 py-4 text-base font-semibold shadow-2xl shadow-red-900/40 sm:text-lg"
+        className="book-cta-pill btn-primary relative flex items-center gap-2 rounded-full px-6 py-4 text-base font-semibold shadow-2xl shadow-gold-900/40 sm:text-lg"
       >
         {/* Shimmer sweep: translateX only (composited) */}
         <span className="book-cta-shine" aria-hidden="true" />

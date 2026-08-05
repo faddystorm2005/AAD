@@ -8,10 +8,10 @@
  * Required env vars (set in Vercel → Settings → Environment Variables):
  *   TWILIO_ACCOUNT_SID
  *   TWILIO_AUTH_TOKEN
- *   TWILIO_FROM_NUMBER       - Twilio number that sends SMS, e.g. "+15125550100"
- *   ADMIN_NOTIFY_PHONE       - Admin's phone, e.g. "+15125559999"
+ *   TWILIO_FROM_NUMBER       - Twilio number that sends SMS, e.g. "+14805550100"
+ *   ADMIN_NOTIFY_PHONE       - Admin's phone, e.g. "+14805559999"
  *   RESEND_API_KEY
- *   NOTIFY_FROM_EMAIL        - verified sender, e.g. "alerts@austinautodetail.com"
+ *   NOTIFY_FROM_EMAIL        - verified sender, e.g. "alerts@__TIKTOK_TBD__.com"
  *
  * If env vars are missing, the helpers log "[notify] skipped" and return.
  */
@@ -34,7 +34,7 @@ interface EmailResult {
 }
 
 /**
- * Light phone-number normalization. Twilio requires E.164 (e.g., +15125551234).
+ * Light phone-number normalization. Twilio requires E.164 (e.g., +14805551234).
  * If the input has no leading +, assume US/Canada (+1).
  */
 export function normalizePhone(raw: string | null | undefined): string | null {
@@ -164,7 +164,7 @@ export async function notifyAdminNewBooking(opts: {
   // No time slot in the request model: show "needs scheduling" instead of a date.
   const when = opts.scheduledAt
     ? new Date(opts.scheduledAt).toLocaleString('en-US', {
-        timeZone: 'America/Chicago',
+        timeZone: 'America/Phoenix',
         weekday: 'short',
         month: 'short',
         day: 'numeric',
@@ -174,12 +174,12 @@ export async function notifyAdminNewBooking(opts: {
     : '⏱ Needs scheduling - reach out to set a time';
 
   const body =
-    `🚗 NEW DETAIL REQUEST - Austin Auto Detail\n` +
+    `🚗 NEW DETAIL REQUEST - Signature Mobile Detailing\n` +
     `${opts.customerName || 'Customer'}: ${opts.service}\n` +
     `${when}\n` +
     `${opts.address}\n` +
     (opts.customerPhone ? `📞 ${opts.customerPhone}\n` : '') +
-    `\nApprove: https://austinautodetail.vercel.app/admin`;
+    `\nApprove: https://__TIKTOK_TBD__.vercel.app/admin`;
 
   await sendSms(to, body);
 }
@@ -199,18 +199,18 @@ export async function notifyCustomerCarReady(opts: {
 
   const smsBody =
     `Hey ${name}! 🚗✨ Your ${opts.service} is complete. ` +
-    `Thanks for choosing Austin Auto Detail - see you next time!`;
+    `Thanks for choosing Signature Mobile Detailing - see you next time!`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
       <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
-        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d4a24c; margin: 0;">SIGNATURE</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">MOBILE DETAILING</p>
       </div>
       <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Your car is ready! 🚗✨</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hey ${name},</p>
-      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> is complete. Thanks for choosing Austin Auto Detail - we'd love to see you again.</p>
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+      <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> is complete. Thanks for choosing Signature Mobile Detailing - we'd love to see you again.</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Signature Mobile Detailing</p>
     </div>
   `;
 
@@ -258,7 +258,7 @@ export async function notifyAdminCancellationRequest(opts: {
   }
 
   const when = new Date(opts.scheduledAt).toLocaleString('en-US', {
-    timeZone: 'America/Chicago',
+    timeZone: 'America/Phoenix',
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -267,12 +267,12 @@ export async function notifyAdminCancellationRequest(opts: {
   });
 
   const body =
-    `⚠️ CANCEL REQUEST - Austin Auto Detail\n` +
+    `⚠️ CANCEL REQUEST - Signature Mobile Detailing\n` +
     `${opts.customerName || 'Customer'}: ${opts.service}\n` +
     `${when}\n` +
     (opts.customerPhone ? `📞 ${opts.customerPhone}\n` : '') +
     (opts.reason ? `Reason: ${opts.reason}\n` : '') +
-    `\nReview: https://austinautodetail.vercel.app/admin`;
+    `\nReview: https://__TIKTOK_TBD__.vercel.app/admin`;
 
   await sendSms(to, body);
 }
@@ -296,13 +296,13 @@ export async function notifyCustomerCancellationApproved(opts: {
 
   const smsBody =
     `Hi ${name}, your cancellation for "${opts.service}" was approved.` +
-    `${creditLine} - Austin Auto Detail`;
+    `${creditLine} - Signature Mobile Detailing`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
       <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
-        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d4a24c; margin: 0;">SIGNATURE</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">MOBILE DETAILING</p>
       </div>
       <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Cancellation approved</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
@@ -314,7 +314,7 @@ export async function notifyCustomerCancellationApproved(opts: {
             )}</strong> account credit. It will apply automatically to your next booking.</p>`
           : ''
       }
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Signature Mobile Detailing</p>
     </div>
   `;
 
@@ -349,13 +349,13 @@ export async function notifyCustomerCancellationDenied(opts: {
   const smsBody =
     `Hi ${name}, your cancellation request for "${opts.service}" was not approved.` +
     (opts.note ? ` Note: ${opts.note}` : '') +
-    ` Please reach out if you need help. - Austin Auto Detail`;
+    ` Please reach out if you need help. - Signature Mobile Detailing`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
       <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
-        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d4a24c; margin: 0;">SIGNATURE</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">MOBILE DETAILING</p>
       </div>
       <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Cancellation request update</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
@@ -366,7 +366,7 @@ export async function notifyCustomerCancellationDenied(opts: {
           : ''
       }
       <p style="color: #c8c8c8; line-height: 1.6;">If something changed, just reply or text us and we'll work it out.</p>
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Signature Mobile Detailing</p>
     </div>
   `;
 
@@ -398,20 +398,20 @@ export async function notifyCustomerBookingApproved(opts: {
   const name = opts.customerName?.split(' ')[0] || 'there';
 
   const smsBody =
-    `Hi ${name}! Your ${opts.service} request with Austin Auto Detail is approved. ` +
+    `Hi ${name}! Your ${opts.service} request with Signature Mobile Detailing is approved. ` +
     `We'll text you shortly to lock in a time that works. No deposit needed - you pay on-site when the detail is done.`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
       <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
-        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d4a24c; margin: 0;">SIGNATURE</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">MOBILE DETAILING</p>
       </div>
       <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">You're approved!</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
       <p style="color: #c8c8c8; line-height: 1.6;">Your <strong style="color: #fff;">${opts.service}</strong> request has been approved. We'll reach out by text shortly to lock in a time that works for you.</p>
       <p style="color: #c8c8c8; line-height: 1.6;">No deposit needed - you simply pay on-site once the detail is complete.</p>
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Signature Mobile Detailing</p>
     </div>
   `;
 
@@ -443,22 +443,22 @@ export async function notifyCustomerBookingDeclined(opts: {
   const name = opts.customerName?.split(' ')[0] || 'there';
 
   const smsBody =
-    `Hi ${name}, unfortunately we couldn't accommodate your ${opts.service} booking with Austin Auto Detail.` +
+    `Hi ${name}, unfortunately we couldn't accommodate your ${opts.service} booking with Signature Mobile Detailing.` +
     (opts.reason ? ` Reason: ${opts.reason}` : '') +
-    ` Feel free to book another slot anytime at austinautodetail.vercel.app`;
+    ` Feel free to book another slot anytime at __TIKTOK_TBD__.vercel.app`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">
       <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d62030; margin: 0;">AAD</p>
-        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">DETAILING</p>
+        <p style="font-size: 28px; font-weight: 800; letter-spacing: 0.06em; color: #d4a24c; margin: 0;">SIGNATURE</p>
+        <p style="font-size: 11px; letter-spacing: 0.32em; color: #f8f8f8; margin: 6px 0 0;">MOBILE DETAILING</p>
       </div>
       <h1 style="font-size: 22px; font-weight: 600; color: #fff; margin: 24px 0 12px;">Booking update</h1>
       <p style="color: #c8c8c8; line-height: 1.6;">Hi ${name},</p>
       <p style="color: #c8c8c8; line-height: 1.6;">Unfortunately we couldn't accommodate your <strong style="color: #fff;">${opts.service}</strong> booking at this time.</p>
       ${opts.reason ? `<p style="color: #c8c8c8; line-height: 1.6;"><strong style="color: #fff;">Reason:</strong> ${opts.reason}</p>` : ''}
       <p style="color: #c8c8c8; line-height: 1.6;">We'd love to help on another day - feel free to book a new slot anytime.</p>
-      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Austin Auto Detail</p>
+      <p style="color: #888; font-size: 12px; margin-top: 32px;">- Signature Mobile Detailing</p>
     </div>
   `;
 
@@ -468,7 +468,7 @@ export async function notifyCustomerBookingDeclined(opts: {
     promises.push(
       sendEmail({
         to: opts.customerEmail,
-        subject: 'Booking update from Austin Auto Detail',
+        subject: 'Booking update from Signature Mobile Detailing',
         html: emailHtml,
         text: smsBody,
       })
