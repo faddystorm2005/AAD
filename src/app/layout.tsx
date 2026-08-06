@@ -46,7 +46,7 @@ const SCHEMA_LOCAL_BUSINESS = {
   name: "Signature Mobile Detailing",
   alternateName: "Signature Detailing Phoenix",
   description:
-    "Mobile car detailing serving Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale and Peoria, Arizona. We come to your driveway, office, or garage with everything we need, including our own water and power. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, three details a day max.",
+    "Mobile car detailing serving Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale and Peoria, Arizona. We come to your driveway, office, or garage with everything we need, including our own water and power. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, six details a day max.",
   url: SITE_URL,
   telephone: "+1-480-793-3782",
   email: "info@__DOMAIN_TBD__",

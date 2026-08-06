@@ -640,7 +640,7 @@ export default async function Home() {
           </blockquote>
           <p className="reveal-on-scroll mt-6 text-base leading-relaxed text-gray-300">
             We treat every vehicle like it&apos;s our own. That&apos;s why we
-            cap at three details a day, bring everything to your door, and
+            cap at six details a day, bring everything to your door, and
             don&apos;t cut a single corner. Cars take you to the people and
             places that matter, so they should look the part.
           </p>
@@ -1070,7 +1070,7 @@ const REASONS = [
   {
     headline: 'Quality',
     title: 'Quality over quantity',
-    description: 'Three details a day max. Your car gets focus and care, not assembly-line speed. Showroom-ready, guaranteed.',
+    description: 'Six details a day max. Your car gets focus and care, not assembly-line speed. Showroom-ready, guaranteed.',
   },
   {
     headline: 'Fair Price',

@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { computeAvailability, SLOT_TIMES, SlotTime } from '@/lib/slots';
 import { phoenixOffsetFor, phoenixNowParts } from '@/lib/phoenixTime';
+import { fetchDefaultHelpDow, resolveHelpAvailable } from '@/lib/defaultHelp';
 import { pushBookingToGoogle, findAdminUserId } from '@/lib/googleCalendar';
 
 export const runtime = 'nodejs';
@@ -141,7 +142,15 @@ export async function POST(req: NextRequest) {
     return true;
   });
 
-  const isHelpAvailable = capRow?.is_help_available ?? false;
+  // Same rule the booking page uses: an explicit daily_capacity row wins,
+  // otherwise the day-of-week default from app_config. This used to hardcode
+  // false, so a customer could be told a slot was full on the reschedule
+  // screen while the booking page showed it as open.
+  const isHelpAvailable = resolveHelpAvailable(
+    slotDate,
+    capRow?.is_help_available ?? undefined,
+    await fetchDefaultHelpDow()
+  );
   const availability = computeAvailability(
     slotDate,
     isHelpAvailable,
