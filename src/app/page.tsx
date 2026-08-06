@@ -841,9 +841,13 @@ export default async function Home() {
             Contact Signature Mobile Detailing
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Mobile detailing across Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale, and Peoria. Call or text{' '}
+            Mobile detailing across Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale, and Peoria. Call or text Alex at{' '}
             <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
               (480) 793-3782
+            </a>
+            {' '}or Kane at{' '}
+            <a href="tel:+16028815602" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              (602) 881-5602
             </a>
             , email{' '}
             <a href="mailto:info@austin-autodetail.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
@@ -881,8 +885,15 @@ export default async function Home() {
               Mobile detailing in Phoenix, AZ and across the valley. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
             </p>
             <p className="mt-4 text-base text-gray-200">
+              <span className="text-sm text-gray-400">Alex</span>{' '}
               <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
                 (480) 793-3782
+              </a>
+            </p>
+            <p className="mt-1 text-base text-gray-200">
+              <span className="text-sm text-gray-400">Kane</span>{' '}
+              <a href="tel:+16028815602" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+                (602) 881-5602
               </a>
             </p>
             <p className="mt-2 text-base text-gray-200">

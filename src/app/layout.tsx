@@ -52,7 +52,30 @@ const SCHEMA_LOCAL_BUSINESS = {
   description:
     "Mobile car detailing serving Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale and Peoria, Arizona. We come to your driveway, office, or garage with everything we need, including our own water and power. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, six details a day max.",
   url: SITE_URL,
+  // ONE primary number here on purpose. This is what Google surfaces in the
+  // local pack and cross-checks against the Google Business Profile, the
+  // TikTok bio, and any directory listing. Two values in this field is how
+  // you end up with an inconsistent NAP and a weaker local ranking.
+  // Kane's line is a secondary contactPoint below, not a competing primary.
   telephone: "+1-480-793-3782",
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      telephone: "+1-480-793-3782",
+      name: "Alex Browning",
+      areaServed: "US-AZ",
+      availableLanguage: "English",
+    },
+    {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      telephone: "+1-602-881-5602",
+      name: "Kane Pexa",
+      areaServed: "US-AZ",
+      availableLanguage: "English",
+    },
+  ],
   email: "info@austin-autodetail.com",
   // image is the rich-result preview thumbnail. Using the marketing CTA
   // image (1200x630, OG-sized) so Google's local pack and rich results
