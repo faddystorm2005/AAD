@@ -9,8 +9,8 @@ export const dynamic = 'force-dynamic';
 // matching the existing pattern in src/lib/notify.ts. Keeps this route on
 // the Edge-friendly fetch surface and avoids adding a runtime dependency.
 const RESEND_API = 'https://api.resend.com/emails';
-const FROM_ADDRESS = 'Alex at Signature Mobile Detailing <info@__DOMAIN_TBD__>';
-const REPLY_TO_ADDRESS = 'info@__DOMAIN_TBD__';
+const FROM_ADDRESS = 'Alex at Signature Mobile Detailing <info@austin-autodetail.com>';
+const REPLY_TO_ADDRESS = 'info@austin-autodetail.com';
 
 type EligibleBooking = {
   id: string;

@@ -11,7 +11,7 @@
  *   TWILIO_FROM_NUMBER       - Twilio number that sends SMS, e.g. "+14805550100"
  *   ADMIN_NOTIFY_PHONE       - Admin's phone, e.g. "+14805559999"
  *   RESEND_API_KEY
- *   NOTIFY_FROM_EMAIL        - verified sender, e.g. "alerts@__TIKTOK_TBD__.com"
+ *   NOTIFY_FROM_EMAIL        - verified sender, e.g. "alerts@austinautodetail.com"
  *
  * If env vars are missing, the helpers log "[notify] skipped" and return.
  */
@@ -179,7 +179,7 @@ export async function notifyAdminNewBooking(opts: {
     `${when}\n` +
     `${opts.address}\n` +
     (opts.customerPhone ? `📞 ${opts.customerPhone}\n` : '') +
-    `\nApprove: https://__TIKTOK_TBD__.vercel.app/admin`;
+    `\nApprove: https://austinautodetail.vercel.app/admin`;
 
   await sendSms(to, body);
 }
@@ -272,7 +272,7 @@ export async function notifyAdminCancellationRequest(opts: {
     `${when}\n` +
     (opts.customerPhone ? `📞 ${opts.customerPhone}\n` : '') +
     (opts.reason ? `Reason: ${opts.reason}\n` : '') +
-    `\nReview: https://__TIKTOK_TBD__.vercel.app/admin`;
+    `\nReview: https://austinautodetail.vercel.app/admin`;
 
   await sendSms(to, body);
 }
@@ -445,7 +445,7 @@ export async function notifyCustomerBookingDeclined(opts: {
   const smsBody =
     `Hi ${name}, unfortunately we couldn't accommodate your ${opts.service} booking with Signature Mobile Detailing.` +
     (opts.reason ? ` Reason: ${opts.reason}` : '') +
-    ` Feel free to book another slot anytime at __TIKTOK_TBD__.vercel.app`;
+    ` Feel free to book another slot anytime at austinautodetail.vercel.app`;
 
   const emailHtml = `
     <div style="font-family: -apple-system, system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; background: #000; color: #f8f8f8;">

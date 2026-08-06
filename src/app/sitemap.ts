@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
   return [
     {
-      url: "https://www.__DOMAIN_TBD__",
+      url: "https://www.austin-autodetail.com",
       lastModified,
       changeFrequency: "weekly",
       priority: 1,

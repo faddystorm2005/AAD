@@ -22,11 +22,11 @@ const oswald = Oswald({
 });
 
 // Canonical site URL. The Vercel domain config serves www as the live
-// address and redirects apex (__DOMAIN_TBD__) -> www, so the
+// address and redirects apex (austin-autodetail.com) -> www, so the
 // canonical must match what the customer actually hits in the browser.
 // If the redirect direction is ever flipped to www -> apex, change
 // this AND sitemap.ts AND robots.ts in the same commit.
-const SITE_URL = "https://www.__DOMAIN_TBD__";
+const SITE_URL = "https://www.austin-autodetail.com";
 const SOCIAL_TITLE = "Mobile Car Detailing in Phoenix, AZ | Signature Mobile Detailing";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
 // so search engines and social previews stay consistent.
@@ -49,7 +49,7 @@ const SCHEMA_LOCAL_BUSINESS = {
     "Mobile car detailing serving Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale and Peoria, Arizona. We come to your driveway, office, or garage with everything we need, including our own water and power. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, six details a day max.",
   url: SITE_URL,
   telephone: "+1-480-793-3782",
-  email: "info@__DOMAIN_TBD__",
+  email: "info@austin-autodetail.com",
   // image is the rich-result preview thumbnail. Using the marketing CTA
   // image (1200x630, OG-sized) so Google's local pack and rich results
   // show real work, not just the logo. logo stays as the brand mark.
@@ -119,7 +119,7 @@ const SCHEMA_LOCAL_BUSINESS = {
       description: "Outside posted hours, available by appointment.",
     },
   ],
-  sameAs: ["https://www.tiktok.com/@__TIKTOK_TBD__"],
+  sameAs: ["https://www.tiktok.com/@austinautodetail"],
   knowsAbout: [
     "Mobile Car Detailing",
     "Ceramic Coating",

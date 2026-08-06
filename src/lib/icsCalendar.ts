@@ -76,7 +76,7 @@ export function buildIcs(events: CalendarEvent[]): string {
     const dtStamp = e.updatedAt ? formatUtc(new Date(e.updatedAt)) : now;
 
     lines.push('BEGIN:VEVENT');
-    lines.push(`UID:booking-${e.id}@__TIKTOK_TBD__.vercel.app`);
+    lines.push(`UID:booking-${e.id}@austinautodetail.vercel.app`);
     lines.push(`DTSTAMP:${dtStamp}`);
     lines.push(`DTSTART:${formatUtc(start)}`);
     lines.push(`DTEND:${formatUtc(end)}`);
