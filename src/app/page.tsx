@@ -645,7 +645,7 @@ export default async function Home() {
             places that matter, so they should look the part.
           </p>
           <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-300">
-            Alex, Founder
+            Alex Browning, Owner
           </p>
           <p className="reveal-on-scroll mt-4 text-xs italic text-gray-700">
             &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &mdash; Prov. 16:3
@@ -1086,7 +1086,7 @@ const TRUST_PILLARS = [
   {
     icon: '👤',
     title: 'Owner-Operated',
-    description: 'Hands-on, locally run, and accountable. No revolving crew of contractors. The person who answers the phone is the person who details the car.',
+    description: 'Alex and Kane own the business fifty-fifty and do every detail themselves. No revolving crew of contractors. Call us and you get an owner, not a call center.',
   },
   {
     icon: '✅',

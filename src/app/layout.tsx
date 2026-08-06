@@ -55,6 +55,12 @@ const SCHEMA_LOCAL_BUSINESS = {
   // show real work, not just the logo. logo stays as the brand mark.
   image: `${SITE_URL}/images/aad/cta-king-ranch.jpg`,
   logo: `${SITE_URL}/images/aad/logo.png`,
+  // Naming the real owners gives Google a person-to-business link, which
+  // helps the local pack treat this as a genuine small business.
+  founder: [
+    { "@type": "Person", name: "Alex Browning" },
+    { "@type": "Person", name: "Kane Pexa" },
+  ],
   priceRange: "$$",
   currenciesAccepted: "USD",
   paymentAccepted: "Credit Card, Debit Card",
