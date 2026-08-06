@@ -44,7 +44,11 @@ const SCHEMA_LOCAL_BUSINESS = {
   "@type": ["LocalBusiness", "AutomotiveBusiness"],
   "@id": BUSINESS_ID,
   name: "Signature Mobile Detailing",
-  alternateName: "Signature Detailing Phoenix",
+  // "Austin Auto Detail" is the former trading name. Declaring it here is the
+  // structured-data way to tell Google "same business, new name", so searches
+  // for the old brand still resolve to this listing. It is NOT a location
+  // claim - every geo field below says Phoenix, AZ.
+  alternateName: ["Signature Detailing Phoenix", "Austin Auto Detail"],
   description:
     "Mobile car detailing serving Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale and Peoria, Arizona. We come to your driveway, office, or garage with everything we need, including our own water and power. Interior, exterior, ceramic coatings, and paint correction. Quality over quantity, six details a day max.",
   url: SITE_URL,
@@ -119,7 +123,7 @@ const SCHEMA_LOCAL_BUSINESS = {
       description: "Outside posted hours, available by appointment.",
     },
   ],
-  sameAs: ["https://www.tiktok.com/@austinautodetail"],
+  sameAs: ["https://www.tiktok.com/@signaturedetailingco"],
   knowsAbout: [
     "Mobile Car Detailing",
     "Ceramic Coating",

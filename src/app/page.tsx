@@ -456,7 +456,7 @@ export default async function Home() {
       >
         <div className="reveal-on-scroll">
           <a
-            href="https://www.tiktok.com/@austinautodetail"
+            href="https://www.tiktok.com/@signaturedetailingco"
             target="_blank"
             rel="noopener noreferrer"
             className="lift-hover group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 sm:flex-row"
@@ -513,7 +513,7 @@ export default async function Home() {
                   >
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
                   </svg>
-                  Follow @austinautodetail →
+                  Follow @signaturedetailingco →
                 </span>
                 <span className="text-sm text-gray-300">Free to watch &amp; follow</span>
               </div>
@@ -930,7 +930,16 @@ export default async function Home() {
           </nav>
         </div>
         <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
-          <p>© {new Date().getFullYear()} Signature Mobile Detailing. Mobile detailing in Phoenix, AZ.</p>
+          <p>
+            © {new Date().getFullYear()} Signature Mobile Detailing. Mobile detailing in Phoenix, AZ.
+            {/* Kept deliberately small and muted. Returning customers who only
+                know the old name can still confirm they're in the right place,
+                without the old brand competing with the new one visually. The
+                structured-data equivalent lives in layout.tsx as alternateName. */}
+            <span className="mt-1 block text-xs text-gray-500">
+              Formerly Austin Auto Detail.
+            </span>
+          </p>
           <p className="text-xs text-gray-300 italic text-center sm:text-right">
             <span aria-hidden className="mr-1.5 text-gray-600">✝</span>
             &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
