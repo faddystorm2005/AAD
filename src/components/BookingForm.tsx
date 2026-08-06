@@ -74,7 +74,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     address: draft?.formData?.address ?? '',
     unit: draft?.formData?.unit ?? '',
     city: draft?.formData?.city ?? '',
-    state: draft?.formData?.state ?? 'TX',
+    state: draft?.formData?.state ?? 'AZ',
     zip: draft?.formData?.zip ?? '',
     notes: draft?.formData?.notes ?? '',
   });
