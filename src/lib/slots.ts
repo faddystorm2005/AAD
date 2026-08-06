@@ -12,8 +12,10 @@ export const SLOT_LABELS: Record<SlotTime, string> = {
   '17:00:00': '5:00 PM',
 };
 
-// Ceramic coating runs the 9 AM (first) slot only - it's a full-day job
-// that needs an early start and time to cure. Only car detailed that day.
+// Ceramic coating used to be locked to the 9 AM (first) slot, one per day,
+// because it is a full-day job and there was only one detailer. There are two
+// detailers now, so ceramic books like any other job: any slot with capacity.
+// CERAMIC_SLOT is kept only as the label for the first slot of the day.
 export const CERAMIC_SLOT: SlotTime = '09:00:00';
 
 export const SOLO_PER_SLOT = 1;
@@ -98,14 +100,11 @@ export function computeAvailability(
     // Past-slot check: only relevant when the requested date is today in
     // Phoenix. String comparison works because both are zero-padded HH:MM:SS.
     const pastSlot = !!now && now.date === date && time <= now.time;
-    // Regular booking rule: slot has capacity AND no ceramic blocking it AND
-    // day not full AND slot hasn't already started.
-    const availableForRegular =
-      !dayFull && !pastSlot && taken < perSlot && !(time === CERAMIC_SLOT && ceramicHere);
-    // Ceramic rule: only the 9 AM (first) slot, only if it's empty AND no
-    // ceramic anywhere this day AND slot hasn't already started.
-    const availableForCeramic =
-      time === CERAMIC_SLOT && !pastSlot && taken === 0 && !ceramicBooked;
+    // Regular booking rule: slot has capacity AND day not full AND slot
+    // hasn't already started. Ceramic no longer blocks other bookings.
+    const availableForRegular = !dayFull && !pastSlot && taken < perSlot;
+    // Ceramic now books on exactly the same terms as everything else.
+    const availableForCeramic = availableForRegular;
     return {
       time,
       label: SLOT_LABELS[time],

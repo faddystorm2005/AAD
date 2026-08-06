@@ -80,10 +80,10 @@ export interface AddOn {
 }
 
 export const ADD_ONS: AddOn[] = [
-  { id: 'wax', name: '6 Month Wax', price: 50, applicableServiceTypes: ['exterior', 'full_detail'] },
-  { id: 'engine', name: 'Engine Bay', price: 25, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'wax', name: '6 Month Wax', price: 100, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'engine', name: 'Engine Bay', price: 35, applicableServiceTypes: ['exterior', 'full_detail'] },
   { id: 'stain', name: 'Stain Removal', price: 30, applicableServiceTypes: ['interior', 'full_detail'] },
-  { id: 'leather', name: 'Leather Conditioner', price: 10, applicableServiceTypes: ['interior', 'full_detail'] },
+  { id: 'leather', name: 'Leather Conditioner', price: 20, applicableServiceTypes: ['interior', 'full_detail'] },
   {
     id: 'pethair',
     name: 'Pet Hair Removal',
@@ -91,17 +91,23 @@ export const ADD_ONS: AddOn[] = [
     applicableServiceTypes: ['interior', 'full_detail'],
     sizePrices: { small: 25, suv: 40, truck: 40 },
   },
-  { id: 'windshield', name: 'Windshield Coating', price: 40, applicableServiceTypes: ['exterior', 'full_detail'] },
+  { id: 'windshield', name: 'Windshield Coating', price: 100, applicableServiceTypes: ['exterior', 'full_detail'] },
   { id: 'headlight', name: 'Headlight Restoration', price: 80, applicableServiceTypes: ['exterior', 'full_detail'] },
-  { id: 'paint1', name: '1-Step Paint Correction', price: 95, applicableServiceTypes: ['exterior', 'full_detail'] },
-  { id: 'paint2', name: '2-Step Paint Correction', price: 125, applicableServiceTypes: ['exterior', 'full_detail'] },
-  // Ceramic Coating: full-day job at the 9 AM slot, only 1 per day.
-  // Adjust price to match Signature Mobile Detailing's actual ceramic coating rate.
+  { id: 'paint1', name: '1-Step Paint Correction', price: 125, applicableServiceTypes: ['exterior', 'full_detail'] },
+  {
+    id: 'paint2',
+    name: '2-Step Paint Correction',
+    price: 495,
+    applicableServiceTypes: ['exterior', 'full_detail'],
+    sizePrices: { small: 495, suv: 595, truck: 595 },
+  },
+  // Ceramic Coating: full-day job. With two detailers it books in any slot,
+  // so the old mornings-only / one-per-day restriction has been removed.
   {
     id: CERAMIC_ADDON_ID,
     name: 'Ceramic Coating',
     price: 500,
-    description: 'Multi-year protection. Mornings only - first slot of the day (9:00 AM), full-day job, 1 per day.',
+    description: 'Multi-year protection. Full-day job, so we confirm the day with you when we reach out.',
     applicableServiceTypes: ['exterior', 'full_detail'],
   },
 ];

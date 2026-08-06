@@ -104,9 +104,7 @@ export default function DailyCapacityPanel({ session }: Props) {
             // Recompute availableForRegular so the customer-facing slots
             // unlock immediately if more capacity is now allowed.
             availableForRegular:
-              d.totalBookings < newPerDay &&
-              s.takenCount < newPerSlot &&
-              !(s.ceramicTaken),
+              d.totalBookings < newPerDay && s.takenCount < newPerSlot,
           })),
         };
       })

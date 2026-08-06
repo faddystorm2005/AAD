@@ -81,7 +81,7 @@ const SIZE_CONTENT_KEYS: Record<keyof SizePriceMap, string> = {
   truck: 'truck',
 };
 
-// Add-on ids -> portal content keys under "addons".
+// Add-on ids -> portal content keys under "addons". Flat-priced add-ons only.
 const ADDON_CONTENT_KEYS: Record<string, string> = {
   wax: 'wax',
   engine: 'engine_bay',
@@ -90,8 +90,16 @@ const ADDON_CONTENT_KEYS: Record<string, string> = {
   windshield: 'windshield',
   headlight: 'headlight',
   paint1: 'paint1',
-  paint2: 'paint2',
   ceramic: 'ceramic',
+};
+
+// Add-ons priced per vehicle size. The portal stores these as
+// addons.pet_hair_sedan, addons.paint2_truck, and so on. A plain
+// addons.paint2 is still honoured and applies to all three sizes,
+// so an older portal entry never gets ignored.
+const PER_SIZE_ADDON_KEYS: Record<string, string> = {
+  pethair: 'pet_hair',
+  paint2: 'paint2',
 };
 
 /** Merge raw portal content over the defaults, validating every value. */
@@ -112,12 +120,18 @@ export function resolvePriceTable(raw: unknown): LivePriceTable {
     if (v !== null) table.addOns[addonId] = v;
   }
 
-  // Pet hair is priced per vehicle size.
-  const pethair = table.addOns.pethair;
-  if (pethair && typeof pethair === 'object') {
+  // Per-size add-ons. A flat portal value applies to every size first, then
+  // any per-size value overrides it.
+  for (const [addonId, contentKey] of Object.entries(PER_SIZE_ADDON_KEYS)) {
+    const entry = table.addOns[addonId];
+    if (!entry || typeof entry !== 'object') continue;
+    const flat = num(pick(raw, `addons.${contentKey}`));
+    if (flat !== null) {
+      for (const size of sizes) entry[size] = flat;
+    }
     for (const size of sizes) {
-      const v = num(pick(raw, `addons.pet_hair_${SIZE_CONTENT_KEYS[size]}`));
-      if (v !== null) pethair[size] = v;
+      const v = num(pick(raw, `addons.${contentKey}_${SIZE_CONTENT_KEYS[size]}`));
+      if (v !== null) entry[size] = v;
     }
   }
 

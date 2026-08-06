@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { computeAvailability, SLOT_TIMES, SlotTime, CERAMIC_SLOT } from '@/lib/slots';
+import { computeAvailability, SLOT_TIMES, SlotTime } from '@/lib/slots';
 import { phoenixOffsetFor, phoenixNowParts } from '@/lib/phoenixTime';
 import { pushBookingToGoogle, findAdminUserId } from '@/lib/googleCalendar';
 
@@ -96,16 +96,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, status: 'unchanged' });
   }
 
-  // Ceramic-only-at-9am rule.
-  if (booking.is_ceramic && slotTime !== CERAMIC_SLOT) {
-    return NextResponse.json(
-      {
-        error:
-          'Ceramic Coating is mornings only - please pick the first slot of the day (9:00 AM).',
-      },
-      { status: 400 }
-    );
-  }
+  // Ceramic used to be locked to the 9 AM slot. With two detailers it moves
+  // like any other booking, so there is no extra rule here any more.
 
   // Authoritative availability check on the new date. Mirror create-booking's
   // filter (excludes declined/completed/cancelled, requires completed_at IS NULL).

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { todayPhoenixDateString } from '@/lib/phoenixTime';
-import { SLOT_TIMES, SLOT_LABELS, SlotTime, CERAMIC_SLOT, DayAvailability } from '@/lib/slots';
+import { SLOT_TIMES, SLOT_LABELS, SlotTime, DayAvailability } from '@/lib/slots';
 import BookingWeather from '@/components/BookingWeather';
 
 interface Props {
@@ -160,9 +160,7 @@ export default function RescheduleModal({
               const isSelected = slotTime === time;
               let reason = '';
               if (!usable) {
-                if (isCeramic && time !== CERAMIC_SLOT) reason = 'Mornings only';
-                else if (slot.ceramicTaken) reason = 'Booked';
-                else if (slot.takenCount >= slot.perSlotCapacity) reason = 'Full';
+                if (slot.takenCount >= slot.perSlotCapacity) reason = 'Full';
                 else if (availability.totalBookings >= availability.perDayCapacity) reason = 'Day full';
                 else reason = 'Not available';
               }
