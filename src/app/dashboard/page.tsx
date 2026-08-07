@@ -293,7 +293,7 @@ export default function Dashboard() {
                 Ready for your next detail?
               </h3>
               <p className="mt-1 max-w-md text-sm text-gray-300">
-                Pick a slot, we&apos;ll come to you. $30 deposit holds it.
+                Pick a slot, we&apos;ll come to you. No deposit, pay when it&apos;s done.
               </p>
             </div>
             <button

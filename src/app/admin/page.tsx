@@ -30,7 +30,7 @@ type Status =
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
-  approved: { label: 'Approved · awaiting deposit', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
+  approved: { label: 'Approved', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
   cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-300 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
@@ -357,7 +357,7 @@ export default function AdminPage() {
     if (!session?.access_token) return;
     if (!paid) {
       const ok = await showDialog({
-        title: 'Mark this deposit as unpaid?',
+        title: 'Mark this booking as not yet paid?',
         body: 'The customer will see the booking as pending again.',
         confirmLabel: 'Mark unpaid',
         danger: true,
@@ -415,8 +415,9 @@ export default function AdminPage() {
     setUpdatingId(bookingId);
     setActionError(null);
 
-    // Optimistic - flip to 'approved' immediately. The Square payment URL
-    // comes back in the response; we patch it in once we have it.
+    // Optimistic - flip to 'approved' immediately, then roll back if the
+    // request fails. There is no payment link to wait for: approving just
+    // confirms the request, and the customer pays in full on-site.
     const prev = bookings;
     const now = new Date().toISOString();
     setBookings((list) =>
@@ -438,13 +439,7 @@ export default function AdminPage() {
       if (!res.ok) {
         throw new Error(body?.error || 'Approve failed');
       }
-      const paymentUrl: string | undefined = body?.paymentUrl;
-      if (paymentUrl) {
-        setBookings((list) =>
-          list.map((b) => (b.id === bookingId ? { ...b, payment_url: paymentUrl } : b))
-        );
-      }
-      setActionSuccess('Booking approved - deposit link sent to customer.');
+      setActionSuccess('Booking approved. Text the customer to lock in a time.');
     } catch (err: any) {
       setBookings(prev);
       setActionError(err.message || 'Approve failed');
@@ -962,7 +957,7 @@ export default function AdminPage() {
                         </p>
                         <p className="text-sm text-gray-300">{b.service}</p>
                         <p className="text-sm text-gray-300">
-                          {b.slot_time ? new Date(b.scheduled_at).toLocaleString() : 'Needs scheduling — text customer'}
+                          {b.slot_time ? new Date(b.scheduled_at).toLocaleString() : 'Needs scheduling, text customer'}
                         </p>
                         <p className="break-words text-sm text-gray-300">
                           {b.address}{b.unit ? ` ${b.unit}` : ''}, {b.city}, {b.state} {b.zip}
@@ -978,7 +973,7 @@ export default function AdminPage() {
                           {b.is_ceramic && ' · ceramic'}
                         </span>
                         <span className="text-sm text-gray-300">
-                          ${Number(b.deposit_amount).toFixed(2)} of ${Number(b.total).toFixed(2)}
+                          ${Number(b.total).toFixed(2)} due on-site
                         </span>
                         {b.status !== 'pending' && b.status !== 'declined' && (
                           <span className="text-sm text-gold-400">
@@ -1117,7 +1112,7 @@ export default function AdminPage() {
                             Scheduled
                           </h3>
                           <p className="mt-2 text-white">
-                            {b.slot_time ? new Date(b.scheduled_at).toLocaleString() : 'Needs scheduling — text customer'}
+                            {b.slot_time ? new Date(b.scheduled_at).toLocaleString() : 'Needs scheduling, text customer'}
                           </p>
                         </div>
 
@@ -1150,12 +1145,8 @@ export default function AdminPage() {
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-300">
                             Payment
                           </h3>
-                          <p
-                            className={`mt-2 font-semibold ${
-                              b.deposit_paid ? 'text-green-400' : 'text-yellow-300'
-                            }`}
-                          >
-                            {b.deposit_paid ? 'Deposit paid' : 'Awaiting deposit'}
+                          <p className="mt-2 font-semibold text-gray-100">
+                            No deposit. Full amount collected on-site.
                           </p>
                           <div className="mt-1 space-y-0.5 text-sm text-gray-300">
                             <div className="flex justify-between">
@@ -1177,12 +1168,8 @@ export default function AdminPage() {
                               <span>${Number(b.total).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span>Deposit</span>
-                              <span>${Number(b.deposit_amount).toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Balance due on site</span>
-                              <span>${(Number(b.total) - Number(b.deposit_amount)).toFixed(2)}</span>
+                              <span>Due on-site</span>
+                              <span>${Number(b.total).toFixed(2)}</span>
                             </div>
                           </div>
                           <button
@@ -1201,8 +1188,8 @@ export default function AdminPage() {
                             {updatingId === b.id
                               ? 'Saving…'
                               : b.deposit_paid
-                              ? 'Mark deposit unpaid'
-                              : 'Mark deposit paid'}
+                              ? 'Mark as not yet paid'
+                              : 'Mark as paid'}
                           </button>
                         </div>
 
@@ -1331,8 +1318,8 @@ export default function AdminPage() {
                               Approval
                             </h3>
                             <p className="mt-2 text-sm text-gray-300">
-                              Approving sends the customer a deposit payment link.
-                              Declining frees the slot.
+                              Approving confirms the request and notifies the customer.
+                              Text them to lock in a time. Declining frees the slot.
                             </p>
                             <textarea
                               value={declineReasonDraft[b.id] ?? ''}
@@ -1387,26 +1374,6 @@ export default function AdminPage() {
                                 {new Date(b.declined_at).toLocaleString()}
                               </p>
                             )}
-                          </div>
-                        )}
-
-                        {b.status === 'approved' && b.payment_url && (
-                          <div className="md:col-span-2 rounded-lg border border-blue-700 bg-blue-900/20 p-4">
-                            <p className="text-sm font-semibold text-blue-300">
-                              Awaiting customer deposit
-                            </p>
-                            <p className="mt-1 text-xs text-blue-200/80">
-                              Customer can pay via the booking confirmation page or this link:
-                            </p>
-                            <a
-                              href={b.payment_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="mt-2 block break-all text-xs text-blue-400 underline"
-                            >
-                              {b.payment_url}
-                            </a>
                           </div>
                         )}
 

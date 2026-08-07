@@ -13,7 +13,7 @@
  *            old networkFirst path stalled playback (infinite spinner,
  *            tap-to-play flakiness). The browser now streams video natively.
  */
-const VERSION = "aad-v10";
+const VERSION = "aad-v11";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";

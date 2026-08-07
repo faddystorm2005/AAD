@@ -821,7 +821,7 @@ export default async function Home() {
                 Mobile Detailing in Phoenix
               </h3>
               <p className="mt-2 max-w-xl text-base text-gray-100 sm:text-lg">
-                Quality on-site detailing brought to you. Pick a slot, we&apos;ll show up with everything we need. Pay a $30 deposit when we approve; the rest on-site.
+                Quality on-site detailing brought to you. Pick a slot, we&apos;ll show up with everything we need. No deposit, you pay on-site once the work is done.
               </p>
             </div>
             <Link
@@ -1115,8 +1115,8 @@ const TRUST_PILLARS = [
   },
   {
     icon: '🔒',
-    title: 'Just $30 to Hold Your Slot',
-    description: "Pay a small refundable-as-credit deposit to lock in. The rest is paid on-site after you've seen the work.",
+    title: 'Nothing to Pay Up Front',
+    description: "No deposit, no card needed to book. You pay on-site after the detail is done and you've seen the work.",
   },
 ];
 

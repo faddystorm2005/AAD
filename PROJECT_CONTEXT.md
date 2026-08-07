@@ -6,9 +6,9 @@
 
 ## What the app is
 
-A booking site for **Signature Mobile Detailing** — a one-person mobile detailing business in Phoenix, AZ run by Alex. Customers pick a slot, the owner approves it, customer pays a $30 deposit to lock it in, the rest is paid on-site. Three details per day max ("quality over quantity").
+A booking site for **Signature Mobile Detailing**, a mobile detailing business in Phoenix, AZ run by two owners, Alex Browning and Kane Pexa. Customers request a slot, an owner approves it, then the owners text to lock in a time. There is NO deposit: the full amount is paid on-site once the detail is done. Six details a day max, two-person capacity ("quality over quantity").
 
-Live at: **__DOMAIN_TBD__** (deployed on Vercel)
+Live at: **https://www.austin-autodetail.com** (deployed on Vercel). "Austin Auto Detail" is the former trading name; the business is now Signature Mobile Detailing and the domain was kept.
 
 ---
 
@@ -26,7 +26,7 @@ Live at: **__DOMAIN_TBD__** (deployed on Vercel)
 - **Next.js 16.2.4** with **Turbopack** (NOT the Next.js you know — read `node_modules/next/dist/docs/` before writing code; APIs differ from training data).
 - **TypeScript**, **Tailwind v4**.
 - **Supabase** (Postgres + Auth + Realtime).
-- **PayPal v2 Orders API** for deposits (not Square — there's a kill-switch via `PAYMENT_PROCESSOR` env var).
+- **No payment processor is in the booking flow.** Deposits were removed; customers pay in full on-site. The PayPal and Square libraries in `src/lib/` are vestigial. Do not wire them back in without being asked.
 - **Twilio** SMS + **Resend** email for notifications.
 - **Google Calendar** integration (admin-side ICS feed + OAuth push).
 - **Open-Meteo** for weather forecasts on booking dates (no API key).
@@ -48,7 +48,7 @@ From `AGENTS.md` / `CLAUDE.md`:
 
 ## Timezones
 
-- **Code says Phoenix UTC-7**, business is in **Phoenix (Central, observes DST)**. There's an `phoenixOffsetFor(date)` helper in `src/lib/phoenixTime.ts` that returns the correct offset for a given date. Use it when constructing TIMESTAMPTZ for `scheduled_at`.
+- Phoenix, Arizona stays on **MST (UTC-7) year round and does NOT observe daylight saving time**. The `phoenixOffsetFor(date)` helper in `src/lib/phoenixTime.ts` resolves the offset through `Intl` rather than hardcoding it. Use it when constructing TIMESTAMPTZ for `scheduled_at`.
 
 ---
 
@@ -107,12 +107,12 @@ From `AGENTS.md` / `CLAUDE.md`:
 - **Booking flow** (modal): 3 steps — pick car & extras → when/where → review & submit.
 - **Reschedule modal**: change the slot.
 - **Cancellation requests**: customer requests with optional reason; admin approves (with optional credit) or denies. Customer cannot cancel directly anymore.
-- **Booking confirmation** (`/booking-confirmation/[id]`): pay-deposit button, status, stage progress.
+- **Booking confirmation** (`/booking-confirmation/[id]`): status and stage progress. No payment step; the page tells the customer we will text to lock in a time and that they pay on-site.
 - **Account credit**: admin issues credit when approving cancellations, auto-applies at next booking.
 
 ### Admin-facing (`/admin`)
 - Booking list with filters: Pending, **Cancel Requests (N)**, Active, All.
-- Per-booking: approve (creates payment link), decline (with reason), mark deposit paid/unpaid, advance stage, delete (danger zone).
+- Per-booking: approve (confirms only, no payment link), decline (with reason), advance stage, delete (danger zone).
 - Cancellation request review: approve with optional credit input, OR deny with optional note. Either path texts/emails the customer.
 - Manage admins (promote/demote users).
 - Manage promo codes.
@@ -146,7 +146,15 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY        # server-only, RLS bypass
 
-# PayPal (kill-switch via PAYMENT_PROCESSOR=paypal|square)
+# Cache purge, called by the Maus & Co. portal's publish button.
+# MUST be set or /api/revalidate refuses every request (fails closed).
+REVALIDATE_SECRET
+
+# Cron auth. All three /api/cron/* routes require Bearer <CRON_SECRET>.
+CRON_SECRET
+
+# PayPal / Square: no longer used by the booking flow. Deposits were removed.
+# These stay set only so the vestigial webhook routes do not error.
 PAYMENT_PROCESSOR
 PAYPAL_CLIENT_ID
 PAYPAL_CLIENT_SECRET
@@ -155,7 +163,7 @@ PAYPAL_WEBHOOK_ID
 
 # Notifications
 RESEND_API_KEY
-NOTIFY_FROM_EMAIL                # notifications@__DOMAIN_TBD__
+NOTIFY_FROM_EMAIL                # notifications@austin-autodetail.com
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_FROM_NUMBER

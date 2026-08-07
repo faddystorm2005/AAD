@@ -42,7 +42,7 @@ export const DEFAULT_FAQS: FaqItem[] = [
   {
     question: 'How does payment work?',
     answer:
-      'After we approve your booking, you pay a $30 deposit online to lock in your slot. The remaining balance is due on-site after the service is complete.',
+      'There is no deposit and nothing to pay up front. Send your request, we approve it and text you to lock in a time, and you pay the full amount on-site once the detail is done and you have seen the work.',
   },
   {
     question: 'What’s included in Phoenix car cleaning?',
@@ -52,7 +52,7 @@ export const DEFAULT_FAQS: FaqItem[] = [
   {
     question: 'Can I cancel or reschedule?',
     answer:
-      "Yes. To reschedule, open your booking and pick a new time. You can do that yourself any time before service. To cancel, tap Request Cancellation and add a quick reason. We'll review within 24 hours. Once approved, your $30 deposit becomes account credit toward a future booking.",
+      "Yes. To reschedule, open your booking and pick a new time. You can do that yourself any time before service. To cancel, tap Request Cancellation and add a quick reason. We'll review within 24 hours. Since nothing is paid up front, there is no deposit to refund.",
   },
 ];
 

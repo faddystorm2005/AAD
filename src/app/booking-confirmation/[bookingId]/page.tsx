@@ -391,7 +391,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
 
           {status === 'approved' && !booking.payment_url && (
             <p className="mt-5 rounded-xl border-2 border-green-700 bg-green-900/30 p-4 text-base text-green-100">
-              We&apos;ll text you shortly to lock in a time that works. No deposit needed — you pay on-site once the detail is done.
+              We&apos;ll text you shortly to lock in a time that works. No deposit needed. You pay on-site once the detail is done.
             </p>
           )}
         </div>
@@ -407,7 +407,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-white">Get notified about your booking</p>
-                  <p className="mt-0.5 text-xs text-gray-300">We&apos;ll push an alert when approved, deposit confirmed, or service complete.</p>
+                  <p className="mt-0.5 text-xs text-gray-300">We&apos;ll push an alert when your request is approved and when the service is complete.</p>
                 </div>
                 <button
                   type="button"

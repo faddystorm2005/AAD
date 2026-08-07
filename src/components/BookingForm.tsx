@@ -261,7 +261,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     2: {
       title: 'Where should we come?',
       caption:
-        "Tell us where the car is. We'll text you to lock in a time — no deposit, you pay on-site when it's done.",
+        "Tell us where the car is. We'll text you to lock in a time. No deposit, you pay on-site when it's done.",
     },
   };
 

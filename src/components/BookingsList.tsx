@@ -55,7 +55,7 @@ export interface BookingRow {
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending approval', className: 'animate-pulse-soft bg-yellow-900/40 text-yellow-300 border-yellow-800' },
-  approved: { label: 'Approved · pay deposit', className: 'animate-pulse-soft bg-blue-900/40 text-blue-300 border-blue-800' },
+  approved: { label: 'Approved · we will text you', className: 'animate-pulse-soft bg-blue-900/40 text-blue-300 border-blue-800' },
   declined: { label: 'Declined', className: 'bg-red-900/40 text-red-300 border-red-800' },
   cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-300 border-gray-700' },
   confirmed: { label: 'Confirmed', className: 'bg-green-900/40 text-green-300 border-green-800' },
@@ -133,7 +133,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
   const handleRequestCancellation = async (bookingId: string) => {
     if (!session?.access_token) return;
     const reason = window.prompt(
-      "Request cancellation? Tell us briefly why so we can decide quickly. We'll review and get back to you. If we approve and you've paid a deposit, you'll get account credit toward a future booking.",
+      "Request cancellation? Tell us briefly why so we can decide quickly. We'll review and get back to you. Nothing has been charged, so there is nothing to refund.",
       ''
     );
     // Null = user pressed Cancel on the prompt itself. Empty string is OK.
