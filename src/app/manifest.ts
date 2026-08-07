@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Signature Mobile Detailing",
     short_name: "Signature",
     description:
-      "Premium mobile detailing in Phoenix. Book a wash, track your appointment, and pay your deposit - all in one place.",
+      "Premium mobile detailing in Phoenix. Book a wash, track your appointment, and pay on-site when it's done.",
     start_url: "/",
     scope: "/",
     display: "standalone",

@@ -386,7 +386,8 @@ export async function notifyCustomerCancellationDenied(opts: {
 }
 
 /**
- * Tell the customer their booking was approved and they need to pay the deposit.
+ * Tell the customer their request was approved and that we will text them to
+ * lock in a time. There is no deposit; they pay on-site when the detail is done.
  * Sends SMS + email so customers without push notifications still get notified.
  */
 export async function notifyCustomerBookingApproved(opts: {
