@@ -28,6 +28,17 @@ type Status =
   | 'in_progress'
   | 'completed';
 
+const PAYMENT_METHODS = ['cash', 'card', 'venmo', 'zelle', 'other'] as const;
+type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
+const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cash: 'Cash',
+  card: 'Card',
+  venmo: 'Venmo',
+  zelle: 'Zelle',
+  other: 'Other',
+};
+
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
   approved: { label: 'Approved', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
@@ -76,7 +87,13 @@ interface AdminBooking {
   zip: string;
   notes: string | null;
   deposit_amount: number;
+  // `deposit_paid` does NOT mean the customer paid. It means the booking
+  // holds its slot (approve sets it true; availability and the
+  // expire-approvals cron read it). Real payments live in paid_at below.
   deposit_paid: boolean;
+  paid_at: string | null;
+  paid_amount: number | null;
+  payment_method: PaymentMethod | null;
   subtotal: number;
   total: number;
   discount_amount: number;
@@ -130,6 +147,10 @@ export default function AdminPage() {
   }, [actionSuccess]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [declineReasonDraft, setDeclineReasonDraft] = useState<Record<string, string>>({});
+  // Which booking has the "record a payment" form open, plus its drafts.
+  const [payFormOpenId, setPayFormOpenId] = useState<string | null>(null);
+  const [payAmountDraft, setPayAmountDraft] = useState<Record<string, string>>({});
+  const [payMethodDraft, setPayMethodDraft] = useState<Record<string, PaymentMethod>>({});
   const [photosByBooking, setPhotosByBooking] = useState<Record<string, { id: string; slotKey: string; signedUrl: string | null }[]>>({});
   const [photosLoadingId, setPhotosLoadingId] = useState<string | null>(null);
   const loadedPhotoIds = useRef(new Set<string>());
@@ -353,17 +374,36 @@ export default function AdminPage() {
     }
   };
 
-  const handleMarkDeposit = async (bookingId: string, paid: boolean) => {
+  /**
+   * Record what Alex actually collected on-site, or undo a recorded
+   * payment. Only touches paid_at / paid_amount / payment_method, never
+   * `deposit_paid` or `status`: see the note on the AdminBooking type.
+   */
+  const handleMarkPaid = async (bookingId: string, paid: boolean) => {
     if (!session?.access_token) return;
-    if (!paid) {
+
+    let amount = 0;
+    let method: PaymentMethod = 'cash';
+
+    if (paid) {
+      // Tolerate "$275", "275.00" and stray spaces before validating.
+      const raw = (payAmountDraft[bookingId] ?? '').replace(/[$,\s]/g, '');
+      amount = Number(raw);
+      if (!raw || !Number.isFinite(amount) || amount < 0) {
+        setActionError('Enter the amount you collected, for example 275.00');
+        return;
+      }
+      method = payMethodDraft[bookingId] ?? 'cash';
+    } else {
       const ok = await showDialog({
-        title: 'Mark this booking as not yet paid?',
-        body: 'The customer will see the booking as pending again.',
-        confirmLabel: 'Mark unpaid',
+        title: 'Undo this payment?',
+        body: 'The booking goes back to showing no payment recorded. It does not refund anything or message the customer.',
+        confirmLabel: 'Undo payment',
         danger: true,
       });
       if (!ok) return;
     }
+
     setUpdatingId(bookingId);
     setActionError(null);
 
@@ -375,32 +415,50 @@ export default function AdminPage() {
         b.id === bookingId
           ? {
               ...b,
-              deposit_paid: paid,
-              status: paid
-                ? b.status === 'approved' || b.status === 'pending'
-                  ? 'confirmed'
-                  : b.status
-                : b.status === 'confirmed'
-                ? 'approved'
-                : b.status,
+              paid_at: paid ? new Date().toISOString() : null,
+              paid_amount: paid ? Math.round(amount * 100) / 100 : null,
+              payment_method: paid ? method : null,
             }
           : b
       )
     );
 
     try {
-      const res = await fetch('/api/admin/mark-deposit', {
+      const res = await fetch('/api/admin/mark-paid', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ bookingId, paid }),
+        body: JSON.stringify(
+          paid ? { bookingId, paid: true, amount, method } : { bookingId, paid: false }
+        ),
       });
+      const body = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
         throw new Error(body?.error || 'Update failed');
       }
+      // Trust the server's stored row over the optimistic guess, so the
+      // timestamp shown is the one actually written.
+      if (body?.booking) {
+        setBookings((list) =>
+          list.map((b) =>
+            b.id === bookingId
+              ? {
+                  ...b,
+                  paid_at: body.booking.paid_at,
+                  paid_amount:
+                    body.booking.paid_amount === null
+                      ? null
+                      : Number(body.booking.paid_amount),
+                  payment_method: body.booking.payment_method,
+                }
+              : b
+          )
+        );
+      }
+      setPayFormOpenId(null);
+      setActionSuccess(paid ? 'Payment recorded.' : 'Payment undone.');
     } catch (err: any) {
       // Roll back on failure.
       setBookings(prev);
@@ -972,8 +1030,14 @@ export default function AdminPage() {
                           {STATUS_BADGES[(b.status ?? 'pending') as Status].label}
                           {b.is_ceramic && ' · ceramic'}
                         </span>
-                        <span className="text-sm text-gray-300">
-                          ${Number(b.total).toFixed(2)} due on-site
+                        <span
+                          className={`text-sm ${
+                            b.paid_at ? 'font-semibold text-green-400' : 'text-gray-300'
+                          }`}
+                        >
+                          {b.paid_at
+                            ? `Paid $${Number(b.paid_amount ?? 0).toFixed(2)}`
+                            : `$${Number(b.total).toFixed(2)} due on-site`}
                         </span>
                         {b.status !== 'pending' && b.status !== 'declined' && (
                           <span className="text-sm text-gold-400">
@@ -1167,30 +1231,126 @@ export default function AdminPage() {
                               <span>Total</span>
                               <span>${Number(b.total).toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between">
-                              <span>Due on-site</span>
-                              <span>${Number(b.total).toFixed(2)}</span>
-                            </div>
                           </div>
-                          <button
-                            type="button"
-                            disabled={updatingId === b.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleMarkDeposit(b.id, !b.deposit_paid);
-                            }}
-                            className={`mt-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors disabled:opacity-50 ${
-                              b.deposit_paid
-                                ? 'border border-gray-600 text-gray-300 hover:bg-gray-800'
-                                : 'bg-green-600 text-white hover:bg-green-700'
-                            }`}
-                          >
-                            {updatingId === b.id
-                              ? 'Saving…'
-                              : b.deposit_paid
-                              ? 'Mark as not yet paid'
-                              : 'Mark as paid'}
-                          </button>
+
+                          {/* What Alex actually collected on-site. */}
+                          {b.paid_at ? (
+                            <div className="mt-3 rounded-lg border border-green-800 bg-green-900/20 p-3">
+                              <p className="text-base font-semibold text-green-300">
+                                Paid ${Number(b.paid_amount ?? 0).toFixed(2)}
+                                {b.payment_method
+                                  ? ` by ${PAYMENT_METHOD_LABELS[b.payment_method].toLowerCase()}`
+                                  : ''}
+                              </p>
+                              <p className="mt-0.5 text-sm text-gray-300">
+                                {new Date(b.paid_at).toLocaleString()}
+                              </p>
+                              {Number(b.paid_amount ?? 0) !== Number(b.total) && (
+                                <p className="mt-1 text-sm text-yellow-300">
+                                  Quote was ${Number(b.total).toFixed(2)}.
+                                </p>
+                              )}
+                              <button
+                                type="button"
+                                disabled={updatingId === b.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMarkPaid(b.id, false);
+                                }}
+                                className="mt-2 rounded-lg border border-gray-600 px-4 py-3 text-base font-medium text-gray-200 transition-colors hover:bg-gray-800 disabled:opacity-50"
+                              >
+                                {updatingId === b.id ? 'Saving…' : 'Undo'}
+                              </button>
+                            </div>
+                          ) : payFormOpenId === b.id ? (
+                            <div
+                              className="mt-3 rounded-lg border border-gray-700 bg-gray-900/60 p-3"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <label
+                                htmlFor={`pay-amount-${b.id}`}
+                                className="block text-base font-medium text-gray-100"
+                              >
+                                How much did you collect?
+                              </label>
+                              <div className="mt-1 flex items-center gap-2">
+                                <span className="text-lg text-gray-200">$</span>
+                                <input
+                                  id={`pay-amount-${b.id}`}
+                                  type="text"
+                                  inputMode="decimal"
+                                  autoComplete="off"
+                                  placeholder={Number(b.total).toFixed(2)}
+                                  value={payAmountDraft[b.id] ?? ''}
+                                  onChange={(e) =>
+                                    setPayAmountDraft((d) => ({ ...d, [b.id]: e.target.value }))
+                                  }
+                                  className="w-32 rounded-lg border border-gray-600 bg-black px-3 py-3 text-base text-white placeholder:text-gray-500 focus:border-gold-500 focus:outline-none"
+                                />
+                                <span className="text-sm text-gray-300">
+                                  Quote: ${Number(b.total).toFixed(2)}
+                                </span>
+                              </div>
+
+                              <p className="mt-3 text-base font-medium text-gray-100">
+                                How did they pay?
+                              </p>
+                              <div className="mt-1 flex flex-wrap gap-2">
+                                {PAYMENT_METHODS.map((m) => {
+                                  const selected = (payMethodDraft[b.id] ?? 'cash') === m;
+                                  return (
+                                    <button
+                                      key={m}
+                                      type="button"
+                                      onClick={() =>
+                                        setPayMethodDraft((d) => ({ ...d, [b.id]: m }))
+                                      }
+                                      className={`rounded-lg border px-4 py-3 text-base font-medium transition-colors ${
+                                        selected
+                                          ? 'border-gold-500 bg-gold-500/15 text-gold-300'
+                                          : 'border-gray-600 text-gray-200 hover:bg-gray-800'
+                                      }`}
+                                    >
+                                      {PAYMENT_METHOD_LABELS[m]}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  disabled={updatingId === b.id}
+                                  onClick={() => handleMarkPaid(b.id, true)}
+                                  className="rounded-lg bg-green-600 px-5 py-3 text-base font-semibold text-white transition-colors hover:bg-green-700 disabled:opacity-50"
+                                >
+                                  {updatingId === b.id ? 'Saving…' : 'Save payment'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setPayFormOpenId(null)}
+                                  className="rounded-lg border border-gray-600 px-5 py-3 text-base font-medium text-gray-200 transition-colors hover:bg-gray-800"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPayAmountDraft((d) => ({
+                                  ...d,
+                                  [b.id]: d[b.id] ?? Number(b.total).toFixed(2),
+                                }));
+                                setPayFormOpenId(b.id);
+                              }}
+                              className="mt-3 rounded-lg bg-green-600 px-5 py-3 text-base font-semibold text-white transition-colors hover:bg-green-700"
+                            >
+                              Mark as paid
+                            </button>
+                          )}
                         </div>
 
                         <div>
@@ -1245,7 +1405,7 @@ export default function AdminPage() {
                                     inputMode="decimal"
                                     min="0"
                                     step="0.01"
-                                    placeholder={`e.g. ${Number(b.deposit_amount).toFixed(2)}`}
+                                    placeholder="e.g. 25.00"
                                     value={cancelCreditDraft[b.id] ?? ''}
                                     onChange={(e) =>
                                       setCancelCreditDraft((prev) => ({

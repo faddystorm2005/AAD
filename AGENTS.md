@@ -26,6 +26,16 @@ The PayPal and Square libraries in `src/lib/` are vestigial from the old
 deposit flow. Do not wire them back into the booking flow without being asked.
 Any copy that mentions a deposit is a bug.
 
+**`deposit_paid` does not mean the customer paid.** `/api/admin/approve` sets
+it `true` at approval time so the booking keeps holding its slot, and both
+`/api/availability` and the expire-approvals cron read it to decide whether to
+release a slot. Never write it from the UI.
+
+What Alex actually collected on-site lives in separate columns: `paid_at`,
+`paid_amount`, `payment_method`. They are written only by
+`/api/admin/mark-paid` and read only by the admin UI, so they cannot affect
+scheduling. Schema: `supabase-add-payment-tracking.sql`.
+
 # House rules
 
 - **Never use em-dashes (—)** anywhere in `src/`. Use periods, commas, colons,
