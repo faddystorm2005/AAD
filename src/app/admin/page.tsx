@@ -17,6 +17,12 @@ import DailyCapacityPanel from '@/components/admin/DailyCapacityPanel';
 import GoogleCalendarSubscribe from '@/components/admin/GoogleCalendarSubscribe';
 import ManageAdmins from '@/components/admin/ManageAdmins';
 import ManagePromoCodes from '@/components/admin/ManagePromoCodes';
+import CollectedSummary from '@/components/admin/CollectedSummary';
+import {
+  PAYMENT_METHODS,
+  PAYMENT_METHOD_LABELS,
+  type PaymentMethod,
+} from '@/lib/payments';
 import { ReviewRequestHealth } from '@/components/admin/ReviewRequestHealth';
 
 type Status =
@@ -27,17 +33,6 @@ type Status =
   | 'confirmed'
   | 'in_progress'
   | 'completed';
-
-const PAYMENT_METHODS = ['cash', 'card', 'venmo', 'zelle', 'other'] as const;
-type PaymentMethod = (typeof PAYMENT_METHODS)[number];
-
-const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
-  cash: 'Cash',
-  card: 'Card',
-  venmo: 'Venmo',
-  zelle: 'Zelle',
-  other: 'Other',
-};
 
 const STATUS_BADGES: Record<Status, { label: string; className: string }> = {
   pending: { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
@@ -816,6 +811,16 @@ export default function AdminPage() {
             System Health
           </h2>
           <ReviewRequestHealth />
+        </section>
+
+        {/* Money in. Computed from the bookings already loaded above, so it
+            adds no query. Sits high because "what did I make this month" is
+            the question Alex opens this page to answer. */}
+        <section className="space-y-3">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-300">
+            Money In
+          </h2>
+          <CollectedSummary bookings={bookings} />
         </section>
 
         {/* Settings group: calendar sync, admin management, promo codes, and

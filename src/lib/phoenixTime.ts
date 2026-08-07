@@ -44,6 +44,42 @@ export function phoenixNowParts(): { date: string; time: string } {
 }
 
 /**
+ * Which Phoenix calendar month a moment falls in, as 'YYYY-MM'.
+ *
+ * Needed because a payment recorded at, say, 6 PM Phoenix on the last day of
+ * the month is already the 1st in UTC. Bucketing on the raw timestamp would
+ * push it into the next month and quietly misreport the monthly total.
+ */
+export function phoenixMonthKey(when: string | Date): string {
+  const d = typeof when === 'string' ? new Date(when) : when;
+  // 'en-CA' gives ISO-style ordering, so year-then-month formats as '2026-08'.
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: PHOENIX_TZ,
+    year: 'numeric',
+    month: '2-digit',
+  }).format(d);
+}
+
+/** The 'YYYY-MM' key for the Phoenix month `back` months before now (0 = this month). */
+export function phoenixMonthKeyAgo(back: number): string {
+  const [year, month] = todayPhoenixDateString().split('-').map(Number);
+  // Build the target month at noon UTC on the 15th, far from any boundary
+  // where the UTC and Phoenix calendar dates could disagree.
+  const d = new Date(Date.UTC(year, month - 1 - back, 15, 12, 0, 0));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
+/** Human label for a 'YYYY-MM' key, e.g. '2026-08' becomes 'August 2026'. */
+export function phoenixMonthLabel(monthKey: string): string {
+  const [year, month] = monthKey.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, 15, 12, 0, 0)).toLocaleDateString(undefined, {
+    timeZone: PHOENIX_TZ,
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+/**
  * UTC offset for a given Phoenix-local calendar date. Arizona stays on MST
  * year round, so this returns "-07:00" every day. Used to build a
  * TIMESTAMPTZ string like "2026-07-04T09:00:00-07:00".

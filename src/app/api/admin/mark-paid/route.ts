@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { isPaymentMethod } from '@/lib/payments';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,9 +27,6 @@ export const dynamic = 'force-dynamic';
  * Admin-only. Requires a Bearer access token belonging to an is_admin
  * profile, matching every other route under /api/admin.
  */
-
-const PAYMENT_METHODS = ['cash', 'card', 'venmo', 'zelle', 'other'] as const;
-type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 // Matches the numeric(10,2) column: at most 8 digits before the decimal.
 const MAX_AMOUNT = 99_999_999.99;
@@ -103,7 +101,7 @@ export async function POST(req: NextRequest) {
     }
 
     const method = body?.method;
-    if (!PAYMENT_METHODS.includes(method as PaymentMethod)) {
+    if (!isPaymentMethod(method)) {
       return NextResponse.json(
         { error: 'Pick how the customer paid.' },
         { status: 400 }
