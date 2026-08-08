@@ -15,7 +15,7 @@ interface AddVehicleFormProps {
 
 const FIELD_CLASSES =
   'w-full rounded-xl border-2 border-gray-700 bg-gray-900 px-4 py-3 text-base text-white focus:border-gold-500 focus:outline-none';
-const FIELD_CLASSES_PLACEHOLDER = `${FIELD_CLASSES} placeholder-gray-500`;
+const FIELD_CLASSES_PLACEHOLDER = `${FIELD_CLASSES} placeholder-gray-300`;
 const FIELD_CLASSES_DISABLED = `${FIELD_CLASSES} disabled:cursor-not-allowed disabled:opacity-50`;
 
 export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {

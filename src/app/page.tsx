@@ -861,20 +861,20 @@ export default async function Home() {
             <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
               Signature Mobile Detailing
             </p>
-            <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-600 italic">
+            <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-300 italic">
               <span aria-hidden>✝</span> Faith-driven, owner-operated
             </p>
             <p className="mt-3 text-base text-gray-200">
               Mobile detailing in Phoenix, AZ and across the valley. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
             </p>
             <p className="mt-4 text-base text-gray-200">
-              <span className="text-sm text-gray-400">Alex</span>{' '}
+              <span className="text-base text-gray-300">Alex</span>{' '}
               <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
                 (480) 793-3782
               </a>
             </p>
             <p className="mt-1 text-base text-gray-200">
-              <span className="text-sm text-gray-400">Kane</span>{' '}
+              <span className="text-base text-gray-300">Kane</span>{' '}
               <a href="tel:+16028815602" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
                 (602) 881-5602
               </a>
@@ -926,19 +926,21 @@ export default async function Home() {
         <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
           <p>
             © {new Date().getFullYear()} Signature Mobile Detailing. Mobile detailing in Phoenix, AZ.
-            {/* Kept deliberately small and muted. Returning customers who only
-                know the old name can still confirm they're in the right place,
-                without the old brand competing with the new one visually. The
-                structured-data equivalent lives in layout.tsx as alternateName. */}
-            <span className="mt-1 block text-xs text-gray-500">
+            {/* Kept visually secondary so the old brand does not compete with
+                the new one. De-emphasis comes from size and weight only, not
+                from dimming the text: this line exists for returning customers
+                who know the old name, and that group skews older, so it has to
+                stay readable. The structured-data equivalent lives in
+                layout.tsx as alternateName. */}
+            <span className="mt-1 block text-sm text-gray-300">
               Formerly Austin Auto Detail.
             </span>
           </p>
-          <p className="text-xs text-gray-300 italic text-center sm:text-right">
-            <span aria-hidden className="mr-1.5 text-gray-600">✝</span>
+          <p className="text-sm text-gray-300 italic text-center sm:text-right">
+            <span aria-hidden className="mr-1.5 text-gray-500">✝</span>
             &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-sm text-gray-300">
             Site by{" "}
             <a
               href="https://www.mausandco.com"

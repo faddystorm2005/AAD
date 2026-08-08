@@ -253,7 +253,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   };
 
   const inputCls =
-    'w-full rounded-xl border border-gray-700 bg-gray-900/60 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none';
+    'w-full rounded-xl border border-gray-700 bg-gray-900/60 px-4 py-3 text-base text-white placeholder-gray-300 focus:border-gold-500 focus:outline-none';
 
   const stepHeadings: Record<number, { title: string; caption: string }> = {
     1: {

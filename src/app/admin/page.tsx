@@ -924,7 +924,7 @@ export default function AdminPage() {
             placeholder="Search by name, phone, email, or address"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-3 pl-10 pr-4 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none"
+            className="w-full rounded-xl border border-gray-700 bg-gray-900 py-3 pl-10 pr-4 text-base text-white placeholder-gray-300 focus:border-gold-500 focus:outline-none"
           />
         </div>
 
@@ -1503,7 +1503,7 @@ export default function AdminPage() {
                               }
                               placeholder="Optional decline reason (only sent if you decline)"
                               rows={2}
-                              className="mt-3 w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-base text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none sm:max-w-md"
+                              className="mt-3 w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-3 text-base text-white placeholder-gray-300 focus:border-gold-500 focus:outline-none sm:max-w-md"
                               onClick={(e) => e.stopPropagation()}
                             />
                             <div className="mt-3 flex flex-wrap gap-2">

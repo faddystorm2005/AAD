@@ -672,6 +672,19 @@ button:disabled {
 
 /* Respect users who prefer reduced motion - disable all decorative animations. */
 @media (prefers-reduced-motion: reduce) {
+  /* Blanket rule first, so an animation added later is covered even if
+     nobody remembers to add its selector to the list below. The named
+     selectors that follow are still required: they force the finished
+     state (opacity 1, no transform) for elements that start hidden and
+     would otherwise never be revealed. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
   .scroll-card {
     opacity: 1 !important;
     transform: none !important;

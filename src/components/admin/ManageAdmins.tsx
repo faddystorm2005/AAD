@@ -324,13 +324,13 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name, email, or phone…"
-              className="flex-1 rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-gold-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-gray-600 bg-gray-800 px-3 py-3 text-base text-white placeholder-gray-300 focus:border-gold-500 focus:outline-none"
             />
             <button
               type="button"
               onClick={load}
               disabled={loading}
-              className="press shrink-0 rounded-lg border border-gray-600 px-3 py-2 text-xs font-medium text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+              className="press shrink-0 rounded-lg border border-gray-600 px-3 py-3 text-base font-medium text-gray-300 hover:bg-gray-800 disabled:opacity-50"
             >
               {loading ? '…' : 'Refresh'}
             </button>
