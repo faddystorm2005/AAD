@@ -16,6 +16,8 @@ export default function HeroStatCounter() {
     if (!el) return;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Reduced-motion fallback: jumps straight to the final value instead of animating.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVal(4);
       return;
     }

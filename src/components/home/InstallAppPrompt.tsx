@@ -55,6 +55,8 @@ export default function InstallAppPrompt() {
 
     // iOS path: show button immediately if iOS Safari and not already installed
     if (isIOSSafari() && !isAlreadyInstalled()) {
+      // Shown based on install state and dismissal history in localStorage, both client-only.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       // No event listeners needed for iOS - button click opens our modal
       return; // Skip beforeinstallprompt registration entirely

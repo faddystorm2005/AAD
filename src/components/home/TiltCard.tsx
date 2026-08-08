@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState, ReactNode } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
+import { useIsHydrated, usePrefersReducedMotion } from '@/lib/useBrowserState';
 
 interface TiltCardProps {
   children: ReactNode;
@@ -10,14 +11,13 @@ interface TiltCardProps {
 
 export default function TiltCard({ children, className = '', style }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) return;
-    setEnabled(true);
-  }, []);
+  // Both hooks must be called unconditionally, so read them into locals
+  // rather than short-circuiting with &&.
+  const hydrated = useIsHydrated();
+  const reducedMotion = usePrefersReducedMotion();
+  // Stays off during SSR and for anyone who asked for reduced motion. Now
+  // reacts if that OS setting is toggled while the page is open.
+  const enabled = hydrated && !reducedMotion;
 
   useEffect(() => {
     if (!enabled) return;

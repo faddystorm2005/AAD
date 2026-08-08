@@ -1,5 +1,6 @@
 import webpush from 'web-push';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { errorMessage } from '@/lib/errors';
 
 const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
@@ -30,9 +31,16 @@ async function sendToSubscription(
       JSON.stringify(payload)
     );
     return 'ok';
-  } catch (err: any) {
-    if (err?.statusCode === 404 || err?.statusCode === 410) return 'expired';
-    console.error('[push] send failed', err?.message);
+  } catch (err) {
+    // web-push rejects with a WebPushError carrying the push service's HTTP
+    // status. 404/410 mean the browser threw the subscription away, so the
+    // caller prunes it rather than retrying.
+    const statusCode =
+      err && typeof err === 'object' && 'statusCode' in err
+        ? (err as { statusCode?: unknown }).statusCode
+        : undefined;
+    if (statusCode === 404 || statusCode === 410) return 'expired';
+    console.error('[push] send failed', errorMessage(err));
     return 'error';
   }
 }

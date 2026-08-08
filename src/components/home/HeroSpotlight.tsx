@@ -1,6 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import {
+  useIsHydrated,
+  useMediaQuery,
+  usePrefersReducedMotion,
+} from '@/lib/useBrowserState';
 
 /**
  * Mouse-following soft red glow for the hero. Subtle, premium - the kind of
@@ -14,23 +19,16 @@ import { useEffect, useRef, useState } from 'react';
  */
 export default function HeroSpotlight() {
   const ref = useRef<HTMLDivElement>(null);
-  // Start false to match SSR. Flip to true in useEffect only on devices
-  // that have a real cursor and a wide-enough screen.
-  const [enabled, setEnabled] = useState(false);
+  // Every hook runs unconditionally; the gating happens after. All four read
+  // false during SSR, so the server and the hydration pass agree.
+  const hydrated = useIsHydrated();
+  const reducedMotion = usePrefersReducedMotion();
+  const hasHover = useMediaQuery('(hover: hover)');
+  // Was `window.innerWidth >= 1024` read once on mount. As a media query it
+  // now also turns the effect off if the window is resized narrow.
+  const wideEnough = useMediaQuery('(min-width: 1024px)');
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const hasHover = window.matchMedia('(hover: hover)').matches;
-    const wideEnough = window.innerWidth >= 1024;
-
-    if (reducedMotion || !hasHover || !wideEnough) {
-      return;
-    }
-
-    setEnabled(true);
-  }, []);
+  const enabled = hydrated && !reducedMotion && hasHover && wideEnough;
 
   useEffect(() => {
     if (!enabled) return;

@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
   // If the count fails for any reason, fall back to the normal /dashboard
   // path - we'd rather not block the redirect on a non-critical check.
   const userId = data.session?.user?.id;
-  let destination = next.startsWith('/') ? next : '/dashboard';
+  const destination = next.startsWith('/') ? next : '/dashboard';
   let firstTime = false;
 
   if (userId && destination === '/dashboard') {

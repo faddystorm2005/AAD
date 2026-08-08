@@ -94,6 +94,8 @@ export default function PhonePrompt({ forceExpanded, onComplete }: PhonePromptPr
 
   // Auto-expand when the parent wants to force the form open (e.g. booking gated on profile).
   useEffect(() => {
+    // Expands automatically when the parent asks and the profile is still missing details.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (forceExpanded && needsInfo) setExpanded(true);
   }, [forceExpanded, needsInfo]);
 

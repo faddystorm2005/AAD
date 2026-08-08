@@ -1,8 +1,9 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from './AuthContext';
+import { errorMessage } from '@/lib/errors';
 
 export interface Vehicle {
   id: string;
@@ -20,9 +21,13 @@ interface VehicleContextType {
   vehicles: Vehicle[];
   loading: boolean;
   error: string | null;
-  addVehicle: (data: Omit<Vehicle, 'id' | 'user_id' | 'created_at'>) => Promise<{ error?: any }>;
-  updateVehicle: (id: string, data: Partial<Vehicle>) => Promise<{ error?: any }>;
-  deleteVehicle: (id: string) => Promise<{ error?: any }>;
+  // These return a ready-to-display message rather than a raw error object.
+  // They used to return whatever was caught, which could be a string in the
+  // not-signed-in path and a PostgrestError otherwise, so callers reading
+  // `.message` silently showed nothing for the string case.
+  addVehicle: (data: Omit<Vehicle, 'id' | 'user_id' | 'created_at'>) => Promise<{ error: string | null }>;
+  updateVehicle: (id: string, data: Partial<Vehicle>) => Promise<{ error: string | null }>;
+  deleteVehicle: (id: string) => Promise<{ error: string | null }>;
   refreshVehicles: () => Promise<void>;
 }
 
@@ -34,7 +39,7 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchVehicles = async () => {
+  const fetchVehicles = useCallback(async () => {
     if (!user) {
       setVehicles([]);
       setLoading(false);
@@ -52,20 +57,22 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
 
       if (fetchError) throw fetchError;
       setVehicles(data || []);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err));
       console.error('Error fetching vehicles:', err);
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchVehicles();
   }, [user]);
 
+  useEffect(() => {
+    // Reloads the vehicle list when the signed-in user changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchVehicles();
+  }, [fetchVehicles]);
+
   const addVehicle = async (data: Omit<Vehicle, 'id' | 'user_id' | 'created_at'>) => {
-    if (!user) return { error: 'Not authenticated' };
+    if (!user) return { error: 'You are not signed in.' };
 
     try {
       const { error: insertError } = await supabase
@@ -78,9 +85,10 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
       if (insertError) throw insertError;
       await fetchVehicles();
       return { error: null };
-    } catch (err: any) {
-      setError(err.message);
-      return { error: err };
+    } catch (err) {
+      const message = errorMessage(err, 'Could not save that vehicle.');
+      setError(message);
+      return { error: message };
     }
   };
 
@@ -94,9 +102,10 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
       if (updateError) throw updateError;
       await fetchVehicles();
       return { error: null };
-    } catch (err: any) {
-      setError(err.message);
-      return { error: err };
+    } catch (err) {
+      const message = errorMessage(err, 'Could not update that vehicle.');
+      setError(message);
+      return { error: message };
     }
   };
 
@@ -110,9 +119,10 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
       if (deleteError) throw deleteError;
       await fetchVehicles();
       return { error: null };
-    } catch (err: any) {
-      setError(err.message);
-      return { error: err };
+    } catch (err) {
+      const message = errorMessage(err, 'Could not remove that vehicle.');
+      setError(message);
+      return { error: message };
     }
   };
 

@@ -23,7 +23,6 @@ export default function Icon() {
           justifyContent: "center",
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           width={size.width}

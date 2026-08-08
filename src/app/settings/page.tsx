@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabaseClient';
 import VehicleList from '@/components/VehicleList';
 import AddVehicleForm from '@/components/AddVehicleForm';
 import BookingWeather from '@/components/BookingWeather';
+import { errorMessage } from '@/lib/errors';
 
 interface Profile {
   id: string;
@@ -82,6 +83,8 @@ export default function SettingsPage() {
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
+    // Loads booking history from Supabase on mount. Subscribing to an external store is the case this rule exempts.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoadingHistory(true);
     (async () => {
       const { data } = await supabase
@@ -122,8 +125,8 @@ export default function SettingsPage() {
           : prev
       );
       setProfileMessage({ type: 'success', text: 'Profile updated.' });
-    } catch (err: any) {
-      setProfileMessage({ type: 'error', text: err?.message || 'Save failed.' });
+    } catch (err) {
+      setProfileMessage({ type: 'error', text: errorMessage(err, 'Save failed.') });
     } finally {
       setSavingProfile(false);
     }

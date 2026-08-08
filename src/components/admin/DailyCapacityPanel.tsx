@@ -11,6 +11,7 @@ import {
   SLOT_TIMES,
 } from '@/lib/slots';
 import { todayPhoenixDateString } from '@/lib/phoenixTime';
+import { errorMessage } from '@/lib/errors';
 
 interface Props {
   session: Session | null;
@@ -48,14 +49,16 @@ export default function DailyCapacityPanel({ session }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Failed to load availability');
       setDays(data.days ?? []);
-    } catch (err: any) {
-      setError(err?.message ?? 'Load failed');
+    } catch (err) {
+      setError(errorMessage(err, 'Load failed'));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    // Loads capacity and subscribes to Supabase realtime on mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
 
     // Refresh whenever bookings or daily_capacity change.
@@ -124,10 +127,10 @@ export default function DailyCapacityPanel({ session }: Props) {
       // Belt-and-suspenders: refresh from the server to pick up any
       // server-side derivations we didn't replicate locally.
       load();
-    } catch (err: any) {
+    } catch (err) {
       // Roll back.
       setDays(prev);
-      setError(err?.message ?? 'Update failed');
+      setError(errorMessage(err, 'Update failed'));
     } finally {
       setUpdatingDay(null);
     }

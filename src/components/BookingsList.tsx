@@ -15,6 +15,7 @@ import {
 } from '@/lib/bookingStages';
 import RescheduleModal from '@/components/RescheduleModal';
 import { SERVICE_TYPE_NAMES, ServiceType } from '@/lib/bookingPricing';
+import { errorMessage } from '@/lib/errors';
 
 type Status =
   | 'pending'
@@ -167,9 +168,9 @@ export default function BookingsList({ onBook }: BookingsListProps) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.error || 'Request failed');
       }
-    } catch (err: any) {
+    } catch (err) {
       setBookings(prev);
-      setDeleteError(err.message || 'Request failed');
+      setDeleteError(errorMessage(err, 'Request failed'));
     } finally {
       setCancellingId(null);
     }
@@ -201,8 +202,8 @@ export default function BookingsList({ onBook }: BookingsListProps) {
       }
       // Realtime will refresh the list; clear local state in case it doesn't fire.
       setBookings((prev) => prev.filter((b) => b.id !== bookingId));
-    } catch (err: any) {
-      setDeleteError(err.message || 'Delete failed');
+    } catch (err) {
+      setDeleteError(errorMessage(err, 'Delete failed'));
     } finally {
       setDeletingId(null);
     }
@@ -211,6 +212,8 @@ export default function BookingsList({ onBook }: BookingsListProps) {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
+      // Clears the list when the user signs out, driven by the auth store.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBookings([]);
       setLoading(false);
       return;

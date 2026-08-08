@@ -68,7 +68,18 @@ export async function GET(req: NextRequest) {
 
   // Profiles - request the discount column too. If it doesn't exist yet
   // (admin hasn't run the SQL), fall back to a query without it.
-  let profiles: any[] | null = null;
+  interface ProfileRow {
+    id: string;
+    email: string | null;
+    full_name: string | null;
+    phone: string | null;
+    is_admin: boolean;
+    custom_discount_rate?: number | null;
+    discount_single_use?: boolean | null;
+    created_at: string;
+  }
+
+  let profiles: ProfileRow[] | null = null;
   let profilesErr: { message: string } | null = null;
 
   {
@@ -95,7 +106,7 @@ export async function GET(req: NextRequest) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    profiles = (data ?? []).map((p: any) => ({
+    profiles = (data ?? []).map((p) => ({
       ...p,
       custom_discount_rate: 0,
       discount_single_use: false,

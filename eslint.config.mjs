@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static assets, not app source. sw.js is a hand-written service worker
+    // that runs in its own worker scope, so the app's rules do not apply.
+    "public/**",
   ]),
 ]);
 

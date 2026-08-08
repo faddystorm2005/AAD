@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDialog } from '@/contexts/DialogContext';
+import { errorMessage } from '@/lib/errors';
 
 interface PromoCode {
   id: string;
@@ -49,14 +50,16 @@ export default function ManagePromoCodes({ accessToken }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Load failed');
       setPromos(data.promos ?? []);
-    } catch (err: any) {
-      setFlash({ type: 'error', text: err?.message || 'Load failed' });
+    } catch (err) {
+      setFlash({ type: 'error', text: errorMessage(err, 'Load failed') });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    // Lazy-loads promo codes the first time the panel is opened.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open && promos.length === 0 && !loading) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -87,8 +90,8 @@ export default function ManagePromoCodes({ accessToken }: Props) {
       setMaxUses('');
       setExpiresAt('');
       setFlash({ type: 'success', text: `Code "${data.promo.code}" created.` });
-    } catch (err: any) {
-      setFlash({ type: 'error', text: err?.message || 'Create failed' });
+    } catch (err) {
+      setFlash({ type: 'error', text: errorMessage(err, 'Create failed') });
     } finally {
       setCreating(false);
     }
@@ -114,9 +117,9 @@ export default function ManagePromoCodes({ accessToken }: Props) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || 'Delete failed');
       setFlash({ type: 'success', text: `Deleted "${promo.code}".` });
-    } catch (err: any) {
+    } catch (err) {
       setPromos(prev);
-      setFlash({ type: 'error', text: err?.message || 'Delete failed' });
+      setFlash({ type: 'error', text: errorMessage(err, 'Delete failed') });
     } finally {
       setBusyId(null);
     }

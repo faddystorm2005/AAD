@@ -73,6 +73,8 @@ export default function Dashboard() {
     const signedIn = params.get('signedIn') === '1';
     const firstTime = params.get('firstTime') === '1';
 
+    // Reads a one-shot URL flag set by the auth callback, client-only.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (signedIn) setJustSignedIn(true);
     if (firstTime) setShowAddVehicle(true);
 
@@ -145,7 +147,7 @@ export default function Dashboard() {
               </svg>
             </span>
             <div className="text-left">
-              <div className="font-semibold text-green-100">You're signed in</div>
+              <div className="font-semibold text-green-100">You&apos;re signed in</div>
               {user?.email && (
                 <div className="text-xs text-green-200/80">{user.email}</div>
               )}

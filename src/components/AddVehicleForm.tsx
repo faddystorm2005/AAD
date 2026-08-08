@@ -72,7 +72,7 @@ export default function AddVehicleForm({ onClose }: AddVehicleFormProps) {
 
     const { error: submitError } = await addVehicle({ ...formData, size });
     if (submitError) {
-      setError(submitError.message);
+      setError(submitError);
     } else {
       onClose();
     }

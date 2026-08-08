@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useDialog } from '@/contexts/DialogContext';
+import { errorMessage } from '@/lib/errors';
 
 interface UserRow {
   id: string;
@@ -69,14 +70,16 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Failed to load users');
       setUsers(data.users ?? []);
-    } catch (err: any) {
-      setFlash({ type: 'error', text: err?.message || 'Load failed' });
+    } catch (err) {
+      setFlash({ type: 'error', text: errorMessage(err, 'Load failed') });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    // Lazy-loads the user list the first time the panel is opened.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open && users.length === 0) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -161,9 +164,9 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
           ? `${user.full_name || user.email} is now an admin.`
           : `${user.full_name || user.email} is no longer an admin.`,
       });
-    } catch (err: any) {
+    } catch (err) {
       setUsers(prev);
-      setFlash({ type: 'error', text: err?.message || 'Update failed' });
+      setFlash({ type: 'error', text: errorMessage(err, 'Update failed') });
     } finally {
       setUpdatingId(null);
     }
@@ -201,9 +204,9 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
             ? `${rate}% discount saved${singleUse ? ' (single use)' : ''}.`
             : 'Discount removed.',
       });
-    } catch (err: any) {
+    } catch (err) {
       setUsers(prev);
-      setFlash({ type: 'error', text: err?.message || 'Save failed' });
+      setFlash({ type: 'error', text: errorMessage(err, 'Save failed') });
     } finally {
       setSavingDiscount(null);
     }
@@ -265,8 +268,8 @@ export default function ManageAdmins({ currentAdminId, accessToken }: Props) {
         type: 'success',
         text: `${user.full_name || user.email} deleted.`,
       });
-    } catch (err: any) {
-      setFlash({ type: 'error', text: err?.message || 'Delete failed' });
+    } catch (err) {
+      setFlash({ type: 'error', text: errorMessage(err, 'Delete failed') });
     } finally {
       setDeletingUserId(null);
     }

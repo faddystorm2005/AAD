@@ -9,6 +9,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { ALL_STAGES, STAGE_LABELS } from '@/lib/bookingStages';
+import { oneOf, type JoinedCustomer } from '@/lib/bookingJoins';
 const ALLOWED_STAGES = ALL_STAGES;
 type Stage = (typeof ALLOWED_STAGES)[number];
 
@@ -129,12 +130,12 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
 
       if (b) {
-        const customer = (b as any).customer;
+        const customer = oneOf<JoinedCustomer>(b.customer);
         await notifyCustomerCarReady({
           customerName: customer?.full_name ?? null,
           customerPhone: customer?.phone ?? null,
           customerEmail: customer?.email ?? null,
-          service: (b as any).service,
+          service: b.service,
           bookingId,
         });
       }

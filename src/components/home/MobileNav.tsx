@@ -4,6 +4,7 @@ import { useEffect, useCallback, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
+import { useIsHydrated } from '@/lib/useBrowserState';
 
 const LINKS = [
   { href: '#services',    label: 'Services' },
@@ -16,16 +17,12 @@ const LINKS = [
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  // The portal target only exists on the client, so gate on hydration.
+  const mounted = useIsHydrated();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const close = useCallback(() => setOpen(false), []);
   const toggle = useCallback(() => setOpen((o) => !o), []);
-
-  // Portal target only exists after mount (SSR safety).
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // ESC key closes the drawer
   useEffect(() => {

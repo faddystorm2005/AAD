@@ -18,6 +18,7 @@ import {
 } from '@/lib/bookingPricing';
 import { fetchLivePriceTable } from '@/lib/livePricing';
 import { supabase } from '@/lib/supabaseClient';
+import { errorMessage } from '@/lib/errors';
 
 interface BookingFormProps {
   onClose: () => void;
@@ -116,6 +117,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
   // Prune incompatible add-ons when the service type changes.
   useEffect(() => {
+    // Seeds the form from the caller's saved vehicle once it has loaded.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormData((prev) => {
       const stillValid = prev.selectedAddOns.filter((addonId) => {
         const addon = ADD_ONS.find((a) => a.id === addonId);
@@ -243,8 +246,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
       clearDraft();
       window.location.href = `/booking-confirmation/${data.bookingId}`;
-    } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.');
+    } catch (err) {
+      setError(errorMessage(err, 'An error occurred. Please try again.'));
       setIsProcessing(false);
     }
   };

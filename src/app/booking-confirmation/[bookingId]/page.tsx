@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getBooking } from '@/lib/bookingService';
 import { SERVICE_TYPE_NAMES, ServiceType } from '@/lib/bookingPricing';
+import { errorMessage } from '@/lib/errors';
 
 type BookingStatus =
   | 'pending'
@@ -145,9 +146,9 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
           setBooking(result.booking as ConfirmationBooking);
           setLoading(false);
         }
-      } catch (err: any) {
+      } catch (err) {
         if (!cancelled) {
-          setError(err.message || 'An error occurred');
+          setError(errorMessage(err, 'An error occurred'));
           setLoading(false);
         }
       }

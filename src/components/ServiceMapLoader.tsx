@@ -31,6 +31,8 @@ export default function ServiceMapLoader() {
     if (!el) return;
 
     if (typeof IntersectionObserver === 'undefined') {
+      // Fallback for browsers with no IntersectionObserver, which cannot be detected during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShouldMount(true);
       return;
     }

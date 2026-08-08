@@ -56,6 +56,8 @@ function AuthInner() {
   // a confirmation link has expired or already been used).
   useEffect(() => {
     const incoming = searchParams.get('error');
+    // Surfaces an error passed in the URL, readable only on the client after mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (incoming) setError(incoming);
   }, [searchParams]);
 

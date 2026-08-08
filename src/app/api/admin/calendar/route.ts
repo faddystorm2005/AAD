@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { buildIcs, CalendarEvent } from '@/lib/icsCalendar';
 import { ADD_ONS, isCeramicSelected } from '@/lib/bookingPricing';
+import { oneOf, type JoinedCustomer, type JoinedVehicle } from '@/lib/bookingJoins';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -50,13 +51,14 @@ export async function GET(req: NextRequest) {
     return new NextResponse(`DB error: ${bookingsErr.message}`, { status: 500 });
   }
 
-  const events: CalendarEvent[] = (bookings ?? []).map((b: any) => {
+  const events: CalendarEvent[] = (bookings ?? []).map((b) => {
     const ceramic = isCeramicSelected(b.addons);
     // Ceramic = full day (8h). Everything else ~3h block.
     const duration = ceramic ? 8 : 3;
 
-    const customer = b.customer?.full_name || 'Customer';
-    const v = b.vehicle;
+    const c = oneOf<JoinedCustomer>(b.customer);
+    const customer = c?.full_name || 'Customer';
+    const v = oneOf<JoinedVehicle>(b.vehicle);
     const vehicleStr = v ? `${v.year} ${v.make} ${v.model}${v.nickname ? ` "${v.nickname}"` : ''}` : 'Vehicle';
 
     const addonNames =
@@ -64,7 +66,7 @@ export async function GET(req: NextRequest) {
         .map((id: string) => ADD_ONS.find((a) => a.id === id)?.name ?? id)
         .join(', ') || 'None';
 
-    const phone = b.customer?.phone ? `\nPhone: ${b.customer.phone}` : '';
+    const phone = c?.phone ? `\nPhone: ${c.phone}` : '';
     const description =
       `${b.service} – ${customer}${phone}\n` +
       `Vehicle: ${vehicleStr}\n` +

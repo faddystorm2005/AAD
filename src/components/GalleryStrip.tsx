@@ -21,6 +21,10 @@ export default function GalleryStrip() {
               key={`${photo.src}-${i}`}
               className="relative aspect-[3/4] w-44 flex-shrink-0 overflow-hidden rounded-xl border border-white/10 bg-gray-900"
             >
+              {/* Plain img on purpose: the marquee duplicates every node and
+                  relies on a flat flex row. next/image wraps each one in a
+                  sized span, which breaks the seamless loop. Already lazy. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photo.src}
                 alt={photo.alt}

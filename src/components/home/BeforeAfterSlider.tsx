@@ -52,6 +52,8 @@ export default function BeforeAfterSlider({
     const el = containerRef.current;
     if (!el) return;
     if (typeof IntersectionObserver === 'undefined') {
+      // Fallback for browsers with no IntersectionObserver, which cannot be detected during render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadSrc(true);
       return;
     }

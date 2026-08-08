@@ -57,6 +57,8 @@ function StatTile({ stat }: { stat: Stat }) {
     if (!el) return;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Scroll-triggered count-up, driven by IntersectionObserver and reduced-motion.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActive(true);
       return;
     }
@@ -118,6 +120,8 @@ function CountUp({ target, active }: { target: number; active: boolean }) {
     startedRef.current = true;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Scroll-triggered count-up, driven by IntersectionObserver and reduced-motion.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVal(target);
       return;
     }

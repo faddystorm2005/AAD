@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { sendPushToCustomer } from '@/lib/pushNotifications';
 import { notifyCustomerBookingApproved } from '@/lib/notify';
+import { oneOf, type JoinedCustomer } from '@/lib/bookingJoins';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -106,7 +107,7 @@ export async function POST(req: NextRequest) {
 
   // SMS + email fallback (best-effort).
   try {
-    const customer = (booking as any).customer;
+    const customer = oneOf<JoinedCustomer>(booking.customer);
     await notifyCustomerBookingApproved({
       customerName: customer?.full_name ?? null,
       customerPhone: customer?.phone ?? null,

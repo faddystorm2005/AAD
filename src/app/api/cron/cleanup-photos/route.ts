@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { errorMessage } from '@/lib/errors';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
         .remove([storagePath]);
       if (storageError) {
         // Continue even if storage delete fails - we still want the DB row gone
-        errors.push(`Storage delete failed for ${storagePath}: ${storageError.message}`);
+        errors.push(`Storage delete failed for ${storagePath}: ${errorMessage(storageError)}`);
       }
 
       // Delete the DB row
@@ -43,12 +44,12 @@ export async function GET(req: NextRequest) {
         .delete()
         .eq('id', photoId);
       if (dbError) {
-        errors.push(`DB delete failed for ${photoId}: ${dbError.message}`);
+        errors.push(`DB delete failed for ${photoId}: ${errorMessage(dbError)}`);
         return false;
       }
       return true;
-    } catch (err: any) {
-      errors.push(`Unexpected error for ${photoId}: ${err.message}`);
+    } catch (err) {
+      errors.push(`Unexpected error for ${photoId}: ${errorMessage(err)}`);
       return false;
     }
   };
@@ -64,7 +65,7 @@ export async function GET(req: NextRequest) {
 
   if (declinedError) {
     return NextResponse.json(
-      { error: `Declined query failed: ${declinedError.message}` },
+      { error: `Declined query failed: ${errorMessage(declinedError)}` },
       { status: 500 }
     );
   }
@@ -87,7 +88,7 @@ export async function GET(req: NextRequest) {
 
   if (oldError) {
     return NextResponse.json(
-      { error: `Old photos query failed: ${oldError.message}` },
+      { error: `Old photos query failed: ${errorMessage(oldError)}` },
       { status: 500 }
     );
   }

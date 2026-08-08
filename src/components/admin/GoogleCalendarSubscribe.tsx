@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDialog } from '@/contexts/DialogContext';
+import { errorMessage } from '@/lib/errors';
 
 interface Props {
   /** The admin's Supabase user_id - used to build the ICS subscription URL. */
@@ -32,6 +33,8 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
     const params = new URLSearchParams(window.location.search);
     const g = params.get('google');
     if (g === 'connected') {
+      // Reads the OAuth result from the URL and checks connection state on the server.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFlash({ type: 'success', text: 'Google Calendar connected!' });
       setOpen(true);
     } else if (g === 'error') {
@@ -58,6 +61,8 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
   // Load connection status.
   useEffect(() => {
     if (!accessToken) {
+      // Reads the OAuth result from the URL and checks connection state on the server.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setState('not_connected');
       return;
     }
@@ -100,8 +105,8 @@ export default function GoogleCalendarSubscribe({ adminUserId, accessToken }: Pr
       if (!res.ok) throw new Error('Disconnect failed');
       setState('not_connected');
       setFlash({ type: 'success', text: 'Disconnected.' });
-    } catch (err: any) {
-      setFlash({ type: 'error', text: err?.message || 'Disconnect failed' });
+    } catch (err) {
+      setFlash({ type: 'error', text: errorMessage(err, 'Disconnect failed') });
     } finally {
       setBusy(false);
     }

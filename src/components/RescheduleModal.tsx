@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { todayPhoenixDateString } from '@/lib/phoenixTime';
 import { SLOT_TIMES, SLOT_LABELS, SlotTime, DayAvailability } from '@/lib/slots';
 import BookingWeather from '@/components/BookingWeather';
+import { errorMessage } from '@/lib/errors';
 
 interface Props {
   bookingId: string;
@@ -49,6 +50,8 @@ export default function RescheduleModal({
   useEffect(() => {
     if (!slotDate) return;
     let cancelled = false;
+    // Fetches availability from the API when the modal opens.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoadingAvail(true);
     fetch(`/api/availability?from=${slotDate}&to=${slotDate}`)
       .then((r) => r.json())
@@ -87,8 +90,8 @@ export default function RescheduleModal({
       if (!res.ok) throw new Error(data?.error || 'Reschedule failed');
       onRescheduled();
       onClose();
-    } catch (err: any) {
-      setError(err?.message || 'Reschedule failed');
+    } catch (err) {
+      setError(errorMessage(err, 'Reschedule failed'));
     } finally {
       setSubmitting(false);
     }

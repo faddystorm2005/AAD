@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { deleteBookingFromGoogle } from '@/lib/googleCalendar';
 import { notifyCustomerBookingDeclined } from '@/lib/notify';
 import { sendPushToCustomer } from '@/lib/pushNotifications';
+import { oneOf, type JoinedCustomer } from '@/lib/bookingJoins';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -103,12 +104,12 @@ export async function POST(req: NextRequest) {
 
   // SMS + email so customers without push still get notified (best-effort).
   try {
-    const customer = (booking as any).customer;
+    const customer = oneOf<JoinedCustomer>(booking.customer);
     await notifyCustomerBookingDeclined({
       customerName: customer?.full_name ?? null,
       customerPhone: customer?.phone ?? null,
       customerEmail: customer?.email ?? null,
-      service: (booking as any).service,
+      service: booking.service,
       reason: reason || null,
     });
   } catch (err) {

@@ -24,6 +24,7 @@ import {
   type PaymentMethod,
 } from '@/lib/payments';
 import { ReviewRequestHealth } from '@/components/admin/ReviewRequestHealth';
+import { errorMessage } from '@/lib/errors';
 
 type Status =
   | 'pending'
@@ -241,6 +242,8 @@ export default function AdminPage() {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       const isStandalone = (navigator as { standalone?: boolean }).standalone === true;
       if (isIOS && !isStandalone) {
+        // Push capability check. Needs navigator/window, so it cannot run during render.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPushState('needs-install');
       } else {
         setPushState('unsupported');
@@ -295,8 +298,8 @@ export default function AdminPage() {
         body: JSON.stringify({ subscription: sub.toJSON(), userAgent: navigator.userAgent }),
       });
       setPushState('enabled');
-    } catch (err: any) {
-      setActionError('Could not enable push notifications: ' + err.message);
+    } catch (err) {
+      setActionError('Could not enable push notifications: ' + errorMessage(err));
     } finally {
       setPushWorking(false);
     }
@@ -318,8 +321,8 @@ export default function AdminPage() {
         body: JSON.stringify({ endpoint }),
       });
       setPushState('disabled');
-    } catch (err: any) {
-      setActionError('Could not disable push notifications: ' + err.message);
+    } catch (err) {
+      setActionError('Could not disable push notifications: ' + errorMessage(err));
     } finally {
       setPushWorking(false);
     }
@@ -360,9 +363,9 @@ export default function AdminPage() {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.error || 'Update failed');
       }
-    } catch (err: any) {
+    } catch (err) {
       setBookings(prev);
-      setActionError(err.message || 'Update failed');
+      setActionError(errorMessage(err, 'Update failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -453,10 +456,10 @@ export default function AdminPage() {
       }
       setPayFormOpenId(null);
       setActionSuccess(paid ? 'Payment recorded.' : 'Payment undone.');
-    } catch (err: any) {
+    } catch (err) {
       // Roll back on failure.
       setBookings(prev);
-      setActionError(err.message || 'Update failed');
+      setActionError(errorMessage(err, 'Update failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -492,9 +495,9 @@ export default function AdminPage() {
         throw new Error(body?.error || 'Approve failed');
       }
       setActionSuccess('Booking approved. Text the customer to lock in a time.');
-    } catch (err: any) {
+    } catch (err) {
       setBookings(prev);
-      setActionError(err.message || 'Approve failed');
+      setActionError(errorMessage(err, 'Approve failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -527,8 +530,8 @@ export default function AdminPage() {
       // Realtime will refresh; clear optimistically too.
       setBookings((prev) => prev.filter((b) => b.id !== bookingId));
       if (expandedId === bookingId) setExpandedId(null);
-    } catch (err: any) {
-      setActionError(err.message || 'Delete failed');
+    } catch (err) {
+      setActionError(errorMessage(err, 'Delete failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -594,9 +597,9 @@ export default function AdminPage() {
           ? `Cancellation approved. $${creditAmount.toFixed(2)} credit issued.`
           : 'Cancellation approved.'
       );
-    } catch (err: any) {
+    } catch (err) {
       setBookings(prev);
-      setActionError(err.message || 'Approve failed');
+      setActionError(errorMessage(err, 'Approve failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -643,9 +646,9 @@ export default function AdminPage() {
         return next;
       });
       setActionSuccess('Cancellation request denied. Customer notified.');
-    } catch (err: any) {
+    } catch (err) {
       setBookings(prev);
-      setActionError(err.message || 'Deny failed');
+      setActionError(errorMessage(err, 'Deny failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -700,9 +703,9 @@ export default function AdminPage() {
         return next;
       });
       setActionSuccess('Booking declined - slot freed.');
-    } catch (err: any) {
+    } catch (err) {
       setBookings(prevBookings);
-      setActionError(err.message || 'Decline failed');
+      setActionError(errorMessage(err, 'Decline failed'));
     } finally {
       setUpdatingId(null);
     }
@@ -1116,6 +1119,11 @@ export default function AdminPage() {
                                   className="group relative aspect-square overflow-hidden rounded-lg border border-gray-700 bg-gray-800"
                                 >
                                   {p.signedUrl ? (
+                                    // Supabase signed URLs are short-lived and
+                                    // host-specific, so next/image would need a
+                                    // remotePatterns entry per storage domain and
+                                    // would cache renders past URL expiry.
+                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={p.signedUrl}
                                       alt={slotKeyToLabel(p.slotKey)}
