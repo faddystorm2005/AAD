@@ -96,7 +96,6 @@ interface AdminBooking {
   booking_stage: Stage;
   status: Status;
   decline_reason: string | null;
-  payment_url: string | null;
   approved_at: string | null;
   declined_at: string | null;
   is_ceramic: boolean;

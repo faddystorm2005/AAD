@@ -41,7 +41,6 @@ export interface BookingRow {
   booking_stage: Stage;
   status: Status;
   decline_reason: string | null;
-  payment_url: string | null;
   started_at: string | null;
   completed_at: string | null;
   created_at: string;
@@ -224,7 +223,7 @@ export default function BookingsList({ onBook }: BookingsListProps) {
       const { data } = await supabase
         .from('bookings')
         .select(
-          'id, service, service_type, scheduled_at, address, unit, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, payment_url, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason'
+          'id, service, service_type, scheduled_at, address, unit, city, state, zip, deposit_amount, deposit_paid, total, booking_stage, status, decline_reason, started_at, completed_at, created_at, addons, is_ceramic, slot_date, slot_time, cancel_requested_at, cancel_request_reason'
         )
         .eq('user_id', user.id)
         .order('scheduled_at', { ascending: true });
@@ -337,17 +336,6 @@ export default function BookingsList({ onBook }: BookingsListProps) {
                 </span>
               </div>
             </div>
-
-            {status === 'approved' && b.payment_url && (
-              <a
-                href={b.payment_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary press mt-4 inline-block rounded-xl px-5 py-3 text-base font-semibold"
-              >
-                Pay ${Number(b.deposit_amount).toFixed(2)} deposit →
-              </a>
-            )}
 
             {showStageBar && (
               <div className="mt-3">

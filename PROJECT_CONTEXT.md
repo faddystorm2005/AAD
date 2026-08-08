@@ -26,7 +26,7 @@ Live at: **https://www.austin-autodetail.com** (deployed on Vercel). "Austin Aut
 - **Next.js 16.2.4** with **Turbopack** (NOT the Next.js you know — read `node_modules/next/dist/docs/` before writing code; APIs differ from training data).
 - **TypeScript**, **Tailwind v4**.
 - **Supabase** (Postgres + Auth + Realtime).
-- **No payment processor is in the booking flow.** Deposits were removed; customers pay in full on-site. The PayPal and Square libraries in `src/lib/` are vestigial. Do not wire them back in without being asked.
+- **No payment processor at all.** Deposits were removed and customers pay in full on-site, so the PayPal and Square libraries, their webhooks, and the payment-link route were deleted outright. Alex records what he collected via the admin "Mark as paid" button.
 - **Twilio** SMS + **Resend** email for notifications.
 - **Google Calendar** integration (admin-side ICS feed + OAuth push).
 - **Open-Meteo** for weather forecasts on booking dates (no API key).
@@ -153,13 +153,9 @@ REVALIDATE_SECRET
 # Cron auth. All three /api/cron/* routes require Bearer <CRON_SECRET>.
 CRON_SECRET
 
-# PayPal / Square: no longer used by the booking flow. Deposits were removed.
-# These stay set only so the vestigial webhook routes do not error.
-PAYMENT_PROCESSOR
-PAYPAL_CLIENT_ID
-PAYPAL_CLIENT_SECRET
-PAYPAL_ENVIRONMENT               # sandbox | live
-PAYPAL_WEBHOOK_ID
+# NOTE: the PayPal and Square vars (PAYMENT_PROCESSOR, PAYPAL_CLIENT_ID,
+# PAYPAL_CLIENT_SECRET, PAYPAL_ENVIRONMENT, PAYPAL_WEBHOOK_ID, SQUARE_*) are
+# no longer read by any code and can be deleted from the Vercel project.
 
 # Notifications
 RESEND_API_KEY

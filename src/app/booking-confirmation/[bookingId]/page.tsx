@@ -35,7 +35,6 @@ interface ConfirmationBooking {
   discount_amount: number;
   promo_code_used?: string | null;
   decline_reason: string | null;
-  payment_url: string | null;
   photo_permission?: boolean | null;
 }
 
@@ -160,46 +159,6 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
     };
   }, [bookingId]);
 
-  // Polling fallback - when the booking is in 'approved' status (waiting on
-  // deposit), we hit /api/paypal/check-capture which queries PayPal directly
-  // and captures the order if the buyer has approved. If captured, it flips
-  // the booking to confirmed in our DB. Then we re-fetch to update the UI.
-  // This works even if PayPal webhooks aren't being delivered.
-  //
-  // We fire ONE immediate tick on mount (so customers returning from PayPal
-  // see "Confirmed" within ~2s instead of waiting for the first interval),
-  // then poll every 3s as a safety net.
-  useEffect(() => {
-    // Only poll for a payment capture when there's actually a payment link
-    // (legacy deposit bookings). The simplified flow has no deposit, so an
-    // approved booking with no payment_url has nothing to capture.
-    if (!booking || booking.status !== 'approved' || !booking.payment_url) return;
-    let cancelled = false;
-    const tick = async () => {
-      // Ask PayPal directly via our server. Best-effort - failures are silent.
-      try {
-        await fetch(`/api/paypal/check-capture?bookingId=${bookingId}`);
-      } catch {
-        /* ignore */
-      }
-      if (cancelled) return;
-      // Re-load the booking from our DB so the UI reflects whatever
-      // check-capture wrote (or didn't write).
-      const result = await getBooking(bookingId);
-      if (cancelled) return;
-      if (result.success && result.booking) {
-        setBooking(result.booking as ConfirmationBooking);
-      }
-    };
-    // Fire immediately on mount (catches the post-PayPal redirect fast).
-    tick();
-    const interval = setInterval(tick, 3000);
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [booking, bookingId]);
-
   // Check if push is available and not yet subscribed for this booking.
   // Show the prompt only once the booking has loaded and isn't declined.
   useEffect(() => {
@@ -251,20 +210,6 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
       setPushState('enabled');
     } catch {
       setPushState('prompt');
-    }
-  };
-
-  const handleManualRefresh = async () => {
-    // Customer clicked "I paid - check now". First ask PayPal directly,
-    // then refresh from DB.
-    try {
-      await fetch(`/api/paypal/check-capture?bookingId=${bookingId}`);
-    } catch {
-      /* ignore */
-    }
-    const result = await getBooking(bookingId);
-    if (result.success && result.booking) {
-      setBooking(result.booking as ConfirmationBooking);
     }
   };
 
@@ -324,14 +269,8 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
   const header = STATUS_HEADER[status];
   const tone = TONE_CLASSES[header.tone];
 
-  const showStickyPay = status === 'approved' && Boolean(booking.payment_url);
-
   return (
-    <main
-      className={`min-h-screen bg-black px-6 py-16 text-white ${
-        showStickyPay ? 'pb-32 sm:pb-16' : ''
-      }`}
-    >
+    <main className="min-h-screen bg-black px-6 py-16 text-white">
       <div className="mx-auto flex w-full max-w-md flex-col gap-8">
         <div className={`glass-card animate-scale-in rounded-3xl border ${tone.border} ${tone.bg} p-8 text-center`}>
           {status === 'confirmed' && (
@@ -365,31 +304,7 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
             </p>
           )}
 
-          {status === 'approved' && booking.payment_url && (
-            <div className="mt-5 flex flex-col items-center gap-3">
-              <a
-                href={booking.payment_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="press inline-block rounded-xl bg-blue-600 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-blue-900/40 hover:bg-blue-700 sm:text-lg"
-              >
-                Pay ${Number(booking.deposit_amount).toFixed(2)} deposit →
-              </a>
-              <div className="flex items-center gap-2 text-sm text-blue-200">
-                <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-blue-400" />
-                <span>Checking for payment every 3 seconds…</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleManualRefresh}
-                className="press rounded-lg border border-blue-500/40 bg-blue-950/40 px-4 py-2 text-sm font-semibold text-blue-100 hover:bg-blue-900/40"
-              >
-                I paid. Check now
-              </button>
-            </div>
-          )}
-
-          {status === 'approved' && !booking.payment_url && (
+          {status === 'approved' && (
             <p className="mt-5 rounded-xl border-2 border-green-700 bg-green-900/30 p-4 text-base text-green-100">
               We&apos;ll text you shortly to lock in a time that works. No deposit needed. You pay on-site once the detail is done.
             </p>
@@ -499,22 +414,6 @@ export default function BookingConfirmationPage({ params }: BookingConfirmationP
         </Link>
       </div>
 
-      {/* Sticky deposit CTA for mobile - keeps the Pay button visible
-          while customers scroll the booking details. Hidden on desktop
-          (sm and up) where the inline button at the top of the status
-          card is already in view. */}
-      {showStickyPay && (
-        <div className="confirmation-pay-sticky fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/95 backdrop-blur sm:hidden">
-          <a
-            href={booking.payment_url ?? '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="press mx-auto flex w-full max-w-md items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-900/40 hover:bg-blue-700"
-          >
-            Pay ${Number(booking.deposit_amount).toFixed(2)} deposit →
-          </a>
-        </div>
-      )}
     </main>
   );
 }

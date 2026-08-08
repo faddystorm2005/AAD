@@ -22,9 +22,10 @@ Customers pay **nothing up front**. There is no deposit and no payment link.
 Approving a booking just confirms it, then the owners text the customer to
 arrange a time and collect the full amount on-site.
 
-The PayPal and Square libraries in `src/lib/` are vestigial from the old
-deposit flow. Do not wire them back into the booking flow without being asked.
-Any copy that mentions a deposit is a bug.
+There is **no payment processor in this codebase at all**. The PayPal and
+Square libraries, their webhook routes, and the payment-link endpoint were all
+deleted. Do not reintroduce a processor without being asked. Any copy that
+mentions a deposit is a bug.
 
 **`deposit_paid` does not mean the customer paid.** `/api/admin/approve` sets
 it `true` at approval time so the booking keeps holding its slot, and both
