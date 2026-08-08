@@ -1,4 +1,4 @@
-# Signature Mobile Detailing — Project Context
+# Signature Mobile Detailing: Project Context
 
 **Drop this file into a new Claude / AI chat to bring it up to speed on the codebase.**
 
@@ -23,14 +23,14 @@ Live at: **https://www.austin-autodetail.com** (deployed on Vercel). "Austin Aut
 
 ## Tech stack
 
-- **Next.js 16.2.4** with **Turbopack** (NOT the Next.js you know — read `node_modules/next/dist/docs/` before writing code; APIs differ from training data).
+- **Next.js 16.2.4** with **Turbopack** (NOT the Next.js you know, read `node_modules/next/dist/docs/` before writing code; APIs differ from training data).
 - **TypeScript**, **Tailwind v4**.
 - **Supabase** (Postgres + Auth + Realtime).
 - **No payment processor at all.** Deposits were removed and customers pay in full on-site, so the PayPal and Square libraries, their webhooks, and the payment-link route were deleted outright. Alex records what he collected via the admin "Mark as paid" button.
 - **Twilio** SMS + **Resend** email for notifications.
 - **Google Calendar** integration (admin-side ICS feed + OAuth push).
 - **Open-Meteo** for weather forecasts on booking dates (no API key).
-- Service worker for offline caching (`public/sw.js` — bump `VERSION` constant to flush stale clients).
+- Service worker for offline caching (`public/sw.js`, bump `VERSION` constant to flush stale clients).
 
 ---
 
@@ -38,11 +38,11 @@ Live at: **https://www.austin-autodetail.com** (deployed on Vercel). "Austin Aut
 
 From `AGENTS.md` / `CLAUDE.md`:
 - Read `node_modules/next/dist/docs/` before writing Next.js code. This Next.js has breaking changes vs. older versions.
-- **NEVER use em-dashes** (—) anywhere on the site. Use periods, commas, colons, or "and" / "or" instead. (User explicitly removed them site-wide.)
-- Don't push directly to `main` — but in this repo we push to `master`. Pushing was blocked at one point by GitHub branch protection; if blocked, ask user to push.
-- Always run `npm run build` (not just `npx tsc --noEmit`) before pushing — Next.js prerender can fail in ways TypeScript-only checks miss. Lost 8 consecutive Vercel deploys to this once.
+- **NEVER use the em-dash character** (U+2014) anywhere on the site. Use periods, commas, colons, or "and" / "or" instead. (User explicitly removed them site-wide.)
+- Don't push directly to `main`, but in this repo we push to `master`. Pushing was blocked at one point by GitHub branch protection; if blocked, ask user to push.
+- Always run `npm run build` (not just `npx tsc --noEmit`) before pushing: Next.js prerender can fail in ways TypeScript-only checks miss. Lost 8 consecutive Vercel deploys to this once.
 - Vercel deploys must be verified green after pushing. Use `npx vercel ls` or check the dashboard.
-- Windows builds occasionally crash with code 3221226505 / svgload errors. These are environmental — retry the build, Vercel's Linux builders don't have this issue.
+- Windows builds occasionally crash with code 3221226505 / svgload errors. These are environmental, retry the build, Vercel's Linux builders don't have this issue.
 
 ---
 
@@ -72,7 +72,7 @@ From `AGENTS.md` / `CLAUDE.md`:
 - `full_name`, `phone`, `email`
 - `is_admin` (boolean)
 - `custom_discount_rate` (0-50%) + `discount_single_use` (boolean)
-- `credit_balance` (numeric, default 0, ≥ 0 check) — auto-applied to next booking total
+- `credit_balance` (numeric, default 0, ≥ 0 check), auto-applied to next booking total
 
 ### `vehicles`
 - Per-customer saved cars (`year`, `make`, `model`, `size`, `color`, `nickname`).
@@ -80,10 +80,10 @@ From `AGENTS.md` / `CLAUDE.md`:
 ### `bookings`
 - `status` enum: `pending | approved | declined | cancelled | confirmed | in_progress | completed`
 - `booking_stage` enum: `requested | washing | waxing | interior | done` (and a few more added via SQL)
-- `cancel_requested_at` + `cancel_request_reason` — customer requests cancellation, admin reviews
-- `credit_applied` — how much account credit was used at booking time
-- `decline_reason` / `cancelled_at` / `declined_at` — audit columns
-- `payment_url` — PayPal order URL once approved
+- `cancel_requested_at` + `cancel_request_reason`, customer requests cancellation, admin reviews
+- `credit_applied`, how much account credit was used at booking time
+- `decline_reason` / `cancelled_at` / `declined_at`, audit columns
+- `payment_url`, PayPal order URL once approved
 - `addons` (jsonb), `is_ceramic` (boolean, locks slot)
 
 ### `app_config`
@@ -104,7 +104,7 @@ From `AGENTS.md` / `CLAUDE.md`:
 - **Auth** (`/auth`): Google + magic link, with cross-device code option.
 - **Dashboard** (`/dashboard`): time-based greeting, personal stats (vehicles, bookings, days a member, account credit if any), quick actions grid, vehicles list, bookings list, gallery.
 - **Settings** (`/settings`): profile (name/phone/email), vehicles, past bookings.
-- **Booking flow** (modal): 3 steps — pick car & extras → when/where → review & submit.
+- **Booking flow** (modal): 3 steps, pick car & extras → when/where → review & submit.
 - **Reschedule modal**: change the slot.
 - **Cancellation requests**: customer requests with optional reason; admin approves (with optional credit) or denies. Customer cannot cancel directly anymore.
 - **Booking confirmation** (`/booking-confirmation/[id]`): status and stage progress. No payment step; the page tells the customer we will text to lock in a time and that they pay on-site.
@@ -125,13 +125,13 @@ From `AGENTS.md` / `CLAUDE.md`:
 ## Notifications (`src/lib/notify.ts`)
 
 All best-effort (never throw):
-- `sendSms(to, body)` — Twilio
-- `sendEmail({ to, subject, html, text })` — Resend
-- `notifyAdminNewBooking(...)` — SMS to admin on new booking
-- `notifyAdminCancellationRequest(...)` — SMS to admin on cancel request
-- `notifyCustomerCarReady(...)` — SMS + email on stage='done'
-- `notifyCustomerCancellationApproved(...)` — SMS + email when cancel approved (mentions credit if issued)
-- `notifyCustomerCancellationDenied(...)` — SMS + email when cancel denied (with optional admin note)
+- `sendSms(to, body)`, Twilio
+- `sendEmail({ to, subject, html, text })`, Resend
+- `notifyAdminNewBooking(...)`, SMS to admin on new booking
+- `notifyAdminCancellationRequest(...)`, SMS to admin on cancel request
+- `notifyCustomerCarReady(...)`, SMS + email on stage='done'
+- `notifyCustomerCancellationApproved(...)`, SMS + email when cancel approved (mentions credit if issued)
+- `notifyCustomerCancellationDenied(...)`, SMS + email when cancel denied (with optional admin note)
 
 Resend is also configured as the SMTP provider for Supabase auth emails (avoids Supabase's 3-emails-per-hour built-in limit).
 
@@ -172,17 +172,17 @@ ADMIN_NOTIFY_PHONE               # optional override; falls back to admin.profil
 
 In rough order:
 
-1. Auth simplification — Google + magic link, no passwords (`d16b955`).
+1. Auth simplification: Google + magic link, no passwords (`d16b955`).
 2. Confirmation toast on dashboard after sign-in (`d582b0c`).
 3. Auto-redirect signed-in users away from /auth (`cb528a5`).
 4. Cross-device sign-in via OTP code (`d75ab2d`, `1dfdef4`).
 5. Phone-number nag banner on dashboard (`ddfa007`).
 6. Cancellation request workflow + customer account credit (`2a851e1`).
-7. Dashboard liveliness — greeting, stats, quick actions (`aa405b8`).
+7. Dashboard liveliness, greeting, stats, quick actions (`aa405b8`).
 8. Homepage Mission + Real Value sections (`b24103b`, `315b3aa`, `a3fd772`).
 9. Booking flow: bigger touch targets, plain language (`e8d75cf`).
-10. Three readability passes — bigger text, real buttons, higher contrast across dashboard, settings, reschedule modal, booking confirmation, homepage, vehicle forms (`13c418e`, `6cbedb6`, `c8eff4a`).
-11. Auth visual hierarchy — Google primary, email secondary (`e0934da`).
+10. Three readability passes, bigger text, real buttons, higher contrast across dashboard, settings, reschedule modal, booking confirmation, homepage, vehicle forms (`13c418e`, `6cbedb6`, `c8eff4a`).
+11. Auth visual hierarchy: Google primary, email secondary (`e0934da`).
 12. Supabase database linter security fixes via `supabase-security-fixes.sql` (`b894387`, `525971e`).
 13. SQL migration for cancellation requests + credit columns: `supabase-cancellation-requests.sql`.
 14. Explicit Supabase client auth options (`5000744`).
@@ -203,7 +203,7 @@ In rough order:
 
 - Pushing to master directly may be blocked by branch protection; if so, ask user to push.
 - Vercel rejects builds with placeholder git author emails. User's git config should match her GitHub primary email.
-- The `cancelled` status enum value may not exist on all DB instances — there's a fallback to `declined` in cancel routes.
+- The `cancelled` status enum value may not exist on all DB instances, there's a fallback to `declined` in cancel routes.
 - `is_current_user_admin()` SECURITY DEFINER function MUST have EXECUTE granted to `authenticated` or RLS policies on profiles/vehicles/bookings break for everyone.
 - Supabase email OTP length is per-project (6-10 digits). Auth page accepts up to 10.
 - Service worker can serve stale bundles; bump `VERSION` constant in `public/sw.js` after meaningful deploys.

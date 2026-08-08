@@ -62,7 +62,7 @@ In the **Add a new sitemap** field, type:
 sitemap.xml
 ```
 
-(just the filename, not the full URL — Search Console fills in the
+(just the filename, not the full URL: Search Console fills in the
 domain). Click Submit.
 
 You should see "Success" within a few seconds. Google will then start
@@ -107,7 +107,7 @@ me the error text and I'll fix it.
   for the first month, then monthly.
 - **Coverage tab**: shows pages Google tried to crawl but couldn't. The
   gated pages (`/dashboard`, `/admin`, etc) are excluded by `robots.txt`
-  on purpose, so they will appear here as "Excluded by robots.txt" — that
+  on purpose, so they will appear here as "Excluded by robots.txt", that
   is correct, not an error.
 - **Resubmit the sitemap** after any major content change. Not required,
   but it speeds up re-crawling.

@@ -51,26 +51,26 @@ Scope: N files changed (list them)
     <if FAIL: one-line summary>
 
 [3] Body-text size (text-xs / 10px): PASS | WARN | FAIL
-    <if WARN/FAIL: file:line — context>
+    <if WARN/FAIL: file:line, context>
 
 [4] Dark-bg contrast (gray-400/500): PASS | FAIL
-    <if FAIL: file:line — context>
+    <if FAIL: file:line, context>
 
 [5] Tap targets (py-2 etc on interactive): PASS | WARN
-    <if WARN: file:line — context>
+    <if WARN: file:line, context>
 
 [6] iOS input zoom (text-sm on inputs): PASS | WARN
-    <if WARN: file:line — context>
+    <if WARN: file:line, context>
 
 [7] Word-break on user content: PASS | WARN
-    <if WARN: file:line — context>
+    <if WARN: file:line, context>
 
 === verdict ===
-PASS — safe to commit
+PASS, safe to commit
 or
-FAIL — fix the items marked FAIL above before committing
+FAIL, fix the items marked FAIL above before committing
 or
-PASS WITH WARNINGS — N soft warnings, parent agent must decide
+PASS WITH WARNINGS: N soft warnings, parent agent must decide
 ```
 
 ## Important boundaries

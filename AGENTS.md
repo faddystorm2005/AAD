@@ -1,7 +1,7 @@
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This version has breaking changes: APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
 # Stack
@@ -39,8 +39,10 @@ scheduling. Schema: `supabase-add-payment-tracking.sql`.
 
 # House rules
 
-- **Never use em-dashes (—)** anywhere in `src/`. Use periods, commas, colons,
-  or "and" / "or". Check with `grep -rn "—" src/` before committing.
+- **Never use the em-dash character (U+2014)** anywhere in `src/`. Use periods,
+  commas, colons, or "and" / "or". Check before committing with:
+  `grep -rnP "\x{2014}" src/` (matching by codepoint, so this rule can be
+  written down without violating itself).
 - Run `npm run build`, not just `tsc --noEmit`. Prerender fails in ways a
   typecheck cannot catch. The build needs Supabase env vars to be set.
 - Never hardcode a secret. Read it from `process.env` and fail closed if it is

@@ -20,20 +20,20 @@ Wait for it to complete. Be patient: a clean build takes about 6-10 seconds for 
 
 If the build fails with `Worker exited with code 3221226505` (Windows STACK_BUFFER_OVERRUN), that is a known Turbopack-on-Windows flake on cold-cache parallel page generation. Retry the build ONCE before reporting failure. If it passes on retry, report PASS and note "first attempt hit Windows worker flake, retry succeeded."
 
-Don't retry more than once. Don't try to fix the cold cache (`rm -rf .next`) yourself — that often triggers the flake.
+Don't retry more than once. Don't try to fix the cold cache (`rm -rf .next`) yourself, that often triggers the flake.
 
 ## Reporting format
 
 On pass:
 
 ```
-PASS — Compiled successfully in N seconds, all pages prerendered.
+PASS: Compiled successfully in N seconds, all pages prerendered.
 ```
 
 On fail (after the optional retry):
 
 ```
-FAIL — <one-line summary of the error>
+FAIL, <one-line summary of the error>
 
 <the most relevant 5-15 lines of the build output, focusing on the actual error and file:line if present>
 ```
