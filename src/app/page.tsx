@@ -17,7 +17,7 @@ import {
   MapPin,
   Eye,
 } from 'lucide-react';
-import { SERVICE_TYPES, SERVICE_TYPE_NAMES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE, DEPOSIT_AMOUNT } from '@/lib/bookingPricing';
+import { SERVICE_TYPES, SERVICE_TYPE_NAMES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import HomeNavAccountLink from '@/components/HomeNavAccountLink';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
@@ -33,7 +33,6 @@ import AmbientVideo from '@/components/home/AmbientVideo';
 import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
 import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
-import MarqueeTestimonials from '@/components/home/MarqueeTestimonials';
 import MobileBottomBar from '@/components/home/MobileBottomBar';
 import PagePolish from '@/components/home/PagePolish';
 import ServiceMapLoader from '@/components/ServiceMapLoader';
@@ -290,7 +289,7 @@ export default async function Home() {
             Pricing
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Flat rates by vehicle size. Travel included, no surprise fees. A ${DEPOSIT_AMOUNT} deposit holds your slot, the rest is paid on-site.
+            Flat rates by vehicle size. Travel included, no surprise fees. Nothing to pay up front, you pay on-site once the work is done.
           </p>
         </div>
 
@@ -650,22 +649,6 @@ export default async function Home() {
           <p className="reveal-on-scroll mt-4 text-xs italic text-gray-700">
             &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &mdash; Prov. 16:3
           </p>
-        </div>
-      </section>
-
-      {/* Testimonials marquee - social proof before FAQ. Auto-scrolls,
-          pauses on hover (desktop) and touch-hold (mobile). */}
-      <section aria-label="Customer reviews" className="relative z-10 py-16 overflow-hidden">
-        <div className="reveal-on-scroll mx-auto w-full max-w-5xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
-            What Customers Say
-          </p>
-          <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
-            Real Reviews
-          </h2>
-        </div>
-        <div className="mt-10">
-          <MarqueeTestimonials testimonials={live.reviews} />
         </div>
       </section>
 

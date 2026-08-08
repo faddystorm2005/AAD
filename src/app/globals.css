@@ -205,17 +205,12 @@ h6 {
   box-shadow: 0 10px 30px -12px rgba(212, 162, 76, 0.35);
 }
 
-/* Auto-scrolling marquee for testimonials. The element being animated must
-   be width: max-content with duplicated children so -50% lands on a clone
-   of element 0 (seamless loop). Use group-hover:paused on the parent. */
+/* Auto-scrolling marquee for the gallery strip. The element being animated
+   must be width: max-content with duplicated children so -50% lands on a
+   clone of element 0 (seamless loop). Use group-hover:paused on the parent. */
 @keyframes aad-marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
-}
-.marquee-track {
-  width: max-content;
-  animation: aad-marquee 38s linear infinite;
-  will-change: transform;
 }
 .marquee-track-gallery {
   width: max-content;
@@ -712,7 +707,6 @@ button:disabled {
     animation: none !important;
     width: 56px !important;
   }
-  .marquee-track,
   .marquee-track-gallery {
     animation: none !important;
     transform: none !important;
