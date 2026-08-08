@@ -6,13 +6,19 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Expire approved-but-unpaid bookings (P0-1).
+ * Expire stale approvals (P0-1).
  *
- * A booking that is still 'approved' and deposit_paid=false past its
- * expires_at gets flipped to 'declined' so the bookkeeping stays clean
- * and the customer is notified. The slot itself was already freed in
- * real time by the availability route's expires_at filter, so this cron
- * is for record-keeping plus customer notification.
+ * A booking still 'approved' with deposit_paid=false past its expires_at
+ * gets flipped to 'declined' so the bookkeeping stays clean and the
+ * customer is notified. The slot itself was already freed in real time by
+ * the availability route's expires_at filter, so this cron is for
+ * record-keeping plus customer notification.
+ *
+ * DORMANT under the current model: /api/admin/approve sets deposit_paid
+ * true and never sets expires_at, so no new booking can match this
+ * filter. It stays in place only for legacy rows created back when a
+ * deposit held the slot. The wording below deliberately avoids mentioning
+ * a deposit, since customers are never asked for one now.
  *
  * Auth: Bearer token matching CRON_SECRET. Vercel cron sends this header
  * automatically when the path is registered in vercel.json.
@@ -57,7 +63,7 @@ export async function GET(req: NextRequest) {
     .from('bookings')
     .update({
       status: 'declined',
-      decline_reason: 'Deposit not paid in time',
+      decline_reason: 'Approval expired before it was scheduled',
       declined_at: nowIso,
     })
     .in('id', ids);
@@ -81,7 +87,7 @@ export async function GET(req: NextRequest) {
         customerPhone: customer?.phone ?? null,
         customerEmail: customer?.email ?? null,
         service: b.service,
-        reason: 'Deposit was not paid in time. Please rebook to reserve a new slot.',
+        reason: 'This request expired before we could get it scheduled. Please rebook to reserve a new slot.',
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);

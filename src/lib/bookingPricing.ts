@@ -135,7 +135,6 @@ export function isCeramicSelected(addOnIds: string[] | null | undefined): boolea
   return Boolean(addOnIds?.includes(CERAMIC_ADDON_ID));
 }
 
-export const DEPOSIT_AMOUNT = 30;
 export const RETURNING_CUSTOMER_DISCOUNT_RATE = 0.10;
 
 export interface BookingData {
@@ -156,7 +155,6 @@ export interface PricingBreakdown {
   subtotal: number;
   discount: number;
   total: number;
-  deposit: number;
   isReturning: boolean;
 }
 
@@ -201,7 +199,6 @@ export function calculatePricing(
     subtotal,
     discount,
     total,
-    deposit: DEPOSIT_AMOUNT,
     isReturning,
   };
 }
