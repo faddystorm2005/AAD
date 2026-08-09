@@ -646,8 +646,8 @@ export default async function Home() {
           <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-300">
             Alex Browning, Owner
           </p>
-          <p className="reveal-on-scroll mt-4 text-xs italic text-gray-700">
-            &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &mdash; Prov. 16:3
+          <p className="reveal-on-scroll mt-4 text-sm italic text-gray-300">
+            &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &middot; Prov. 16:3
           </p>
         </div>
       </section>
