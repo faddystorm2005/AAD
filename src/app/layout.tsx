@@ -22,15 +22,11 @@ const oswald = Oswald({
 });
 
 // Canonical site URL. The Vercel domain config serves www as the live
-// address and redirects apex (signaturemobiledetail.com) -> www, so the
+// address and redirects apex (austin-autodetail.com) -> www, so the
 // canonical must match what the customer actually hits in the browser.
 // If the redirect direction is ever flipped to www -> apex, change
 // this AND sitemap.ts AND robots.ts in the same commit.
-//
-// Renamed from austin-autodetail.com. The old domain must stay registered and
-// 301 to this one: it is what every existing Google result, business listing
-// and printed card points at, and a dropped redirect throws all of that away.
-const SITE_URL = "https://www.signaturemobiledetail.com";
+const SITE_URL = "https://www.austin-autodetail.com";
 const SOCIAL_TITLE = "Mobile Car Detailing in Phoenix, AZ | Signature Mobile Detailing";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
 // so search engines and social previews stay consistent.
@@ -80,7 +76,7 @@ const SCHEMA_LOCAL_BUSINESS = {
       availableLanguage: "English",
     },
   ],
-  email: "info@signaturemobiledetail.com",
+  email: "info@austin-autodetail.com",
   // image is the rich-result preview thumbnail. Using the marketing CTA
   // image (1200x630, OG-sized) so Google's local pack and rich results
   // show real work, not just the logo. logo stays as the brand mark.
