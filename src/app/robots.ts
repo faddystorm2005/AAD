@@ -23,7 +23,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://www.austin-autodetail.com/sitemap.xml",
-    host: "https://www.austin-autodetail.com",
+    sitemap: "https://www.signaturemobiledetailaz.com/sitemap.xml",
+    host: "https://www.signaturemobiledetailaz.com",
   };
 }
