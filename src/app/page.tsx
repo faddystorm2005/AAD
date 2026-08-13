@@ -643,8 +643,12 @@ export default async function Home() {
             don&apos;t cut a single corner. Cars take you to the people and
             places that matter, so they should look the part.
           </p>
-          <p className="reveal-on-scroll mt-6 text-xs uppercase tracking-[0.3em] text-gray-300">
-            Alex Browning, Owner
+          {/* Both names, because they own it fifty-fifty and the paragraph
+              above is written as "we". Attributing it to one of them made the
+              other invisible on the only part of the page that says who you
+              are actually hiring. */}
+          <p className="reveal-on-scroll mt-6 text-sm uppercase tracking-[0.3em] text-gray-300">
+            Alex Browning &amp; Kane Pexa, Owners
           </p>
           <p className="reveal-on-scroll mt-4 text-sm italic text-gray-300">
             &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &middot; Prov. 16:3

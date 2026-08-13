@@ -15,7 +15,7 @@ export function renderReviewRequestEmail(input: ReviewRequestInput): {
   const vehiclePhrase = input.vehicle ? `your ${input.vehicle}` : 'your vehicle';
 
   const photoPS = input.photoPermission
-    ? `<p style="font-size:15px;color:#555;margin-top:24px;">P.S. Thanks for letting us share photos of ${vehiclePhrase} on our site and social. The work came out great.</p>`
+    ? `<p style="font-size:16px;color:#4a4a4a;margin-top:24px;">P.S. Thanks for letting us share photos of ${vehiclePhrase} on our site and social. The work came out great.</p>`
     : '';
 
   const photoPSText = input.photoPermission
@@ -33,13 +33,13 @@ export function renderReviewRequestEmail(input: ReviewRequestInput): {
           <tr>
             <td style="font-size:16px;line-height:1.6;color:#222;">
               <p style="margin:0 0 16px;">Hi ${input.firstName},</p>
-              <p style="margin:0 0 16px;">Alex here. Thanks for trusting us with ${vehiclePhrase} on ${input.serviceDateFormatted}.</p>
+              <p style="margin:0 0 16px;">Thanks for trusting us with ${vehiclePhrase} on ${input.serviceDateFormatted}.</p>
               <p style="margin:0 0 24px;">If we earned it, would you drop us a quick recommendation on NextDoor? It's the biggest thing that helps neighbors find us, and it takes about 30 seconds.</p>
               <p style="margin:0 0 32px;text-align:center;">
                 <a href="${input.nextdoorUrl}" style="display:inline-block;background:#d4a24c;color:#0a0a0a;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:600;font-size:16px;">Recommend us on NextDoor</a>
               </p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;">Not on NextDoor? Just reply to this email with your thoughts. We'd love to feature you on the site.</p>
-              <p style="margin:24px 0 0;">Thanks,<br>Alex<br>Signature Mobile Detailing<br>(480) 793-3782</p>
+              <p style="margin:0 0 16px;font-size:16px;color:#4a4a4a;">Not on NextDoor? Just reply to this email with your thoughts. We'd love to feature you on the site.</p>
+              <p style="margin:24px 0 0;">Thanks,<br>Alex and Kane<br>Signature Mobile Detailing<br>(480) 793-3782</p>
               ${photoPS}
             </td>
           </tr>
@@ -53,7 +53,7 @@ export function renderReviewRequestEmail(input: ReviewRequestInput): {
 
   const text = `Hi ${input.firstName},
 
-Alex here. Thanks for trusting us with ${vehiclePhrase} on ${input.serviceDateFormatted}.
+Thanks for trusting us with ${vehiclePhrase} on ${input.serviceDateFormatted}.
 
 If we earned it, would you drop us a quick recommendation on NextDoor? It's the biggest thing that helps neighbors find us, and it takes about 30 seconds.
 
@@ -62,7 +62,7 @@ Recommend us on NextDoor: ${input.nextdoorUrl}
 Not on NextDoor? Just reply to this email with your thoughts. We'd love to feature you on the site.
 
 Thanks,
-Alex
+Alex and Kane
 Signature Mobile Detailing
 (480) 793-3782${photoPSText}`;
 
