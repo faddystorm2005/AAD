@@ -55,14 +55,31 @@ export async function sendPushToAllAdmins(payload: PushPayload): Promise<void> {
     .from('push_subscriptions')
     .select('id, endpoint, p256dh, auth');
 
-  if (error || !subs?.length) return;
+  if (error) {
+    console.error('[push] could not read admin subscriptions', errorMessage(error));
+    return;
+  }
+
+  // Nobody subscribed means nobody is being told a booking came in. That is a
+  // silent failure with a real cost, and it is reachable on its own: expired
+  // subscriptions are pruned below, so the last device going stale empties the
+  // table and every later booking notifies no one, quietly.
+  if (!subs?.length) {
+    console.error(
+      '[push] NO ADMIN DEVICES SUBSCRIBED. This booking alert reached nobody. ' +
+        'An owner needs to open the admin on their phone and re-enable notifications.'
+    );
+    return;
+  }
 
   const expiredIds: string[] = [];
+  let delivered = 0;
 
   await Promise.all(
     subs.map(async (sub) => {
       const result = await sendToSubscription(sub, payload);
       if (result === 'expired') expiredIds.push(sub.id);
+      else if (result === 'ok') delivered += 1;
     })
   );
 
@@ -71,6 +88,21 @@ export async function sendPushToAllAdmins(payload: PushPayload): Promise<void> {
       .from('push_subscriptions')
       .delete()
       .in('id', expiredIds);
+  }
+
+  // The business has two owners, so "it worked" means more than one phone
+  // buzzed. Log the counts either way: a run that delivers to one device out
+  // of two looks identical to a healthy one otherwise.
+  if (delivered === 0) {
+    console.error(
+      `[push] admin alert reached 0 of ${subs.length} device(s). ` +
+        `${expiredIds.length} were expired and have been removed.`
+    );
+  } else {
+    console.log(
+      `[push] admin alert delivered to ${delivered} of ${subs.length} device(s)` +
+        (expiredIds.length ? `, pruned ${expiredIds.length} expired` : '')
+    );
   }
 }
 
