@@ -395,20 +395,18 @@ export const metadata: Metadata = {
     description: SOCIAL_DESCRIPTION,
     url: SITE_URL + "/",
     locale: "en_US",
-    images: [
-      {
-        url: "/images/aad/cta-king-ranch.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Ford F-150 King Ranch interior detailed by Signature Mobile Detailing",
-      },
-    ],
+    // No explicit images here on purpose. An images array set in metadata
+    // overrides the generated opengraph-image.tsx, and the file this used to
+    // point at (cta-king-ranch.jpg) is 895x1600 portrait while being declared
+    // 1200x630, so every platform cropped it to an unreadable slice.
+    // Next.js picks up src/app/opengraph-image.tsx automatically.
   },
   twitter: {
     card: "summary_large_image",
     title: SOCIAL_TITLE,
     description: SOCIAL_DESCRIPTION,
-    images: ["/images/aad/cta-king-ranch.jpg"],
+    // Same reason as openGraph above: leaving images unset lets the generated
+    // opengraph-image.tsx serve both cards, so they can never drift apart.
   },
   robots: {
     index: true,
