@@ -31,10 +31,10 @@ const oswald = Oswald({
 // 301 here: it is what every existing Google result, business listing and
 // printed card points at, and a dropped redirect throws all of that away.
 //
-// The email addresses below deliberately stay on austin-autodetail.com until
-// the new domain is verified in Resend. Sending from an unverified domain gets
-// rejected or spam-filed, so moving them early breaks review emails rather
-// than improving them.
+// Email moved here too, once signaturemobiledetailaz.com was verified in
+// Resend (DKIM, SPF and the bounce MX are on the send subdomain). Sending from
+// an unverified domain gets rejected, so the order mattered: verify first,
+// then switch FROM_ADDRESS and REPLY_TO_ADDRESS in the review-request cron.
 const SITE_URL = "https://www.signaturemobiledetailaz.com";
 const SOCIAL_TITLE = "Mobile Car Detailing in Phoenix, AZ | Signature Mobile Detailing";
 // One canonical description used everywhere (page meta, Open Graph, Twitter)
@@ -85,10 +85,14 @@ const SCHEMA_LOCAL_BUSINESS = {
       availableLanguage: "English",
     },
   ],
-  email: "info@austin-autodetail.com",
-  // image is the rich-result preview thumbnail. Using the marketing CTA
-  // image (1200x630, OG-sized) so Google's local pack and rich results
-  // show real work, not just the logo. logo stays as the brand mark.
+  email: "info@signaturemobiledetailaz.com",
+  // image is the rich-result preview thumbnail Google may show in the local
+  // pack. The comment here used to claim this file was "1200x630, OG-sized".
+  // It is not: cta-king-ranch.jpg is 895x1600, a portrait phone photo. That
+  // mismatch is what made the old link previews unusable before
+  // opengraph-image.tsx replaced them. Google crops rather than stretches, so
+  // a portrait still renders, but it is worth swapping for a real landscape
+  // shot of finished work when one exists.
   image: `${SITE_URL}/images/aad/cta-king-ranch.jpg`,
   logo: `${SITE_URL}/images/aad/logo.png`,
   // Naming the real owners gives Google a person-to-business link, which

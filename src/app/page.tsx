@@ -837,8 +837,8 @@ export default async function Home() {
               (602) 881-5602
             </a>
             , email{' '}
-            <a href="mailto:info@austin-autodetail.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              info@austin-autodetail.com
+            <a href="mailto:info@signaturemobiledetailaz.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              info@signaturemobiledetailaz.com
             </a>
             , or{' '}
             <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
@@ -884,8 +884,8 @@ export default async function Home() {
               </a>
             </p>
             <p className="mt-2 text-base text-gray-200">
-              <a href="mailto:info@austin-autodetail.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-                info@austin-autodetail.com
+              <a href="mailto:info@signaturemobiledetailaz.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+                info@signaturemobiledetailaz.com
               </a>
             </p>
             <p className="mt-2 text-sm text-gray-300">
