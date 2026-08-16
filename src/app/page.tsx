@@ -470,7 +470,9 @@ export default async function Home() {
               <div className="relative aspect-[9/16] w-40 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-all duration-500 group-hover:ring-gold-500/60 group-hover:shadow-[0_0_28px_rgba(212,162,76,0.4)] sm:w-44">
                 <LazyVideo
                   src="/images/aad/tiktok-mercedes.mp4"
+                  poster="/images/aad/posters/tiktok-mercedes.jpg"
                   ariaLabel="Mercedes detail TikTok preview"
+                  tapToPlay={false}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 {/* TikTok glyph badge overlay */}
@@ -744,6 +746,7 @@ export default async function Home() {
           <div className="relative mx-auto aspect-[9/16] w-full max-w-xs overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 sm:mx-0 sm:w-1/3 sm:max-w-none">
             <LazyVideo
               src="/images/aad/13460847_2160_3840_60fps.mp4"
+              poster="/images/aad/posters/13460847_2160_3840_60fps.jpg"
               ariaLabel="Bentley interior detailing in progress"
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -754,6 +757,7 @@ export default async function Home() {
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/garage.mp4"
+                poster="/images/aad/posters/garage.jpg"
                 ariaLabel="Signature Mobile Detailing garage"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -761,6 +765,7 @@ export default async function Home() {
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/van.mp4"
+                poster="/images/aad/posters/van.jpg"
                 ariaLabel="Signature Mobile Detailing mobile detailing van"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -768,6 +773,7 @@ export default async function Home() {
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/6158118-hd_1920_1080_30fps.mp4"
+                poster="/images/aad/posters/6158118-hd_1920_1080_30fps.jpg"
                 ariaLabel="Signature Mobile Detailing at work"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -775,6 +781,7 @@ export default async function Home() {
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
               <LazyVideo
                 src="/images/aad/6159205-hd_1920_1080_30fps.mp4"
+                poster="/images/aad/posters/6159205-hd_1920_1080_30fps.jpg"
                 ariaLabel="Signature Mobile Detailing at work"
                 className="absolute inset-0 h-full w-full object-cover"
               />
