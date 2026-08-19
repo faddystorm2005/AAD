@@ -8,14 +8,7 @@ import {
   Car,
   Sofa,
   Shield,
-  ShieldCheck,
-  Brush,
-  Wrench,
-  Droplets,
-  Lightbulb,
-  SprayCan,
   MapPin,
-  Eye,
 } from 'lucide-react';
 import { SERVICE_TYPES, SERVICE_TYPE_NAMES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
@@ -32,7 +25,6 @@ import HeroParallax from '@/components/home/HeroParallax';
 import AmbientVideo from '@/components/home/AmbientVideo';
 import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
-import BeforeAfterSlider from '@/components/home/BeforeAfterSlider';
 import MobileBottomBar from '@/components/home/MobileBottomBar';
 import PagePolish from '@/components/home/PagePolish';
 import ServiceMapLoader from '@/components/ServiceMapLoader';
@@ -693,45 +685,10 @@ export default async function Home() {
         </p>
       </section>
 
-      {/* See the Transformation. Three before/after sliders on cropped
-          composite images. TODO: replace with real before/after pairs from
-          Alex when he sends them (4-6 pairs, see migration plan). */}
-      <section
-        id="transformations"
-        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
-      >
-        <div className="reveal-on-scroll">
-          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            See the Transformation
-          </h2>
-          <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Drag the slider on each photo to see the difference.
-          </p>
-        </div>
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {/* TODO: replace with real before/after pair from Alex */}
-          <BeforeAfterSlider
-            src="/images/aad/before-after-paint-1.jpg"
-            caption="Black hood, paint correction"
-          />
-          {/* TODO: replace with real before/after pair from Alex */}
-          <BeforeAfterSlider
-            src="/images/aad/before-after-paint-2.webp"
-            caption="Audi S5, swirl mark removal"
-          />
-          {/* TODO: replace with real before/after pair from Alex */}
-          <BeforeAfterSlider
-            src="/images/aad/before-after-ceramic.webp"
-            caption="Ceramic coating, water beading"
-            afterSide="left"
-          />
-        </div>
-      </section>
-
       {/* Watch Us Work - lazy-loaded so the videos don't stall first paint.
           Each <video> stays src-less until LazyVideo's IntersectionObserver
-          fires when this section scrolls into view. Portrait Bentley clip
-          + landscape clip side-by-side on desktop, stacked on mobile. */}
+          fires when this section scrolls into view. Real AAD footage only:
+          the garage and the van, side by side on desktop, stacked on mobile. */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll text-center">
           <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
@@ -741,51 +698,22 @@ export default async function Home() {
             Real jobs. Real results.
           </p>
         </div>
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-stretch">
-          {/* Bentley portrait (left column on desktop) */}
-          <div className="relative mx-auto aspect-[9/16] w-full max-w-xs overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 sm:mx-0 sm:w-1/3 sm:max-w-none">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
             <LazyVideo
-              src="/images/aad/13460847_2160_3840_60fps.mp4"
-              poster="/images/aad/posters/13460847_2160_3840_60fps.jpg"
-              ariaLabel="Bentley interior detailing in progress"
+              src="/images/aad/garage.mp4"
+              poster="/images/aad/posters/garage.jpg"
+              ariaLabel="Signature Mobile Detailing garage"
               className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
-          {/* Landscape clips stacked (right column on desktop). Real AAD
-              footage (garage, van) leads; stock clips fill below. */}
-          <div className="flex flex-1 flex-col gap-4">
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
-              <LazyVideo
-                src="/images/aad/garage.mp4"
-                poster="/images/aad/posters/garage.jpg"
-                ariaLabel="Signature Mobile Detailing garage"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
-              <LazyVideo
-                src="/images/aad/van.mp4"
-                poster="/images/aad/posters/van.jpg"
-                ariaLabel="Signature Mobile Detailing mobile detailing van"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
-              <LazyVideo
-                src="/images/aad/6158118-hd_1920_1080_30fps.mp4"
-                poster="/images/aad/posters/6158118-hd_1920_1080_30fps.jpg"
-                ariaLabel="Signature Mobile Detailing at work"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
-              <LazyVideo
-                src="/images/aad/6159205-hd_1920_1080_30fps.mp4"
-                poster="/images/aad/posters/6159205-hd_1920_1080_30fps.jpg"
-                ariaLabel="Signature Mobile Detailing at work"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900">
+            <LazyVideo
+              src="/images/aad/van.mp4"
+              poster="/images/aad/posters/van.jpg"
+              ariaLabel="Signature Mobile Detailing mobile detailing van"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
           </div>
         </div>
       </section>
@@ -1016,55 +944,6 @@ const SERVICES: ServiceCardDef[] = [
     title: 'Ceramic Coating',
     description: 'Premium clear coat that lasts up to 10 years. Adds deep gloss and shields paint from UV, water spots, and contaminants.',
     priceLabel: 'Quote',
-  },
-  {
-    icon: <Brush size={ICON_SIZE} aria-hidden />,
-    title: 'Paint Correction',
-    description: 'One- or two-step paint correction to remove swirl marks, oxidation, and minor scratches. Restores depth and clarity.',
-    priceLabel: 'Add-on, from $',
-    addonId: 'paint1',
-  },
-  {
-    icon: <ShieldCheck size={ICON_SIZE} aria-hidden />,
-    title: '6-Month Wax',
-    description: 'Long-lasting wax application for daily protection from sun, rain, and road grime - without committing to a coating.',
-    priceLabel: 'Add-on, from $',
-    addonId: 'wax',
-  },
-  {
-    icon: <Wrench size={ICON_SIZE} aria-hidden />,
-    title: 'Engine Bay Cleaning',
-    description: 'Deep degrease and dress under the hood. Brings the engine bay back to showroom clean.',
-    priceLabel: 'Add-on, from $',
-    addonId: 'engine',
-  },
-  {
-    icon: <Droplets size={ICON_SIZE} aria-hidden />,
-    title: 'Stain Removal',
-    description: 'Targeted treatment for stubborn upholstery, carpet, and seat stains. Coffee, ink, pet, you name it.',
-    priceLabel: 'Add-on, from $',
-    addonId: 'stain',
-  },
-  {
-    icon: <Lightbulb size={ICON_SIZE} aria-hidden />,
-    title: 'Headlight Restoration',
-    description: 'Cloudy, yellowed headlights brought back to clear like-new condition. Improves nighttime visibility and curb appeal.',
-    priceLabel: 'Standalone or add-on, $',
-    addonId: 'headlight',
-  },
-  {
-    icon: <Eye size={ICON_SIZE} aria-hidden />,
-    title: 'Windshield Coating',
-    description: 'Hydrophobic glass treatment that repels rain and improves visibility at highway speeds. Lasts months, not weeks.',
-    priceLabel: 'Add-on, from $',
-    addonId: 'windshield',
-  },
-  {
-    icon: <SprayCan size={ICON_SIZE} aria-hidden />,
-    title: 'Leather Conditioning',
-    description: 'Deep clean and condition for leather seats and surfaces. Prevents cracking and restores that new-car softness.',
-    priceLabel: 'Add-on, from $',
-    addonId: 'leather',
   },
   {
     icon: <MapPin size={ICON_SIZE} aria-hidden />,
