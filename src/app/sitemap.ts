@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { CITIES } from "@/lib/cityPages";
 
 /**
  * Sitemap for search engines. Only public pages with SEO value.
@@ -21,5 +22,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    // City landing pages, driven by the same CITIES map as the
+    // src/app/[city] route so the sitemap can never miss one.
+    ...CITIES.map((c) => ({
+      url: `https://www.signaturemobiledetailaz.com/${c.slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
   ];
 }

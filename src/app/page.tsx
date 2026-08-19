@@ -12,7 +12,8 @@ import {
 } from 'lucide-react';
 import { SERVICE_TYPES, SERVICE_TYPE_NAMES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE } from '@/lib/bookingPricing';
 import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
-import HomeNavAccountLink from '@/components/HomeNavAccountLink';
+import SiteHeader from '@/components/home/SiteHeader';
+import SiteFooter from '@/components/home/SiteFooter';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
 import StatsStrip from '@/components/home/StatsStrip';
 import StickyBookCta from '@/components/home/StickyBookCta';
@@ -23,7 +24,6 @@ import ScrollCardObserver from '@/components/ScrollCardObserver';
 import HeroStatCounter from '@/components/HeroStatCounter';
 import HeroParallax from '@/components/home/HeroParallax';
 import AmbientVideo from '@/components/home/AmbientVideo';
-import MobileNav from '@/components/home/MobileNav';
 import Timeline from '@/components/home/Timeline';
 import MobileBottomBar from '@/components/home/MobileBottomBar';
 import PagePolish from '@/components/home/PagePolish';
@@ -74,58 +74,7 @@ export default async function Home() {
       />
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
-      <header className="relative sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
-        <nav
-          className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 px-4 py-4 sm:gap-4 sm:px-6"
-          aria-label="Primary"
-        >
-          <Link
-            href="/"
-            className="flex shrink-0 items-center gap-2"
-            aria-label="Signature Mobile Detailing home"
-          >
-            <Image
-              src="/images/aad/logo.png"
-              alt="Signature Mobile Detailing"
-              width={512}
-              height={512}
-              priority
-              className="h-12 w-12 sm:h-14 sm:w-14"
-            />
-          </Link>
-          <ul className="hidden list-none items-center gap-6 p-0 text-base font-medium text-gray-100 sm:flex">
-            <li><a href="#services" className="hover:text-gold-300">Services</a></li>
-            <li><a href="#pricing" className="hover:text-gold-300">Pricing</a></li>
-            <li><a href="#recent-work" className="hover:text-gold-300">Work</a></li>
-            <li><a href="#how-it-works" className="hover:text-gold-300">How It Works</a></li>
-            <li><a href="#faq" className="hover:text-gold-300">FAQ</a></li>
-            <li><a href="#contact" className="hover:text-gold-300">Contact</a></li>
-          </ul>
-          <div className="flex items-center gap-3 sm:gap-4">
-            <a
-              href="tel:+14807933782"
-              className="flex items-center gap-1.5 font-semibold text-gold-300 hover:text-gold-200"
-              aria-label="Call us at (480) 793-3782"
-            >
-              <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z" />
-              </svg>
-              <span className="hidden text-sm sm:inline">(480) 793-3782</span>
-            </a>
-            {/* Hidden on mobile: accessible via hamburger menu instead */}
-            <div className="hidden sm:flex sm:items-center sm:gap-4">
-              <HomeNavAccountLink />
-              <Link
-                href="/auth"
-                className="btn-primary press shrink-0 rounded-lg px-5 py-2.5 text-base font-semibold"
-              >
-                Book Now
-              </Link>
-            </div>
-            <MobileNav />
-          </div>
-        </nav>
-      </header>
+      <SiteHeader />
 
       {/* Ambient red glow at top + bottom */}
       <div
@@ -794,104 +743,7 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 px-6 py-12">
-        <div className="mx-auto grid w-full max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
-              Signature Mobile Detailing
-            </p>
-            <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-300 italic">
-              <span aria-hidden>✝</span> Faith-driven, owner-operated
-            </p>
-            <p className="mt-3 text-base text-gray-200">
-              Mobile detailing in Phoenix, AZ and across the valley. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
-            </p>
-            <p className="mt-4 text-base text-gray-200">
-              <span className="text-base text-gray-300">Alex</span>{' '}
-              <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-                (480) 793-3782
-              </a>
-            </p>
-            <p className="mt-1 text-base text-gray-200">
-              <span className="text-base text-gray-300">Kane</span>{' '}
-              <a href="tel:+16028815602" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-                (602) 881-5602
-              </a>
-            </p>
-            <p className="mt-2 text-base text-gray-200">
-              <a href="mailto:info@signaturemobiledetailaz.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-                info@signaturemobiledetailaz.com
-              </a>
-            </p>
-            <p className="mt-2 text-sm text-gray-300">
-              {live.availability}
-            </p>
-          </div>
-          <nav aria-label="Services">
-            <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
-              Services
-            </p>
-            <ul className="mt-3 space-y-2 text-base text-gray-200">
-              <li><a href="#services" className="hover:text-white">Mobile Detailing</a></li>
-              <li><a href="#services" className="hover:text-white">Ceramic Coating</a></li>
-              <li><a href="#services" className="hover:text-white">Paint Correction</a></li>
-              <li><a href="#services" className="hover:text-white">Car Cleaning</a></li>
-            </ul>
-          </nav>
-          <nav aria-label="Site">
-            <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
-              Site
-            </p>
-            <ul className="mt-3 space-y-2 text-base text-gray-200">
-              <li><a href="#main-content" className="hover:text-white">Home</a></li>
-              <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
-              <li><a href="#recent-work" className="hover:text-white">Recent Work</a></li>
-              <li><a href="#how-it-works" className="hover:text-white">How It Works</a></li>
-              <li><a href="#faq" className="hover:text-white">FAQ</a></li>
-              <li><a href="#contact" className="hover:text-white">Contact</a></li>
-            </ul>
-          </nav>
-          <nav aria-label="Account">
-            <p className="text-sm font-semibold uppercase tracking-wider text-gray-300">
-              Get Started
-            </p>
-            <ul className="mt-3 space-y-2 text-base text-gray-200">
-              <li><Link href="/auth" className="hover:text-white">Book a Detail</Link></li>
-              <li><Link href="/auth" className="hover:text-white">Sign In</Link></li>
-              <li><Link href="/auth" className="hover:text-white">Create Account</Link></li>
-            </ul>
-          </nav>
-        </div>
-        <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} Signature Mobile Detailing. Mobile detailing in Phoenix, AZ.
-            {/* Kept visually secondary so the old brand does not compete with
-                the new one. De-emphasis comes from size and weight only, not
-                from dimming the text: this line exists for returning customers
-                who know the old name, and that group skews older, so it has to
-                stay readable. The structured-data equivalent lives in
-                layout.tsx as alternateName. */}
-            <span className="mt-1 block text-sm text-gray-300">
-              Formerly Austin Auto Detail.
-            </span>
-          </p>
-          <p className="text-sm text-gray-300 italic text-center sm:text-right">
-            <span aria-hidden className="mr-1.5 text-gray-500">✝</span>
-            &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
-          </p>
-          <p className="text-sm text-gray-300">
-            Site by{" "}
-            <a
-              href="https://www.mausandco.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-4 hover:text-white"
-            >
-              Maus &amp; Co.
-            </a>
-          </p>
-        </div>
-      </footer>
+      <SiteFooter availability={live.availability} />
 
       <H2CinematicObserver />
       <ScrollCardObserver />
