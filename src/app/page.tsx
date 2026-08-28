@@ -550,6 +550,48 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* What customers say - the only third-party voice on the page. Every
+          other proof block here is us making a claim about ourselves, so this
+          sits right after the trust pillars and before the mission statement.
+          CSS columns rather than a grid because the quotes vary in length and
+          seven cards would leave an orphan in any 2 or 3 column grid.
+          Deliberately no stars: nothing here carries a rating, and drawing
+          five gold stars would imply a score Alex never collected. */}
+      <section
+        id="reviews"
+        aria-label="What customers say"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
+      >
+        <div className="reveal-on-scroll">
+          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+            What Customers Say
+          </h2>
+          <p className="mt-3 text-base text-gray-200 sm:text-lg">
+            In their own words, after we detailed their car.
+          </p>
+        </div>
+        <div className="mt-10 gap-5 sm:columns-2 lg:columns-3">
+          {live.reviews.map((r, i) => (
+            <figure
+              key={`${r.name}-${i}`}
+              className="glass-card scroll-card mb-5 break-inside-avoid rounded-2xl p-6"
+              data-stagger-i={i}
+            >
+              <span aria-hidden className="font-serif text-3xl leading-none text-gold-400">
+                &ldquo;
+              </span>
+              <blockquote className="mt-2 text-base leading-relaxed text-gray-200">
+                {r.text}
+              </blockquote>
+              <figcaption className="mt-4 border-t border-white/10 pt-3 text-sm">
+                <span className="font-bold text-white">{r.name}</span>
+                <span className="text-gray-400"> &middot; {r.vehicle}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
       {/* Our Mission - emotional anchor between the card grids and the FAQ.
           Pull-quote layout so it reads as a statement of intent, not another
           marketing tile. */}
