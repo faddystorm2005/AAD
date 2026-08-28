@@ -56,11 +56,61 @@ export const DEFAULT_FAQS: FaqItem[] = [
 
 export const DEFAULT_AVAILABILITY = 'Available 7 days a week, by appointment.';
 
+export type Review = { name: string; text: string; vehicle: string };
+
+// Alex's reviews as they are stored in the portal row, copied verbatim.
+// Note the stored shape is name / text / vehicle. There is no date or month
+// field, so the site attributes each one by name and vehicle only rather than
+// implying a timestamp it does not have.
+export const DEFAULT_REVIEWS: Review[] = [
+  { name: 'Sarah M.', vehicle: 'Tahoe', text: "Best detail I've ever had. Showed up on time and made my SUV look brand new." },
+  { name: 'Mike R.', vehicle: 'F-150', text: 'Booked Sunday night, got it done Monday morning. So convenient.' },
+  { name: 'Jen K.', vehicle: 'Civic', text: 'Quality over quantity is right. He took his time and did it right.' },
+  { name: 'Carlos V.', vehicle: 'Tacoma', text: 'Ceramic coating was worth every penny. Water just rolls off now.' },
+  { name: 'Ashley T.', vehicle: 'Model 3', text: "I'll never go to a brick-and-mortar place again. He brings everything to my driveway." },
+  { name: 'Jordan B.', vehicle: 'Mustang', text: 'Worth every dollar. My paint has never looked this good. Like driving off the lot again.' },
+  { name: 'Priya S.', vehicle: 'RAV4', text: 'Super professional, no mess, and it smelled amazing when I got in. Already booked again.' },
+];
+
+export type ServiceCopy = { title: string; description: string };
+
+// The five real services Alex sells. The six "why us" cards further down the
+// homepage share the same card component but are site copy, not client
+// content, so they stay hardcoded and out of the portal.
+export const DEFAULT_SERVICE_COPY: ServiceCopy[] = [
+  {
+    title: 'Full Detail',
+    description:
+      'Complete interior and exterior reset. Hand wash, decontamination, and clay bar outside. Vacuum, shampoo, and full surface dressing inside.',
+  },
+  {
+    title: 'Exterior Detailing',
+    description:
+      'Hand wash, decontamination, clay bar, and trim/tire dressing. Your paint reset to like-new.',
+  },
+  {
+    title: 'Interior Detailing',
+    description:
+      'Vacuum, shampoo carpets and seats, wipe and dress every surface. Cabin completely reset.',
+  },
+  {
+    title: 'Ceramic Coating',
+    description:
+      'Premium clear coat that lasts up to 10 years. Adds deep gloss and shields paint from UV, water spots, and contaminants.',
+  },
+  {
+    title: 'Mobile - We Come To You',
+    description:
+      'Driveway, office parking lot, garage - anywhere in the Phoenix valley. Three slots a day so you get our full attention.',
+  },
+];
+
 type CmsContent = {
   availability?: string;
   faqs?: Array<{ q?: string; a?: string }>;
-  // The portal row may still carry a `reviews` array. The site no longer
-  // renders testimonials, so it is intentionally not read here.
+  // Stored shape is name / text / vehicle. It is not quote / name / month.
+  reviews?: Array<{ name?: string; text?: string; vehicle?: string }>;
+  services?: Array<{ title?: string; description?: string }>;
 };
 
 async function fetchCms(): Promise<CmsContent | null> {
@@ -80,15 +130,30 @@ async function fetchCms(): Promise<CmsContent | null> {
 export type LiveContent = {
   availability: string;
   faqs: FaqItem[];
+  reviews: Review[];
+  services: ServiceCopy[];
 };
 
+// Every field falls back to its baked-in default, the same way faqs and the
+// live price table already do, so a blank or missing portal value can never
+// render an empty card or a missing name.
 export async function getLiveContent(): Promise<LiveContent> {
   const cms = await fetchCms();
+  const clean = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : '');
   return {
     availability: cms?.availability || DEFAULT_AVAILABILITY,
     faqs: DEFAULT_FAQS.map((base, i) => ({
       question: cms?.faqs?.[i]?.q || base.question,
       answer: cms?.faqs?.[i]?.a || base.answer,
+    })),
+    reviews: DEFAULT_REVIEWS.map((base, i) => ({
+      name: clean(cms?.reviews?.[i]?.name) || base.name,
+      text: clean(cms?.reviews?.[i]?.text) || base.text,
+      vehicle: clean(cms?.reviews?.[i]?.vehicle) || base.vehicle,
+    })),
+    services: DEFAULT_SERVICE_COPY.map((base, i) => ({
+      title: clean(cms?.services?.[i]?.title) || base.title,
+      description: clean(cms?.services?.[i]?.description) || base.description,
     })),
   };
 }

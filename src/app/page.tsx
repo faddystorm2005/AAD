@@ -212,8 +212,8 @@ export default async function Home() {
               <div key={s.title} className="scroll-card" data-stagger-i={i}>
                 <ServiceCard
                   icon={s.icon}
-                  title={s.title}
-                  description={s.description}
+                  title={live.services[i]?.title || s.title}
+                  description={live.services[i]?.description || s.description}
                   priceLabel={priceLabel}
                 />
               </div>
