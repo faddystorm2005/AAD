@@ -58,19 +58,13 @@ export const DEFAULT_AVAILABILITY = 'Available 7 days a week, by appointment.';
 
 export type Review = { name: string; text: string; vehicle: string };
 
-// Alex's reviews as they are stored in the portal row, copied verbatim.
-// Note the stored shape is name / text / vehicle. There is no date or month
-// field, so the site attributes each one by name and vehicle only rather than
-// implying a timestamp it does not have.
-export const DEFAULT_REVIEWS: Review[] = [
-  { name: 'Sarah M.', vehicle: 'Tahoe', text: "Best detail I've ever had. Showed up on time and made my SUV look brand new." },
-  { name: 'Mike R.', vehicle: 'F-150', text: 'Booked Sunday night, got it done Monday morning. So convenient.' },
-  { name: 'Jen K.', vehicle: 'Civic', text: 'Quality over quantity is right. He took his time and did it right.' },
-  { name: 'Carlos V.', vehicle: 'Tacoma', text: 'Ceramic coating was worth every penny. Water just rolls off now.' },
-  { name: 'Ashley T.', vehicle: 'Model 3', text: "I'll never go to a brick-and-mortar place again. He brings everything to my driveway." },
-  { name: 'Jordan B.', vehicle: 'Mustang', text: 'Worth every dollar. My paint has never looked this good. Like driving off the lot again.' },
-  { name: 'Priya S.', vehicle: 'RAV4', text: 'Super professional, no mess, and it smelled amazing when I got in. Already booked again.' },
-];
+// Reviews have NO baked-in defaults, deliberately, and this is the one field
+// on this page that works that way. Everything else here (availability, faqs,
+// service copy) falls back to a constant so the site can never render blank.
+// A testimonial is different: a fallback would mean shipping words attributed
+// to a named customer that the customer's own row does not contain. If the
+// portal row is empty or unreachable, the homepage shows no reviews section at
+// all rather than something we made up.
 
 export type ServiceCopy = { title: string; description: string };
 
@@ -146,11 +140,16 @@ export async function getLiveContent(): Promise<LiveContent> {
       question: cms?.faqs?.[i]?.q || base.question,
       answer: cms?.faqs?.[i]?.a || base.answer,
     })),
-    reviews: DEFAULT_REVIEWS.map((base, i) => ({
-      name: clean(cms?.reviews?.[i]?.name) || base.name,
-      text: clean(cms?.reviews?.[i]?.text) || base.text,
-      vehicle: clean(cms?.reviews?.[i]?.vehicle) || base.vehicle,
-    })),
+    // Length comes from the portal row, not from a defaults array. An entry
+    // needs a name and a quote to be worth showing; vehicle is optional and
+    // the card omits it when blank.
+    reviews: (cms?.reviews ?? [])
+      .map((r) => ({
+        name: clean(r?.name),
+        text: clean(r?.text),
+        vehicle: clean(r?.vehicle),
+      }))
+      .filter((r) => r.name !== '' && r.text !== ''),
     services: DEFAULT_SERVICE_COPY.map((base, i) => ({
       title: clean(cms?.services?.[i]?.title) || base.title,
       description: clean(cms?.services?.[i]?.description) || base.description,

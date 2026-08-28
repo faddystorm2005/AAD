@@ -677,37 +677,42 @@ export default async function Home() {
           reveals as one unit: columns fill top-to-bottom, so a per-card stagger
           keyed to DOM index would fire out of visual order.
           Deliberately no stars: nothing here carries a rating, and drawing
-          five gold stars would imply a score Alex never collected. */}
-      <section
-        id="reviews"
-        aria-label="What customers say"
-        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
-      >
-        <div className="reveal-on-scroll">
-          <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            What Customers Say
-          </h2>
-        </div>
-        <div className="reveal-on-scroll mt-10 gap-x-5 sm:columns-2 lg:columns-3">
-          {live.reviews.map((r) => (
-            <figure
-              key={`${r.name}-${r.vehicle}`}
-              className="glass-card mb-5 break-inside-avoid rounded-2xl p-6"
-            >
-              <span aria-hidden className="font-serif text-3xl leading-none text-gold-400">
-                &ldquo;
-              </span>
-              <blockquote className="mt-2 text-base leading-relaxed text-gray-200">
-                {r.text}
-              </blockquote>
-              <figcaption className="mt-4 border-t border-white/10 pt-3 text-sm">
-                <span className="font-bold text-white">{r.name}</span>
-                <span className="text-gray-400"> &middot; {r.vehicle}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
+          five gold stars would imply a score Alex never collected.
+          The whole section is behind a length check. Reviews have no baked-in
+          defaults, so with an empty portal row this renders nothing at all,
+          not a heading over an empty grid. */}
+      {live.reviews.length > 0 && (
+        <section
+          id="reviews"
+          aria-label="What customers say"
+          className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
+        >
+          <div className="reveal-on-scroll">
+            <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
+              What Customers Say
+            </h2>
+          </div>
+          <div className="reveal-on-scroll mt-10 gap-x-5 sm:columns-2 lg:columns-3">
+            {live.reviews.map((r) => (
+              <figure
+                key={`${r.name}-${r.vehicle}`}
+                className="glass-card mb-5 break-inside-avoid rounded-2xl p-6"
+              >
+                <span aria-hidden className="font-serif text-3xl leading-none text-gold-400">
+                  &ldquo;
+                </span>
+                <blockquote className="mt-2 text-base leading-relaxed text-gray-200">
+                  {r.text}
+                </blockquote>
+                <figcaption className="mt-4 border-t border-white/10 pt-3 text-sm">
+                  <span className="font-bold text-white">{r.name}</span>
+                  {r.vehicle && <span className="text-gray-400"> &middot; {r.vehicle}</span>}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Final CTA */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16">
