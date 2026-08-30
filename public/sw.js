@@ -12,8 +12,14 @@
  *            (partial 206) responses, which cache.put() rejects, so the
  *            old networkFirst path stalled playback (infinite spinner,
  *            tap-to-play flakiness). The browser now streams video natively.
+ * v20 -> v22: the maintenance switch shipped. v21 is skipped on purpose: it is
+ *            already used by the unreleased cms-content-round2 branch, and two
+ *            builds sharing a cache namespace means neither purges the other.
+ *            A 503 now evicts that page from the runtime cache, so a visitor
+ *            who goes offline mid-outage is not shown a cached copy of a site
+ *            that is actually down.
  */
-const VERSION = "aad-v20";
+const VERSION = "aad-v22";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
@@ -113,6 +119,7 @@ async function networkFirst(req) {
   try {
     const res = await fetch(req);
     if (res.ok) cache.put(req, res.clone());
+    else if (res.status === 503) await cache.delete(req);
     return res;
   } catch (err) {
     const hit = await cache.match(req);
@@ -126,6 +133,12 @@ async function networkFirstPage(req) {
   try {
     const res = await fetch(req);
     if (res.ok) cache.put(req, res.clone());
+    // The site is in maintenance. Returning the 503 is already correct, but
+    // the cache is still holding the normal page from before the outage, and
+    // the catch below would serve it the moment this visitor lost signal.
+    // Drop it, so offline during an outage falls through to the offline page
+    // rather than to a page claiming the business is open.
+    else if (res.status === 503) await cache.delete(req);
     return res;
   } catch (err) {
     const hit = await cache.match(req);
