@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useFooterInView } from './useFooterInView';
 
 /**
  * Floating "Book Now" pill that fades in once the visitor scrolls past the
@@ -10,6 +11,7 @@ import { useEffect, useState } from 'react';
  */
 export default function StickyBookCta() {
   const [visible, setVisible] = useState(false);
+  const footerInView = useFooterInView();
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 600);
@@ -21,7 +23,9 @@ export default function StickyBookCta() {
   return (
     <div
       className={`fixed fixed-safe-bottom-right z-40 hidden transition-all duration-300 sm:block ${
-        visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
+        visible && !footerInView
+          ? 'translate-y-0 opacity-100'
+          : 'pointer-events-none translate-y-4 opacity-0'
       }`}
     >
       {/* Pulse ring sits behind the button: scale+opacity only (composited) */}

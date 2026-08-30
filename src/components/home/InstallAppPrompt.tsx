@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useFooterInView } from './useFooterInView';
 
 // iOS detection: user agent match + standalone API presence
 const isIOSSafari = (): boolean => {
@@ -39,6 +40,10 @@ export default function InstallAppPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
   const [showIOSModal, setShowIOSModal] = useState(false);
+  // Never float over the footer: that is what covered the "Formerly Austin
+  // Auto Detail." line.
+  const footerInView = useFooterInView();
+  const onScreen = visible && !footerInView;
 
   useEffect(() => {
     // Check 7-day dismissal cooldown
@@ -127,18 +132,31 @@ export default function InstallAppPrompt() {
   return (
     <>
       <div
-        className={`fixed fixed-safe-bottom-left z-40 transition-all duration-300 ${
-          visible
+        className={`fixed fixed-safe-bottom-left z-40 flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-md ring-1 ring-white/20 shadow-2xl transition-all duration-300 ${
+          onScreen
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-4 opacity-0'
         }`}
+        aria-hidden={!onScreen}
       >
         <button
           type="button"
           onClick={handleInstall}
-          className="rounded-full bg-white/10 px-5 py-3 backdrop-blur-md ring-1 ring-white/20 shadow-2xl text-sm font-semibold uppercase tracking-wider text-white hover:bg-white/15 hover:text-gold-300 transition"
+          tabIndex={onScreen ? 0 : -1}
+          className="rounded-full px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white hover:text-gold-300 transition"
         >
           Install app
+        </button>
+        {/* Until now there was no way to get rid of this on Android or
+            desktop: handleDismiss existed but only the iOS modal called it. */}
+        <button
+          type="button"
+          onClick={handleDismiss}
+          tabIndex={onScreen ? 0 : -1}
+          aria-label="Hide the install button"
+          className="mr-2 flex h-7 w-7 items-center justify-center rounded-full text-lg leading-none text-gray-300 hover:bg-white/10 hover:text-white transition"
+        >
+          &times;
         </button>
       </div>
 

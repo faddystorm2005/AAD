@@ -15,7 +15,10 @@ export default function SiteFooter({
   anchorBase?: string;
 }) {
   return (
-    <footer className="relative z-10 border-t border-white/10 px-6 py-12">
+    <footer
+      id="site-footer"
+      className="relative z-10 border-t border-white/10 px-6 pt-12 pb-28 sm:pb-12"
+    >
       <div className="mx-auto grid w-full max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
