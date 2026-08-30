@@ -53,6 +53,31 @@ scheduling. Schema: `supabase-add-payment-tracking.sql`.
 - Plain English over jargon. Keep the tone warm and direct.
 - Bump the `VERSION` constant in `public/sw.js` after any meaningful deploy, or
   clients keep serving a stale bundle.
+- **Never modify a `.env` file. No agent, no reason, no exceptions.** Tests use
+  a separate file or an inline override on the command that needs it. If an env
+  file is touched during a session anyway, it is verified against the real
+  endpoint before that session ends.
+
+  This exists because it happened twice in one session on this repo:
+  `.env.local` was repointed at a local stub so maintenance mode could be
+  tested, and once the backup copy was overwritten with the stub values as
+  well, so the real credentials were only recoverable from the inlined values
+  in `.next/` and from Vercel. A build against a stubbed env looks like a
+  normal green build, which is what makes this quiet enough to ship.
+
+## The kill switch
+
+The matcher in `src/proxy.ts` excludes any path with a file extension, which
+also exempts a dynamic segment that happens to contain a dot, for example
+`/booking-confirmation/abc.def`. That path bypasses the switch and serves the
+real page during an outage.
+
+**This is accepted deliberately.** The failure mode is fail-open, which is the
+whole design of this feature: a site that stays up when the switch is confused
+is the outcome we want, and the opposite, a page nobody can turn back on, is
+the one that costs Alex phone calls. Booking IDs are UUIDs, so it is not
+reachable in practice. Do not "fix" it by tightening the matcher without
+checking what else that would start intercepting.
 
 # Timezone
 
