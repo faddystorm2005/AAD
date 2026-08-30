@@ -20,8 +20,12 @@ import { getSiteStatus } from "@/lib/site-status";
  * the expensive failure, not a site that stays up while the status read is
  * broken.
  *
- * There is no admin area on this site. Alex's status is flipped from the Maus
- * & Co. studio panel, so nothing here has to stay reachable to turn it back on.
+ * Alex's status is flipped from the Maus & Co. studio panel, so nothing on
+ * this domain has to stay reachable to turn the site back on. The owners'
+ * console at /admin is exempted anyway: they still need to see today's jobs
+ * while the public site is down. An earlier version of this comment claimed
+ * this site had no admin area, which was simply wrong, and the console was
+ * being answered 503 along with everything else.
  */
 
 // Never shown the maintenance page. /maintenance must not rewrite to itself,
@@ -30,6 +34,20 @@ import { getSiteStatus } from "@/lib/site-status";
 const ALWAYS_ALLOW = [
   "/maintenance",
   "/api",
+  // The owners' booking console, and the sign-in flow it depends on. Alex and
+  // Kane still need to see today's jobs while the public site is down, and an
+  // OAuth callback answered 503 strands them mid sign-in.
+  "/admin",
+  "/auth",
+  "/dashboard",
+  // Metadata routes are generated and have no file extension, so the matcher
+  // does not skip them. Without these the maintenance page loses its own
+  // favicon and a shared link shows a broken preview.
+  "/icon",
+  "/apple-icon",
+  "/opengraph-image",
+  "/twitter-image",
+  "/.well-known",
   "/robots.txt",
   "/sitemap.xml",
   "/manifest.webmanifest",
@@ -61,7 +79,16 @@ export async function proxy(request: NextRequest) {
 
   if (matches(pathname, ALWAYS_ALLOW)) return passThrough();
 
-  const { status, message } = await getSiteStatus("aad");
+  let status: string;
+  let message: string | null;
+  try {
+    ({ status, message } = await getSiteStatus("aad"));
+  } catch {
+    // Nothing below this line is allowed to take the site down. site-status is
+    // written not to throw, but the guarantee has to be structural rather than
+    // a promise one file makes to another.
+    return passThrough();
+  }
   if (status !== "maintenance") return passThrough();
 
   const url = request.nextUrl.clone();
@@ -74,7 +101,21 @@ export async function proxy(request: NextRequest) {
   // visit, which otherwise lets anyone link the domain as proof Signature is
   // offline.
   headers.set("x-maintenance", "1");
-  if (message) headers.set("x-maintenance-message", encodeURIComponent(message));
+  if (message) {
+    try {
+      // Capped before encoding. This is free text from a panel, encoding can
+      // triple its length on emoji, and it travels as a request header with a
+      // hard size limit. Also: encodeURIComponent throws on an unpaired
+      // surrogate, so the whole thing sits in a try.
+      headers.set(
+        "x-maintenance-message",
+        encodeURIComponent(message.slice(0, 300))
+      );
+    } catch {
+      // The page has a plain fallback. A bad message costs the note, not the
+      // page.
+    }
+  }
 
   // 503 with Retry-After is the pair that tells a crawler to come back rather
   // than drop the page. Ten minutes, not an hour: Next adds its own noindex to

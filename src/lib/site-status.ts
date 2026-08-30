@@ -94,10 +94,30 @@ async function fetchStatus(slug: string): Promise<SiteStatus> {
   }
 }
 
+// Slightly above the fetch timeout, so a normal slow read still lands and
+// only a genuinely stuck one is cut off.
+const DEADLINE_MS = 2_500;
+
+/**
+ * Guarantees the promise settles.
+ *
+ * fetchStatus already has an AbortSignal timeout, which covers every case a
+ * runtime bothers to reject. It does not cover the case the edge is known for:
+ * work detached from a response being dropped rather than rejected. A promise
+ * that neither resolves nor rejects would sit in inFlight forever and be
+ * handed to every future caller.
+ */
+function settled(p: Promise<SiteStatus>): Promise<SiteStatus> {
+  return Promise.race([
+    p,
+    new Promise<SiteStatus>((resolve) => setTimeout(() => resolve(LIVE), DEADLINE_MS)),
+  ]);
+}
+
 function refresh(slug: string): Promise<SiteStatus> {
   const existing = inFlight.get(slug);
   if (existing) return existing;
-  const p = fetchStatus(slug)
+  const p = settled(fetchStatus(slug))
     .then((value) => {
       memo.set(slug, { value, at: Date.now() });
       return value;
@@ -115,11 +135,14 @@ export async function getSiteStatus(slug: string): Promise<SiteStatus> {
 
   if (hit) {
     const age = Date.now() - hit.at;
-    // Too old to trust. See HARD_MAX_MS.
+    // Too old to trust. Read again rather than guessing: returning LIVE here
+    // without reading meant a site whose visitors arrive more than
+    // HARD_MAX_MS apart never saw the switch at all. refresh() is bounded by
+    // DEADLINE_MS and fails open, so this cannot hang.
     if (age > HARD_MAX_MS) {
       memo.delete(slug);
-      void refresh(slug);
-      return LIVE;
+      inFlight.delete(slug);
+      return refresh(slug);
     }
     // Stale: hand back what we have and refresh behind the request, so a
     // visitor never waits on Supabase once the isolate is warm.
