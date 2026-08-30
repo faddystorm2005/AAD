@@ -39,6 +39,23 @@ scheduling. Schema: `supabase-add-payment-tracking.sql`.
 
 # House rules
 
+- **Every repo has a remote, and no session ends with work living only on local
+  disk.** Check it at the START of a session, not the end. `git remote -v`
+  returning nothing is the signal; create a private remote and push before
+  doing anything else.
+
+  This exists because the Wellbound checkout spent a full working day with a
+  kill switch, an accessibility pass and three recovered assets existing
+  nowhere but one laptop, on a machine whose backup is switched off. A private
+  GitHub repo for it had existed since 2026-08-08. The local checkout simply
+  had no remote configured, and nothing surfaces that on its own: commits
+  succeed, branches merge, deploys go out, and the only symptom is that a disk
+  failure erases the day.
+
+  Where two lineages are unrelated, push under a dated branch name rather than
+  forcing over the remote's own history. Wellbound and thrive65 are both like
+  this.
+
 - **Never use the em-dash character (U+2014)** anywhere in `src/`. Use periods,
   commas, colons, or "and" / "or". Check before committing with:
   `grep -rnP "\x{2014}" src/` (matching by codepoint, so this rule can be
