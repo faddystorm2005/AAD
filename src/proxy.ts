@@ -40,10 +40,14 @@ const ALWAYS_ALLOW = [
   "/admin",
   "/auth",
   "/dashboard",
+  "/settings",
+  // A customer who already booked can still pull up their own confirmation.
+  "/booking-confirmation",
   // Metadata routes are generated and have no file extension, so the matcher
   // does not skip them. Without these the maintenance page loses its own
   // favicon and a shared link shows a broken preview.
   "/icon",
+  "/icon1",
   "/apple-icon",
   "/opengraph-image",
   "/twitter-image",
@@ -127,6 +131,10 @@ export async function proxy(request: NextRequest) {
     headers: {
       "Retry-After": "600",
       "Cache-Control": "no-store, must-revalidate",
+      // Read by public/sw.js. A 503 on its own could be Vercel under load, and
+      // the worker must not purge a visitor's offline copy for that. This says
+      // the outage is deliberate.
+      "x-maintenance": "1",
     },
   });
 }

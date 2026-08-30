@@ -15,9 +15,12 @@
  * v20 -> v22: the maintenance switch shipped. v21 is skipped on purpose: it is
  *            already used by the unreleased cms-content-round2 branch, and two
  *            builds sharing a cache namespace means neither purges the other.
- *            A 503 now evicts that page from the runtime cache, so a visitor
+ *            A maintenance 503, identified by the x-maintenance header the
+ *            proxy sets, now purges the whole runtime cache once, so a visitor
  *            who goes offline mid-outage is not shown a cached copy of a site
- *            that is actually down.
+ *            that is actually down. Only the runtime cache: cacheFirst serves
+ *            /_next/static/, which the proxy never intercepts, and images
+ *            going stale during an outage harms nobody.
  */
 const VERSION = "aad-v22";
 const STATIC_CACHE = `${VERSION}-static`;
@@ -93,6 +96,34 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(networkFirst(req));
 });
 
+/**
+ * Throw away the whole runtime cache the first time we see a deliberate
+ * outage.
+ *
+ * Two things were wrong with deleting only the requested URL. It cleared one
+ * page and left every other warm page intact, so a visitor who then lost
+ * signal still got the real site with a booking button on it. And it could not
+ * reach the entries Next's own link prefetching creates: those are keyed by
+ * the rsc header through Vary, so a navigation-shaped delete never matched
+ * them and a soft navigation replayed the stale page anyway.
+ *
+ * One 503 is proof the whole origin is down, not just that URL, so the whole
+ * runtime cache goes.
+ *
+ * Gated on the header the proxy sets, NOT on the bare status. Vercel returns
+ * 503 under load too, and destroying someone's offline copy of the site
+ * because of a bad ten minutes is a worse trade than leaving it: offline.html
+ * has no phone number on it, so the fallback would be a dead end on a site
+ * whose only job is to make the phone ring.
+ */
+let purged = false;
+async function purgeIfMaintenance(res) {
+  if (purged) return;
+  if (res.status !== 503 || res.headers.get("x-maintenance") !== "1") return;
+  purged = true;
+  await caches.delete(RUNTIME_CACHE);
+}
+
 async function cacheFirst(req) {
   const cache = await caches.open(STATIC_CACHE);
   const hit = await cache.match(req);
@@ -119,7 +150,7 @@ async function networkFirst(req) {
   try {
     const res = await fetch(req);
     if (res.ok) cache.put(req, res.clone());
-    else if (res.status === 503) await cache.delete(req);
+    else await purgeIfMaintenance(res);
     return res;
   } catch (err) {
     const hit = await cache.match(req);
@@ -133,12 +164,7 @@ async function networkFirstPage(req) {
   try {
     const res = await fetch(req);
     if (res.ok) cache.put(req, res.clone());
-    // The site is in maintenance. Returning the 503 is already correct, but
-    // the cache is still holding the normal page from before the outage, and
-    // the catch below would serve it the moment this visitor lost signal.
-    // Drop it, so offline during an outage falls through to the offline page
-    // rather than to a page claiming the business is open.
-    else if (res.status === 503) await cache.delete(req);
+    else await purgeIfMaintenance(res);
     return res;
   } catch (err) {
     const hit = await cache.match(req);
