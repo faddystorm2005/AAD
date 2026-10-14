@@ -61,17 +61,21 @@ function warnOnce(reason: string) {
 // the reason a page is slow.
 const TIMEOUT_MS = 2000;
 
-// How long a fetched value is served before a refresh is kicked off.
+// How long a fetched value is served. Past this the next request reads again
+// and waits for the answer; nothing is ever refreshed behind a response.
+//
+// Until 2026-10-14 a stale value was handed back and refreshed in the
+// background. Vercel only promises to finish middleware work handed to
+// waitUntil, so a refresh cut off after the response left an isolate on its
+// old answer. In Troy's live test of Thrive 65, which runs this same reader,
+// that answer was "live": / showed the notice while /about served the real
+// page throughout.
 const TTL_MS = 20_000;
 
-// Absolute ceiling on how long a remembered value may be served. The refresh
-// runs detached from the response, and the edge is not obliged to finish work
-// that nothing is awaiting. If one is dropped rather than rejected, `inFlight`
-// keeps an unsettled promise, every later refresh returns that dead promise,
-// and the entry never updates again. Serving a stale "maintenance" forever is
-// the exact failure this file exists to prevent, so past this age the answer
-// is live regardless of what is remembered.
-const HARD_MAX_MS = 5 * 60_000;
+// How long a request waits for a read before serving the site. A little over
+// TIMEOUT_MS, because that timeout lives inside a fetch the edge may never
+// finish, and a request must never wait on a dead one.
+const WAIT_MS = TIMEOUT_MS + 500;
 
 // Only the sites that exist. Phase 2 wires the client sites up and the obvious
 // way to pick a slug is from the Host header, which a stranger controls. Left
@@ -88,7 +92,8 @@ const KNOWN_SLUGS = new Set(["aad"]);
  */
 type Entry = { value: SiteStatus; at: number };
 const memo = new Map<string, Entry>();
-const inFlight = new Map<string, Promise<SiteStatus>>();
+type Pending = { p: Promise<SiteStatus>; at: number };
+const inFlight = new Map<string, Pending>();
 
 async function fetchStatus(slug: string): Promise<SiteStatus> {
   const url = process.env.MAUS_STATUS_URL;
@@ -137,37 +142,23 @@ async function fetchStatus(slug: string): Promise<SiteStatus> {
   }
 }
 
-// Slightly above the fetch timeout, so a normal slow read still lands and
-// only a genuinely stuck one is cut off.
-const DEADLINE_MS = 2_500;
-
-/**
- * Guarantees the promise settles.
- *
- * fetchStatus already has an AbortSignal timeout, which covers every case a
- * runtime bothers to reject. It does not cover the case the edge is known for:
- * work detached from a response being dropped rather than rejected. A promise
- * that neither resolves nor rejects would sit in inFlight forever and be
- * handed to every future caller.
- */
-function settled(p: Promise<SiteStatus>): Promise<SiteStatus> {
-  return Promise.race([
-    p,
-    new Promise<SiteStatus>((resolve) => setTimeout(() => resolve(LIVE), DEADLINE_MS)),
-  ]);
-}
-
 function refresh(slug: string): Promise<SiteStatus> {
   const existing = inFlight.get(slug);
-  if (existing) return existing;
-  const p = settled(fetchStatus(slug))
+  // A read older than WAIT_MS was cut off, not slowed down: its own timeout
+  // would have settled it by now. Start a fresh one rather than queue on it.
+  if (existing && Date.now() - existing.at <= WAIT_MS) return existing.p;
+  const p: Promise<SiteStatus> = fetchStatus(slug)
     .then((value) => {
-      memo.set(slug, { value, at: Date.now() });
+      // A read that was given up on and settles late must not overwrite a
+      // newer answer.
+      if (inFlight.get(slug)?.p === p) memo.set(slug, { value, at: Date.now() });
       return value;
     })
     .catch(() => LIVE)
-    .finally(() => inFlight.delete(slug));
-  inFlight.set(slug, p);
+    .finally(() => {
+      if (inFlight.get(slug)?.p === p) inFlight.delete(slug);
+    });
+  inFlight.set(slug, { p, at: Date.now() });
   return p;
 }
 
@@ -175,27 +166,24 @@ export async function getSiteStatus(slug: string): Promise<SiteStatus> {
   if (!KNOWN_SLUGS.has(slug)) return LIVE;
 
   const hit = memo.get(slug);
+  if (hit && Date.now() - hit.at <= TTL_MS) return hit.value;
 
-  if (hit) {
-    const age = Date.now() - hit.at;
-    // Too old to trust. Read again rather than guessing: returning LIVE here
-    // without reading meant a site whose visitors arrive more than
-    // HARD_MAX_MS apart never saw the switch at all. refresh() is bounded by
-    // DEADLINE_MS and fails open, so this cannot hang.
-    if (age > HARD_MAX_MS) {
-      memo.delete(slug);
-      inFlight.delete(slug);
-      return refresh(slug);
-    }
-    // Stale: hand back what we have and refresh behind the request, so a
-    // visitor never waits on Supabase once the isolate is warm.
-    if (age > TTL_MS) void refresh(slug);
-    return hit.value;
+  // Cold or stale: this request waits for a fresh read, at most WAIT_MS, and
+  // serves the site if no answer comes. A request that is awaiting the read
+  // cannot have it dropped. One request per isolate every 20 seconds pays for
+  // the read; the rest are answered from memory.
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const gaveUp = new Promise<SiteStatus>((resolve) => {
+    timer = setTimeout(() => {
+      warnOnce("no answer");
+      resolve(LIVE);
+    }, WAIT_MS);
+  });
+  try {
+    return await Promise.race([refresh(slug), gaveUp]);
+  } finally {
+    clearTimeout(timer);
   }
-
-  // Cold isolate: this one request waits, bounded by the timeout above and
-  // failing open if it expires.
-  return refresh(slug);
 }
 
 /** Test seam, so the cache behaviour can be asserted rather than assumed. */
