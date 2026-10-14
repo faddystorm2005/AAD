@@ -21,8 +21,10 @@
  *            that is actually down. Only the runtime cache: cacheFirst serves
  *            /_next/static/, which the proxy never intercepts, and images
  *            going stale during an outage harms nobody.
+ * v22 -> v23: Next.js 16.2.4 to 16.4.0 for the security advisories. New
+ *            framework bundles, so every client refreshes.
  */
-const VERSION = "aad-v22";
+const VERSION = "aad-v23";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
