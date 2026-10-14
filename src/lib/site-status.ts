@@ -13,7 +13,24 @@
  *
  * No "server-only" import: middleware bundles this, and it holds no secret.
  * The anon key it uses is public by design and the view is read-only to it
- * (see supabase/public-views-readonly.sql).
+ * (see supabase/public-views-readonly.sql in maus-and-co).
+ *
+ * WHERE IT READS. The switch lives in the Maus & Co. Supabase project, not in
+ * this site's own. Until 2026-10-14 this file read NEXT_PUBLIC_SUPABASE_URL,
+ * which on this site is Signature's own booking database. None of the SQL in
+ * this repo creates site_status_public there, so as far as the repo shows,
+ * every read failed open and flipping the switch on the studio panel did
+ * nothing here. It now reads three settings of
+ * its own, all server side, so the booking database is never pointed at
+ * Maus's project and Maus's project is never pointed at the bookings:
+ *
+ *   MAUS_STATUS_URL       the maus-and-co project URL
+ *   MAUS_STATUS_ANON_KEY  the maus-and-co anon key (public, read-only views)
+ *   MAUS_SITE_SLUG        "aad"
+ *
+ * Any of the three missing means live. MAUS_SITE_SLUG matters most: the
+ * aad-command-center Vercel project builds from this same repo, and without
+ * the slug it can never be taken down by Signature's switch.
  */
 
 export type SiteStatus = {
@@ -22,6 +39,23 @@ export type SiteStatus = {
 };
 
 export const LIVE: SiteStatus = { status: "live", message: null };
+
+/**
+ * This deployment's slug, from MAUS_SITE_SLUG, or null when it is not set.
+ * Exact match only: "AAD" or " aad" is not a slug, so it is live.
+ */
+export function siteSlug(): string | null {
+  const slug = process.env.MAUS_SITE_SLUG;
+  return slug && KNOWN_SLUGS.has(slug) ? slug : null;
+}
+
+// One warning per isolate when the read fails, never one per request.
+let warned = false;
+function warnOnce(reason: string) {
+  if (warned) return;
+  warned = true;
+  console.warn(`[site-status] could not read the switch (${reason}); serving the site`);
+}
 
 // Long enough to survive a slow cold read, short enough that it never becomes
 // the reason a page is slow.
@@ -57,8 +91,9 @@ const memo = new Map<string, Entry>();
 const inFlight = new Map<string, Promise<SiteStatus>>();
 
 async function fetchStatus(slug: string): Promise<SiteStatus> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.MAUS_STATUS_URL;
+  const key = process.env.MAUS_STATUS_ANON_KEY;
+  // Not configured is not a failure: say nothing, serve the site.
   if (!url || !key) return LIVE;
 
   const endpoint =
@@ -73,10 +108,17 @@ async function fetchStatus(slug: string): Promise<SiteStatus> {
       signal: AbortSignal.timeout(TIMEOUT_MS),
       cache: "no-store",
     });
-    if (!res.ok) return LIVE;
+    if (!res.ok) {
+      warnOnce(`HTTP ${res.status}`);
+      return LIVE;
+    }
 
     const rows: unknown = await res.json();
-    if (!Array.isArray(rows) || rows.length === 0) return LIVE;
+    if (!Array.isArray(rows)) {
+      warnOnce("not a list");
+      return LIVE;
+    }
+    if (rows.length === 0) return LIVE;
 
     const row = rows[0] as { site_status?: unknown; status_message?: unknown };
     // Anything other than the exact string "maintenance" is live. A typo, a
@@ -89,7 +131,8 @@ async function fetchStatus(slug: string): Promise<SiteStatus> {
         ? row.status_message.trim()
         : null;
     return { status: "maintenance", message };
-  } catch {
+  } catch (e) {
+    warnOnce(e instanceof Error ? e.name : "error");
     return LIVE;
   }
 }
