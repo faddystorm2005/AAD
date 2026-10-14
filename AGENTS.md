@@ -84,6 +84,18 @@ scheduling. Schema: `supabase-add-payment-tracking.sql`.
 
 ## The kill switch
 
+The switch is flipped on the Maus & Co. panel (/admin/sites) and lives in the
+**Maus & Co. Supabase project**, not this site's own. `src/lib/site-status.ts`
+reads it with three settings of its own, server side, in the aad-detailing
+Vercel project: `MAUS_STATUS_URL`, `MAUS_STATUS_ANON_KEY` and `MAUS_SITE_SLUG`
+(`aad`). Never point it at `NEXT_PUBLIC_SUPABASE_URL`: that is the booking
+database; none of the SQL in this repo creates the switch view. Without `MAUS_SITE_SLUG` the check never runs,
+which is what keeps the aad-command-center project (built from this repo) up.
+
+Proof: `npm run test:kill-switch` (unit), `npm run test:kill-switch -- --e2e`
+after a build (runs `next start` against a stub), and
+`npm run test:kill-switch:selftest`, which must fail.
+
 The matcher in `src/proxy.ts` excludes any path with a file extension, which
 also exempts a dynamic segment that happens to contain a dot, for example
 `/booking-confirmation/abc.def`. That path bypasses the switch and serves the

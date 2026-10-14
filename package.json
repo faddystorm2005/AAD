@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:kill-switch": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-maus-kill-switch.mjs",
+    "test:kill-switch:selftest": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-maus-kill-switch.mjs --broken"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.15.0",

@@ -18,9 +18,11 @@ export const metadata: Metadata = {
   // non-200 render, which is enough and is not worth answering 200 to avoid.
 };
 
-// Says "website", on purpose. "We are making some improvements" reads as a
-// business closed for renovations to someone standing next to a dirty truck.
-const FALLBACK = 'Our website is down for a short update. We are still out detailing today.';
+// Shown when the switch is flipped with the Why box left empty. The same
+// words on every site the Maus switch serves (Troy, 2026-10-14). The heading
+// and the call line above it already say the business is open, so this
+// sentence is about the website, not the trucks.
+const FALLBACK = 'We are making some improvements and will be right back.';
 
 const OWNERS = [
   { name: 'Alex', display: '(480) 793-3782', tel: '+14807933782' },

@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getSiteStatus } from "@/lib/site-status";
+import { getSiteStatus, siteSlug } from "@/lib/site-status";
 
 /**
  * The kill switch for signaturemobiledetailaz.com.
@@ -8,13 +8,17 @@ import { getSiteStatus } from "@/lib/site-status";
  * thrive-65.com. This is Next 16, so the file is proxy.ts rather than
  * middleware.ts, and it lives under src/ because the app does.
  *
- * When portal_sites.site_status is 'maintenance' for slug 'aad', every public
+ * When portal_sites.site_status is 'maintenance' for this deployment's slug
+ * (MAUS_SITE_SLUG, "aad" on the aad-detailing project), every public
  * page is rewritten to /maintenance and answered 503 with Retry-After, so the
  * address the visitor typed stays in the bar and search engines treat the
  * outage as temporary rather than dropping the page.
  *
  * FAIL OPEN. getSiteStatus returns "live" for every failure mode: a timeout, a
  * non-200, malformed JSON, an unexpected value, missing environment variables.
+ * No MAUS_SITE_SLUG means this deployment has no switch at all: the
+ * aad-command-center project builds from this repo and must never go down
+ * because Signature's switch was flipped.
  * Nothing here should add a way to fail closed. Alex's phone stops ringing if
  * this site goes dark by accident, so a maintenance page nobody asked for is
  * the expensive failure, not a site that stays up while the status read is
@@ -83,10 +87,14 @@ export async function proxy(request: NextRequest) {
 
   if (matches(pathname, ALWAYS_ALLOW)) return passThrough();
 
+  // Not this deployment's switch to read. Checked before any network call.
+  const slug = siteSlug();
+  if (!slug) return passThrough();
+
   let status: string;
   let message: string | null;
   try {
-    ({ status, message } = await getSiteStatus("aad"));
+    ({ status, message } = await getSiteStatus(slug));
   } catch {
     // Nothing below this line is allowed to take the site down. site-status is
     // written not to throw, but the guarantee has to be structural rather than
@@ -122,14 +130,15 @@ export async function proxy(request: NextRequest) {
   }
 
   // 503 with Retry-After is the pair that tells a crawler to come back rather
-  // than drop the page. Ten minutes, not an hour: Next adds its own noindex to
-  // any non-200 render and, because this is a rewrite, that lands on the real
-  // URL, so the recrawl should follow the recovery closely.
+  // than drop the page. Five minutes, as on every site the Maus switch serves
+  // (docs/plans/kill-switch-client-apps.md in maus-and-co): Next adds its own
+  // noindex to any non-200 render and, because this is a rewrite, that lands
+  // on the real URL, so the recrawl should follow the recovery closely.
   return NextResponse.rewrite(url, {
     request: { headers },
     status: 503,
     headers: {
-      "Retry-After": "600",
+      "Retry-After": "300",
       "Cache-Control": "no-store, must-revalidate",
       // Read by public/sw.js. A 503 on its own could be Vercel under load, and
       // the worker must not purge a visitor's offline copy for that. This says
