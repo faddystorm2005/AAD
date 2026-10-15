@@ -236,6 +236,53 @@ console.log("5. memo, and one warning");
   check("failed reads warn at most once per isolate", warns.length <= 1, `${warns.length} warnings`);
 }
 
+// Moves the clock the reader sees, so the 20 second memo can be crossed
+// without waiting for it.
+async function withClock(fn) {
+  const realNow = Date.now;
+  const clock = { offset: 0 };
+  Date.now = () => realNow() + clock.offset;
+  try {
+    await fn(clock, realNow);
+  } finally {
+    Date.now = realNow;
+  }
+}
+
+console.log("6. a remembered answer is never served past 20 seconds");
+// On 2026-10-14, in Troy's live test of Thrive 65 (the same reader), / showed
+// the notice while /about served the real page throughout. The reader handed
+// back its remembered "live" and refreshed behind the response, and Vercel
+// only finishes middleware work handed to waitUntil.
+await withClock(async (clock) => {
+  env(FULL);
+  m.__resetSiteStatusCache();
+  respond = json([{ site_status: "live" }]);
+  await m.getSiteStatus("aad");
+  respond = json([{ site_status: "maintenance" }]);
+  clock.offset = 21_000;
+  const s = await m.getSiteStatus("aad");
+  check("past 20 seconds the next read is fresh, not the remembered answer", s.status === "maintenance", s.status);
+});
+await withClock(async (clock, realNow) => {
+  // A read the edge cut off never settles, not even through its own timeout
+  // or a timer beside it. It must not pin every later read to the old answer.
+  env(FULL);
+  m.__resetSiteStatusCache();
+  respond = json([{ site_status: "live" }]);
+  await m.getSiteStatus("aad");
+  clock.offset = 21_000;
+  respond = () => new Promise(() => {});
+  const t0 = realNow();
+  const first = await m.getSiteStatus("aad");
+  const ms = realNow() - t0;
+  check(`a read that never answers gives up within 3s and serves the site (${ms}ms)`, first.status === "live" && ms < 3200);
+  respond = json([{ site_status: "maintenance" }]);
+  clock.offset = 30_000;
+  const next = await m.getSiteStatus("aad");
+  check("and the read after it is not stuck behind it", next.status === "maintenance", next.status);
+});
+
 // --- end to end -------------------------------------------------------------
 
 async function e2e() {
@@ -392,6 +439,21 @@ async function e2e() {
   await live('"Maintenance"', all, {
     kind: "rows",
     body: JSON.stringify([{ site_status: "Maintenance" }]),
+  });
+
+  console.log("E. warm, then flipped: a static inner page follows within 20 seconds");
+  // The order of Troy's live test on Thrive 65, where /about kept serving.
+  // /scottsdale is prerendered, the cached kind of page that stayed up there.
+  mode = { kind: "rows", body: JSON.stringify([{ site_status: "live" }]) };
+  await withServer(all, async (base) => {
+    const before = await get(base, "/scottsdale");
+    await before.text();
+    check(`/scottsdale is 200 while live (${before.status})`, before.status === 200);
+    mode = { kind: "rows", body: JSON.stringify([{ site_status: "maintenance" }]) };
+    await new Promise((r) => setTimeout(r, 21_000));
+    const after = await get(base, "/scottsdale");
+    await after.text();
+    check(`the first /scottsdale after the flip and 21s is the notice (${after.status})`, isDown(after));
   });
 
   console.log("D. the notice cannot be forged");
