@@ -92,17 +92,17 @@ function StatTile({ stat }: { stat: Stat }) {
   return (
     <li ref={tileRef} className="text-center animate-fade-up">
       <div className="text-2xl font-bold sm:text-4xl">
-        <span className="text-gradient-hero">
-          {stat.kind === 'number' ? (
-            <>
-              {stat.prefix ?? ''}
-              <CountUp target={stat.value} active={active} />
-              {stat.suffix ?? ''}
-            </>
-          ) : (
-            stat.icon
-          )}
-        </span>
+        {stat.kind === 'number' ? (
+          <span className="text-gradient-hero">
+            {stat.prefix ?? ''}
+            <CountUp target={stat.value} active={active} />
+            {stat.suffix ?? ''}
+          </span>
+        ) : (
+          // Kept outside the gradient span: background-clip:text makes
+          // currentColor transparent, which blanked the SVG.
+          <span className="text-gold-300">{stat.icon}</span>
+        )}
       </div>
       <div className="mt-3 text-xs uppercase tracking-[0.18em] text-gray-200 sm:text-sm sm:tracking-[0.2em]">
         {stat.label}

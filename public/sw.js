@@ -25,8 +25,10 @@
  *            framework bundles, so every client refreshes.
  * v23 -> v24: the kill switch reads the Maus & Co. project (MAUS_* settings)
  *            and the maintenance page has new default words.
+ * v24 -> v25: phone fixes. Hero sizes to its content, no sideways scroll,
+ *            the stats strip icon shows, city page menu links go home.
  */
-const VERSION = "aad-v24";
+const VERSION = "aad-v25";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";

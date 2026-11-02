@@ -35,6 +35,14 @@
   }
 }
 
+/* Safety net against sideways wobble on phones (the panning hero image
+   scales past the viewport). clip, not hidden, so the sticky header keeps
+   working: clip does not create a scroll container. */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   min-height: 100vh;
   background: var(--background);
