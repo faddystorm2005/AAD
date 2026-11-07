@@ -102,6 +102,8 @@ export default function LazyVideo({
     // Hold: show the poster and wait for an explicit tap. Not one byte of
     // video is fetched until the visitor asks for it.
     if (reduceMotion || smallScreen || saveData) {
+      // One-time read of browser media queries on mount.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNeedsTap(true);
       return;
     }

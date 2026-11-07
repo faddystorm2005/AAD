@@ -15,7 +15,9 @@ const LINKS = [
   { href: '#contact',     label: 'Contact' },
 ];
 
-export default function MobileNav() {
+// anchorBase works like SiteHeader's: '' on the homepage, '/' elsewhere so
+// the drawer links lead back to the homepage sections.
+export default function MobileNav({ anchorBase = '' }: { anchorBase?: string }) {
   const [open, setOpen] = useState(false);
   // The portal target only exists on the client, so gate on hydration.
   const mounted = useIsHydrated();
@@ -125,7 +127,7 @@ export default function MobileNav() {
                   {LINKS.map(({ href, label }) => (
                     <li key={href}>
                       <a
-                        href={href}
+                        href={`${anchorBase}${href}`}
                         onClick={close}
                         className="block rounded-xl px-4 py-3.5 text-base font-medium text-gray-100 transition-colors hover:bg-white/10 hover:text-gold-300 active:bg-white/15"
                       >

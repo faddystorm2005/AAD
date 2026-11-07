@@ -96,7 +96,10 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="relative" id="main-content" tabIndex={-1}>
-        <div className="relative h-[60vh] min-h-[480px] w-full overflow-hidden">
+        {/* Phones: grow with the content (min-height, not a fixed height) so
+            the headline is never clipped up behind the sticky header.
+            overflow-hidden also clips the 105% banner pan sideways. */}
+        <div className="relative flex min-h-[480px] w-full flex-col overflow-hidden sm:block sm:h-[60vh]">
           {/* Subtle radial color glow stands in for the old blurred-backdrop
               image. Removing the duplicate <img> saved one image fetch on
               every page load and shaved render-blocking decode work. */}
@@ -127,7 +130,7 @@ export default async function Home() {
           <div aria-hidden className="hero-vignette pointer-events-none absolute inset-0" />
           {/* Soft red glow that follows the cursor for premium polish. */}
           <HeroSpotlight />
-          <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col items-start justify-end px-6 pb-12">
+          <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col items-start justify-end px-6 pb-12 pt-20 sm:h-full sm:pt-0">
             <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.4em] text-gold-400 sm:text-base">
               Quality Over Quantity
             </p>

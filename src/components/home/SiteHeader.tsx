@@ -60,7 +60,7 @@ export default function SiteHeader({ anchorBase = '' }: { anchorBase?: string })
               Book Now
             </Link>
           </div>
-          <MobileNav />
+          <MobileNav anchorBase={anchorBase} />
         </div>
       </nav>
     </header>
