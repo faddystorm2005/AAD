@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import type { Copy } from '@/lib/cmsContent';
+import TextLines from '@/components/TextLines';
 
 /**
  * Site footer, extracted verbatim from the homepage so the city landing
@@ -10,10 +12,15 @@ import Link from 'next/link';
 export default function SiteFooter({
   availability,
   anchorBase = '',
+  copy,
 }: {
   availability: string;
   anchorBase?: string;
+  copy: Copy;
 }) {
+  const alex = copy.phone('contact.alex_phone');
+  const kane = copy.phone('contact.kane_phone');
+  const email = copy.email('contact.email');
   return (
     <footer
       id="site-footer"
@@ -22,29 +29,29 @@ export default function SiteFooter({
       <div className="mx-auto grid w-full max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-base font-bold uppercase tracking-[0.18em] text-white">
-            Signature Mobile Detailing
+            {copy.text('footer.brand')}
           </p>
           <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-300 italic">
-            <span aria-hidden>✝</span> Faith-driven, owner-operated
+            <span aria-hidden>✝</span> {copy.text('footer.tagline')}
           </p>
           <p className="mt-3 text-base text-gray-200">
-            Mobile detailing in Phoenix, AZ and across the valley. Quality over quantity. We come to you for interior, exterior, ceramic coatings, paint correction, and more.
+            <TextLines text={copy.text('footer.blurb')} />
           </p>
           <p className="mt-4 text-base text-gray-200">
-            <span className="text-base text-gray-300">Alex</span>{' '}
-            <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              (480) 793-3782
+            <span className="text-base text-gray-300">{copy.text('contact.alex_name')}</span>{' '}
+            <a href={alex.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {alex.display}
             </a>
           </p>
           <p className="mt-1 text-base text-gray-200">
-            <span className="text-base text-gray-300">Kane</span>{' '}
-            <a href="tel:+16028815602" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              (602) 881-5602
+            <span className="text-base text-gray-300">{copy.text('contact.kane_name')}</span>{' '}
+            <a href={kane.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {kane.display}
             </a>
           </p>
           <p className="mt-2 text-base text-gray-200">
-            <a href="mailto:info@signaturemobiledetailaz.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              info@signaturemobiledetailaz.com
+            <a href={email.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {email.display}
             </a>
           </p>
           <p className="mt-2 text-sm text-gray-300">
@@ -88,7 +95,7 @@ export default function SiteFooter({
       </div>
       <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-3 border-t border-white/10 pt-6 text-sm text-gray-300 sm:flex-row sm:justify-between">
         <p>
-          © {new Date().getFullYear()} Signature Mobile Detailing. Mobile detailing in Phoenix, AZ.
+          © {new Date().getFullYear()} {copy.text('footer.brand')}. {copy.text('footer.copyright_line')}
           {/* Kept visually secondary so the old brand does not compete with
               the new one. De-emphasis comes from size and weight only, not
               from dimming the text: this line exists for returning customers
@@ -96,12 +103,12 @@ export default function SiteFooter({
               stay readable. The structured-data equivalent lives in
               layout.tsx as alternateName. */}
           <span className="mt-1 block text-sm text-gray-300">
-            Formerly Austin Auto Detail.
+            {copy.text('footer.formerly')}
           </span>
         </p>
         <p className="text-sm text-gray-300 italic text-center sm:text-right">
           <span aria-hidden className="mr-1.5 text-gray-500">✝</span>
-          &ldquo;Whatever you do, work at it with all your heart, as working for the Lord.&rdquo; &middot; Col. 3:23
+          &ldquo;{copy.text('footer.verse')}&rdquo; &middot; {copy.text('footer.verse_ref')}
         </p>
         <p className="text-sm text-gray-300">
           Site by{" "}

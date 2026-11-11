@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import TextLines from '@/components/TextLines';
 
 interface Step {
   number: string;
@@ -73,7 +74,29 @@ function StepIcon({ name }: { name: Step['icon'] }) {
   );
 }
 
-export default function Timeline() {
+export type TimelineStep = { number: string; title: string; description: string };
+
+const ICON_ORDER: Step['icon'][] = ['calendar', 'clipboard', 'van'];
+
+/**
+ * A step keeps the icon of the built-in step with the same title, so
+ * reordering in the portal moves the icon with it. New steps cycle through
+ * the three icons by position.
+ */
+function iconFor(step: TimelineStep, i: number): Step['icon'] {
+  return STEPS.find((s) => s.title === step.title)?.icon ?? ICON_ORDER[i % ICON_ORDER.length];
+}
+
+export default function Timeline({
+  steps: stepsProp,
+  moreLabel = 'Learn more',
+  hideLabel = 'Hide',
+}: {
+  steps?: TimelineStep[];
+  moreLabel?: string;
+  hideLabel?: string;
+}) {
+  const steps = stepsProp && stepsProp.length > 0 ? stepsProp : STEPS;
   const rootRef = useRef<HTMLOListElement>(null);
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
@@ -116,9 +139,9 @@ export default function Timeline() {
       className="aad-timeline relative grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-0"
       aria-label="How booking works in three steps"
     >
-      {STEPS.map((step, i) => (
+      {steps.map((step, i) => (
         <li
-          key={step.title}
+          key={i}
           className="aad-step relative flex flex-col items-center text-center sm:items-start sm:text-left"
         >
           {/* Connector to the next step. Hidden on the last item AND on
@@ -126,16 +149,19 @@ export default function Timeline() {
               run through the centered title/description text). On desktop
               the connector is a horizontal line between icons; the filled
               state animates via the .is-active class. */}
-          {i < STEPS.length - 1 && (
+          {i < steps.length - 1 && (
             <span className="aad-connector pointer-events-none absolute hidden sm:block" aria-hidden />
           )}
           <div className="aad-step-icon relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-gold-500/40 bg-zinc-950 text-gold-400 transition-colors duration-500">
-            <StepIcon name={step.icon} />
+            <StepIcon name={iconFor(step, i)} />
           </div>
-          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.25em] text-gold-400">
-            {step.number}
-          </p>
-          <h3 className="mt-2 text-lg font-bold text-white sm:text-xl">{step.title}</h3>
+          {step.number ? (
+            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.25em] text-gold-400">
+              {step.number}
+            </p>
+          ) : null}
+          {step.title ? <h3 className="mt-2 text-lg font-bold text-white sm:text-xl">{step.title}</h3> : null}
+          {step.description ? (
           <button
             type="button"
             onClick={() => toggle(i)}
@@ -143,11 +169,12 @@ export default function Timeline() {
             className="mt-2 flex items-center gap-1.5 text-sm text-gray-300 hover:text-gray-200 transition-colors"
           >
             <span className={`text-lg leading-none transition-transform duration-200 ${expanded.has(i) ? 'rotate-45' : ''}`} aria-hidden>+</span>
-            <span>{expanded.has(i) ? 'Hide' : 'Learn more'}</span>
+            <span>{expanded.has(i) ? hideLabel : moreLabel}</span>
           </button>
-          {expanded.has(i) && (
+          ) : null}
+          {expanded.has(i) && step.description && (
             <p className="mt-2 max-w-xs text-base leading-relaxed text-gray-200 sm:max-w-[18rem]">
-              {step.description}
+              <TextLines text={step.description} />
             </p>
           )}
         </li>

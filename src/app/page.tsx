@@ -1,7 +1,10 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { getLiveContent } from '@/lib/cms';
+import { getCopy, getLiveContent } from '@/lib/cms';
+import TextLines from '@/components/TextLines';
 import { fetchLivePriceTable } from '@/lib/livePricing';
+import { isAllowedImage } from '@/lib/cmsContent';
 import Image from 'next/image';
 import {
   Sparkles,
@@ -11,7 +14,6 @@ import {
   MapPin,
 } from 'lucide-react';
 import { SERVICE_TYPES, SERVICE_TYPE_NAMES, ADD_ONS, RETURNING_CUSTOMER_DISCOUNT_RATE } from '@/lib/bookingPricing';
-import { DASHBOARD_BANNER, BOOK_CTA_IMAGE } from '@/lib/siteImages';
 import SiteHeader from '@/components/home/SiteHeader';
 import SiteFooter from '@/components/home/SiteFooter';
 import HeroSpotlight from '@/components/home/HeroSpotlight';
@@ -30,29 +32,38 @@ import PagePolish from '@/components/home/PagePolish';
 import ServiceMapLoader from '@/components/ServiceMapLoader';
 import ServiceCard from '@/components/home/ServiceCard';
 import LazyVideo from '@/components/home/LazyVideo';
+import { SITE_URL } from '@/lib/cityPages';
 
-const SERVICE_INCLUDES: Record<string, string[]> = {
-  exterior: [
-    'Hand wash & dry',
-    'Clay bar treatment',
-    'Wheel & tire cleaning',
-    'Exterior windows',
-    'Tire dressing & shine',
-  ],
-  interior: [
-    'Full vacuum: seats, floor, trunk',
-    'Dashboard & console detail',
-    'Door panels & pockets',
-    'Interior windows',
-    'Floor mat cleaning',
-  ],
-  full_detail: [
-    'Complete exterior detail',
-    'Complete interior detail',
-    'Door jamb cleaning',
-    'Biggest transformation, best value',
-  ],
-};
+// What's-included lines per pricing tier live in siteCopy.ts
+// (pricing_text.includes_*), portal-editable.
+
+/**
+ * Page title and description, editable in the portal. The layout holds the
+ * same defaults for every other page; openGraph and twitter are restated in
+ * full because a page-level object replaces the layout's rather than merging.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await getCopy();
+  const title = copy.text('seo.home.title');
+  const description = copy.text('seo.home.description');
+  return {
+    title: { absolute: title },
+    description,
+    openGraph: {
+      type: 'website',
+      siteName: 'Signature Mobile Detailing',
+      title,
+      description,
+      url: SITE_URL + '/',
+      locale: 'en_US',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
 
 /**
  * Public marketing homepage. Server-rendered so crawlers + first-time
@@ -64,17 +75,38 @@ const SERVICE_INCLUDES: Record<string, string[]> = {
 export default async function Home() {
   const live = await getLiveContent();
   const priceTable = await fetchLivePriceTable();
+  const copy = await getCopy();
+  const t = copy.text;
+  const heroPhoto = copy.image('hero.photo');
+  const ctaPhoto = copy.image('cta.photo');
+  const alex = copy.phone('contact.alex_phone');
+  const kane = copy.phone('contact.kane_phone');
+  const email = copy.email('contact.email');
+  const services = copy.list('services.cards', ['title', 'description', 'price_note'] as const);
+  const results = copy
+    .list('results.items', ['photo', 'vehicle', 'service'] as const)
+    // A card is the photo, so one without a usable photo is left out.
+    .map((r) => ({ ...r, photo: r.photo.trim() && isAllowedImage(r.photo) ? r.photo.trim() : '' }))
+    .filter((r) => r.photo);
+  const steps = copy.list('how.steps', ['number', 'title', 'description'] as const);
+  const reasons = copy.list('why.reasons', ['headline', 'title', 'description'] as const);
+  const pillars = copy.list('value.pillars', ['title', 'description'] as const);
+  const includes: Record<string, string[]> = {
+    full_detail: copy.strings('pricing_text.includes_full_detail'),
+    interior: copy.strings('pricing_text.includes_interior'),
+    exterior: copy.strings('pricing_text.includes_exterior'),
+  };
   return (
     <main role="main" className="homepage-cinematic relative min-h-screen overflow-hidden bg-black text-white">
       <link
         rel="preload"
         as="image"
         fetchPriority="high"
-        href="/images/aad/hero-s-class.jpg"
+        href={heroPhoto}
       />
 
       {/* Sticky nav with keyword-rich anchor links + persistent Book CTA. */}
-      <SiteHeader />
+      <SiteHeader copy={copy} />
 
       {/* Ambient red glow at top + bottom */}
       <div
@@ -110,7 +142,7 @@ export default async function Home() {
               biggest LCP win on mobile. */}
           <div className="hero-parallax-wrap">
             <Image
-              src={DASHBOARD_BANNER.src}
+              src={heroPhoto}
               alt="Mobile detailing in Phoenix, AZ - professional auto detailing at your driveway"
               fill
               priority
@@ -120,7 +152,11 @@ export default async function Home() {
             />
             {/* Cinemagraph of the same S-Class still: light sweeps across the
                 paint. Desktop only, loads after the still, still is fallback. */}
-            <AmbientVideo src="/images/aad/hero-s-class-loop.mp4" />
+            {/* The loop is filmed on the default photo, so a new photo from
+                the portal plays without it rather than under the wrong car. */}
+            {heroPhoto === copy.fallback('hero.photo') && (
+              <AmbientVideo src="/images/aad/hero-s-class-loop.mp4" />
+            )}
           </div>
           {/* Veil: lighter at the eyebrow line, darker toward the bottom so
               the text and CTAs always have enough contrast. */}
@@ -132,21 +168,21 @@ export default async function Home() {
           <HeroSpotlight />
           <div className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col items-start justify-end px-6 pb-12 pt-20 sm:h-full sm:pt-0">
             <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.4em] text-gold-400 sm:text-base">
-              Quality Over Quantity
+              {t('hero.eyebrow')}
             </p>
             <h1
               className="hero-swipe-reveal text-gradient-hero mt-3 text-4xl font-bold uppercase tracking-[0.04em] sm:text-5xl md:text-6xl"
               style={{ animationDelay: '80ms' }}
             >
-              Mobile Detailing
+              {t('hero.heading_line1')}
               <br />
-              in Phoenix
+              {t('hero.heading_line2')}
             </h1>
             <p
               className="animate-fade-up mt-5 max-w-xl text-lg text-gray-100 sm:text-xl"
               style={{ animationDelay: '160ms' }}
             >
-              Professional detailing brought right to your driveway, office, or garage across Phoenix, Scottsdale, Tempe, Mesa, Chandler, and Gilbert. We bring everything we need. You don&apos;t lift a finger.
+              <TextLines text={t('hero.intro')} />
             </p>
             <div
               className="animate-fade-up mt-8 flex flex-wrap gap-3"
@@ -156,20 +192,20 @@ export default async function Home() {
                 href="/auth"
                 className="btn-primary press inline-block rounded-xl px-7 py-4 text-base font-semibold sm:text-lg"
               >
-                Book Mobile Detailing →
+                {t('hero.book_label')}
               </Link>
               <a
                 href="#services"
                 className="press inline-block rounded-xl border-2 border-white/40 bg-black/40 px-7 py-4 text-base font-semibold text-white backdrop-blur hover:bg-black/60 sm:text-lg"
               >
-                Explore Services
+                {t('hero.explore_label')}
               </a>
             </div>
             <p
               className="animate-fade-up mt-3 text-sm text-gray-300"
               style={{ animationDelay: '320ms' }}
             >
-              Prefer to call? <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">(480) 793-3782</a>
+              {t('hero.call_prompt')} <a href={alex.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">{alex.display}</a>
             </p>
           </div>
         </div>
@@ -181,7 +217,7 @@ export default async function Home() {
         className="relative z-10 border-y border-white/5 bg-gradient-to-b from-black via-zinc-950 to-black py-10"
       >
         <div className="mx-auto w-full max-w-5xl px-6">
-          <StatsStrip />
+          <StatsStrip labels={[t('stats.label_1'), t('stats.label_2'), t('stats.label_3')]} />
         </div>
       </section>
 
@@ -189,35 +225,39 @@ export default async function Home() {
       <section id="services" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Our Mobile Detailing Services
+            {t('services.heading')}
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Every package is tailored to your vehicle. We come to you for{' '}
+            {t('services.intro_before')}{' '}
             <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
-              Phoenix car detailing
+              {t('services.link_1')}
             </Link>
             ,{' '}
             <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
-              auto detailing services
+              {t('services.link_2')}
             </Link>
-            , and ceramic coatings. No driving across town, no waiting rooms.
+            , {t('services.intro_after')}
           </p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((s, i) => {
+          {services.map((card, i) => {
+            const s = serviceMeta(card.title, i);
             const liveAddon = s.addonId ? priceTable.addOns[s.addonId] : undefined;
             const priceLabel =
               liveAddon !== undefined
-                ? `${s.priceLabel}${typeof liveAddon === 'number' ? liveAddon : liveAddon.small}`
-                : s.priceLabel || undefined;
+                ? `${card.price_note}${typeof liveAddon === 'number' ? liveAddon : liveAddon.small}`
+                : card.price_note || undefined;
             return (
-              <div key={s.title} className="scroll-card" data-stagger-i={i}>
+              <div key={i} className="scroll-card" data-stagger-i={i}>
                 <ServiceCard
                   icon={s.icon}
-                  title={s.title}
-                  description={s.description}
+                  title={card.title}
+                  description={card.description}
                   priceLabel={priceLabel}
+                  detailsLabel={t('services.details_label')}
+                  hideLabel={t('services.hide_label')}
+                  bookLabel={t('services.book_label')}
                 />
               </div>
             );
@@ -230,10 +270,10 @@ export default async function Home() {
       <section id="pricing" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Pricing
+            {t('pricing_text.heading')}
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Flat rates by vehicle size. Travel included, no surprise fees. Nothing to pay up front, you pay on-site once the work is done.
+            <TextLines text={t('pricing_text.intro')} />
           </p>
         </div>
 
@@ -256,7 +296,7 @@ export default async function Home() {
               >
                 {isFeatured && (
                   <span className="absolute left-1/2 top-0 -translate-x-1/2 rounded-b-lg bg-gold-600 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-black shadow-[0_4px_14px_rgba(212,162,76,0.4)]">
-                    Most Popular
+                    {t('pricing_text.popular_badge')}
                   </span>
                 )}
                 <div className={isFeatured ? 'sm:grid sm:grid-cols-2 sm:gap-10' : ''}>
@@ -265,8 +305,8 @@ export default async function Home() {
                       {SERVICE_TYPE_NAMES[type]}
                     </h3>
                     <ul className="mt-4 space-y-1.5">
-                      {SERVICE_INCLUDES[type].map((item) => (
-                        <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
+                      {includes[type].map((item, j) => (
+                        <li key={j} className="flex items-center gap-2 text-sm text-gray-300">
                           <svg className="h-3.5 w-3.5 shrink-0 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7" /></svg>
                           {item}
                         </li>
@@ -276,15 +316,15 @@ export default async function Home() {
                   <div className={isFeatured ? 'mt-6 sm:mt-0 sm:flex sm:flex-col sm:justify-center' : ''}>
                     <div className={`space-y-3 ${isFeatured ? 'sm:border-l sm:border-gold-500/20 sm:pl-8' : 'mt-5 border-t border-white/10 pt-4'}`}>
                       <div className="flex items-center justify-between">
-                        <span className="text-base text-gray-200">Coupe / Sedan</span>
+                        <span className="text-base text-gray-200">{t('pricing_text.size_small')}</span>
                         <span className={`font-bold text-gold-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].small}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-base text-gray-200">SUV</span>
+                        <span className="text-base text-gray-200">{t('pricing_text.size_suv')}</span>
                         <span className={`font-bold text-gold-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].suv}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-base text-gray-200">Truck / 3-Row</span>
+                        <span className="text-base text-gray-200">{t('pricing_text.size_truck')}</span>
                         <span className={`font-bold text-gold-300 ${isFeatured ? 'text-2xl' : 'text-xl'}`}>${priceTable.services[type].truck}</span>
                       </div>
                     </div>
@@ -292,7 +332,7 @@ export default async function Home() {
                       href="/auth"
                       className={`mt-5 inline-flex text-sm font-semibold uppercase tracking-wider text-gold-300 hover:text-gold-200 ${isFeatured ? 'sm:pl-8' : ''}`}
                     >
-                      Book {SERVICE_TYPE_NAMES[type]} →
+                      {t('pricing_text.book_prefix')} {SERVICE_TYPE_NAMES[type]} →
                     </Link>
                   </div>
                 </div>
@@ -304,7 +344,7 @@ export default async function Home() {
         {/* Add-ons section */}
         <div className="reveal-on-scroll mt-12">
           <h3 className="text-base font-semibold uppercase tracking-[0.25em] text-gold-400">
-            Add-On Services
+            {t('pricing_text.addons_heading')}
           </h3>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {ADD_ONS.map((addon) => {
@@ -333,10 +373,10 @@ export default async function Home() {
           <span className="mt-0.5 shrink-0 text-2xl sm:mt-0" aria-hidden>🔁</span>
           <div>
             <p className="font-semibold uppercase tracking-wider text-white">
-              Returning customer? {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% off, no code needed.
+              {t('pricing_text.returning_before')} {Math.round(RETURNING_CUSTOMER_DISCOUNT_RATE * 100)}% {t('pricing_text.returning_after')}
             </p>
             <p className="mt-1 text-sm text-gray-300">
-              The discount is applied automatically at checkout. Final quote may adjust for vehicle condition.
+              <TextLines text={t('pricing_text.returning_note')} />
             </p>
           </div>
         </div>
@@ -353,39 +393,32 @@ export default async function Home() {
       >
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            The Results
+            {t('results.heading')}
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Real vehicles, real finishes. This is the standard every detail is held to.
+            <TextLines text={t('results.intro')} />
           </p>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {[
-            { src: '/images/aad/gallery-ford-super-duty.jpg', vehicle: 'Ford Super Duty', service: 'Full Interior Detail' },
-            { src: '/images/aad/gallery-mercedes-gle-interior.jpg', vehicle: 'Mercedes GLE', service: 'Interior Deep Clean' },
-            { src: '/images/aad/gallery-audi-s4-red-leather.jpg', vehicle: 'Audi S4', service: 'Leather Conditioning' },
-            { src: '/images/aad/gallery-toyota-tundra-console.jpg', vehicle: 'Toyota Tundra', service: 'Interior Detail' },
-            { src: '/images/aad/gallery-nissan-rogue-interior.jpg', vehicle: 'Nissan Rogue', service: 'Interior Detail' },
-            { src: '/images/aad/gallery-bmw-engine-bay.jpg', vehicle: 'BMW', service: 'Engine Bay Detail' },
-            { src: '/images/aad/gallery-suv-cargo-area.jpg', vehicle: 'SUV', service: 'Cargo Area Clean' },
-            { src: '/images/aad/gallery-ford-king-ranch.jpg', vehicle: 'Ford King Ranch', service: 'Full Detail' },
-          ].map(({ src, vehicle, service }, i) => (
+          {results.map(({ photo: src, vehicle, service }, i) => (
             <div
-              key={src}
+              key={i}
               className="reveal-on-scroll group relative overflow-hidden rounded-2xl border border-white/10 bg-gray-900"
               data-stagger-i={i}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
-                alt={`${vehicle}, ${service} by Signature Mobile Detailing`}
+                alt={`${[vehicle, service].filter(Boolean).join(', ') || 'Detail'} by Signature Mobile Detailing`}
                 loading="lazy"
                 className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3">
-                <p className="text-xs font-semibold text-white">{vehicle}</p>
-                <p className="text-xs text-gold-300">{service}</p>
-              </div>
+              {(vehicle || service) && (
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3">
+                  {vehicle && <p className="text-xs font-semibold text-white">{vehicle}</p>}
+                  {service && <p className="text-xs text-gold-300">{service}</p>}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -436,16 +469,13 @@ export default async function Home() {
             {/* Content panel */}
             <div className="relative flex flex-1 flex-col justify-center p-8 sm:p-10">
               <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
-                Behind the Scenes
+                {t('tiktok.eyebrow')}
               </p>
               <h2 className="mt-2 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
-                Watch Every Detail Live
+                {t('tiktok.heading')}
               </h2>
               <p className="mt-3 max-w-lg text-base leading-relaxed text-gray-300">
-                Before and afters. Deep-clean transformations. The
-                satisfying moments most customers never see. Real cars,
-                real Phoenix drivers. Follow along and see what
-                yours could look like.
+                <TextLines text={t('tiktok.text')} />
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <span className="inline-flex items-center gap-2 rounded-xl bg-gold-600 px-5 py-2.5 text-sm font-semibold text-black transition-colors duration-200 group-hover:bg-gold-500">
@@ -458,9 +488,9 @@ export default async function Home() {
                   >
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.63z" />
                   </svg>
-                  Follow @signaturedetailingco →
+                  {t('tiktok.button')}
                 </span>
-                <span className="text-sm text-gray-300">Free to watch &amp; follow</span>
+                <span className="text-sm text-gray-300">{t('tiktok.note')}</span>
               </div>
             </div>
           </a>
@@ -471,14 +501,14 @@ export default async function Home() {
       <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            How It Works
+            {t('how.heading')}
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Booking mobile detailing in Phoenix takes about a minute. Here&apos;s how it goes:
+            <TextLines text={t('how.intro')} />
           </p>
         </div>
         <div className="mt-12">
-          <Timeline />
+          <Timeline steps={steps} moreLabel={t('how.more_label')} hideLabel={t('how.hide_label')} />
         </div>
       </section>
 
@@ -486,19 +516,19 @@ export default async function Home() {
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Why Signature Mobile Detailing
+            {t('why.heading')}
           </h2>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          {REASONS.map((r, i) => (
+          {reasons.map((r, i) => (
             <div
-              key={r.title}
+              key={i}
               className="glass-card scroll-card rounded-2xl p-6"
               data-stagger-i={i}
             >
-              <p className="text-2xl font-bold text-gold-400 sm:text-3xl">{r.headline}</p>
-              <h3 className="mt-3 text-lg font-bold text-white">{r.title}</h3>
-              <p className="mt-2 text-base text-gray-200">{r.description}</p>
+              {r.headline && <p className="text-2xl font-bold text-gold-400 sm:text-3xl">{r.headline}</p>}
+              {r.title && <h3 className="mt-3 text-lg font-bold text-white">{r.title}</h3>}
+              {r.description && <p className="mt-2 text-base text-gray-200"><TextLines text={r.description} /></p>}
             </div>
           ))}
         </div>
@@ -514,10 +544,10 @@ export default async function Home() {
       >
         <div className="reveal-on-scroll text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
-            The Real Value
+            {t('value.eyebrow')}
           </p>
           <h2 className="mt-3 text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
-            Get Your Saturday Back
+            {t('value.heading')}
           </h2>
         </div>
 
@@ -527,26 +557,27 @@ export default async function Home() {
             <HeroStatCounter />
           </p>
           <p className="mt-2 text-sm uppercase tracking-[0.25em] text-gray-300">
-            saved per detail
+            {t('value.stat_label')}
           </p>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-gray-300">
-            No drop-off. No shop waiting room. No pickup. No Uber both ways.
-            We work in your driveway while you keep your day.
+            <TextLines text={t('value.text')} />
           </p>
         </div>
 
         {/* Trust pillars - 3D mouse-tilt on hover via TiltCard. */}
         <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          {TRUST_PILLARS.map((p, i) => (
-            <div key={p.title} className="scroll-card" data-stagger-i={i}>
+          {pillars.map((p, i) => (
+            <div key={i} className="scroll-card" data-stagger-i={i}>
             <TiltCard className="glass-card rounded-2xl p-6 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/40 bg-gold-500/10 text-2xl">
-                {p.icon}
+                {pillarIcon(p.title, i)}
               </div>
-              <h3 className="mt-4 text-lg font-bold text-white">
-                {p.title}
-              </h3>
-              <p className="mt-2 text-base text-gray-200">{p.description}</p>
+              {p.title && (
+                <h3 className="mt-4 text-lg font-bold text-white">
+                  {p.title}
+                </h3>
+              )}
+              {p.description && <p className="mt-2 text-base text-gray-200"><TextLines text={p.description} /></p>}
             </TiltCard>
             </div>
           ))}
@@ -573,31 +604,27 @@ export default async function Home() {
         </div>
         <div className="relative mx-auto w-full max-w-3xl px-6 text-center">
           <p className="reveal-on-scroll text-xs font-semibold uppercase tracking-[0.4em] text-gold-500">
-            Our Mission
+            {t('mission.eyebrow')}
           </p>
           <blockquote
             className="reveal-on-scroll mt-6 text-balance text-2xl font-semibold leading-snug text-white sm:text-3xl"
           >
             <span className="text-gradient-hero">
-              &ldquo;Keep every car looking brand new. The one you drive
-              home in should feel like the one you drove off the lot.&rdquo;
+              &ldquo;{t('mission.quote')}&rdquo;
             </span>
           </blockquote>
           <p className="reveal-on-scroll mt-6 text-base leading-relaxed text-gray-300">
-            We treat every vehicle like it&apos;s our own. That&apos;s why we
-            cap at six details a day, bring everything to your door, and
-            don&apos;t cut a single corner. Cars take you to the people and
-            places that matter, so they should look the part.
+            <TextLines text={t('mission.text')} />
           </p>
           {/* Both names, because they own it fifty-fifty and the paragraph
               above is written as "we". Attributing it to one of them made the
               other invisible on the only part of the page that says who you
               are actually hiring. */}
           <p className="reveal-on-scroll mt-6 text-sm uppercase tracking-[0.3em] text-gray-300">
-            Alex Browning &amp; Kane Pexa, Owners
+            {t('mission.owners')}
           </p>
           <p className="reveal-on-scroll mt-4 text-sm italic text-gray-300">
-            &ldquo;Commit your work to the Lord, and your plans will be established.&rdquo; &middot; Prov. 16:3
+            &ldquo;{t('mission.verse')}&rdquo; &middot; {t('mission.verse_ref')}
           </p>
         </div>
       </section>
@@ -606,13 +633,13 @@ export default async function Home() {
       <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
         <div className="reveal-on-scroll text-center">
           <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Frequently Asked Questions
+            {t('faq.heading')}
           </h2>
         </div>
         <div className="mt-10 space-y-4">
           {live.faqs.map((q, i) => (
             <details
-              key={q.question}
+              key={i}
               className="glass-card scroll-card group rounded-2xl p-5"
               data-stagger-i={i}
             >
@@ -620,20 +647,20 @@ export default async function Home() {
                 <span>{q.question}</span>
                 <span className="text-2xl text-gold-400 transition-transform group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-3 text-base leading-relaxed text-gray-200">{q.answer}</p>
+              {q.answer && <p className="mt-3 text-base leading-relaxed text-gray-200"><TextLines text={q.answer} /></p>}
             </details>
           ))}
         </div>
         <p className="mt-8 text-center text-base text-gray-200">
-          Still have questions?{' '}
+          {t('faq.footer_before')}{' '}
           <a href="#contact" className="text-gold-300 underline-offset-4 hover:underline">
-            Contact us
+            {t('faq.contact_link')}
           </a>{' '}
           or{' '}
           <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
-            book a detail
+            {t('faq.book_link')}
           </Link>{' '}
-          to get started.
+          {t('faq.footer_after')}
         </p>
       </section>
 
@@ -644,10 +671,10 @@ export default async function Home() {
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll text-center">
           <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Watch Us Work
+            {t('watch.heading')}
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Real jobs. Real results.
+            <TextLines text={t('watch.intro')} />
           </p>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -675,7 +702,7 @@ export default async function Home() {
         <div className="lift-hover relative overflow-hidden rounded-3xl border border-white/10 reveal-on-scroll">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={BOOK_CTA_IMAGE.src}
+            src={ctaPhoto}
             alt="Book mobile detailing in Phoenix, AZ - on-site car detailing at your home or office"
             width={1920}
             height={1080}
@@ -684,25 +711,27 @@ export default async function Home() {
             className="absolute inset-0 h-full w-full object-cover animate-banner-pan"
           />
           {/* Foam pre-wash cinemagraph from our own photo; still is fallback. */}
-          <AmbientVideo src="/images/aad/foam-loop.mp4" />
+          {ctaPhoto === copy.fallback('cta.photo') && (
+            <AmbientVideo src="/images/aad/foam-loop.mp4" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
           <div className="relative flex flex-col items-start gap-4 p-10 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.35em] text-gold-400">
-                Ready when you are
+                {t('cta.eyebrow')}
               </p>
               <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
-                Mobile Detailing in Phoenix
+                {t('cta.heading')}
               </h3>
               <p className="mt-2 max-w-xl text-base text-gray-100 sm:text-lg">
-                Quality on-site detailing brought to you. Pick a slot, we&apos;ll show up with everything we need. No deposit, you pay on-site once the work is done.
+                <TextLines text={t('cta.text')} />
               </p>
             </div>
             <Link
               href="/auth"
               className="btn-primary press inline-block shrink-0 rounded-xl px-7 py-4 text-base font-semibold sm:text-lg"
             >
-              Book Now →
+              {t('cta.button')}
             </Link>
           </div>
         </div>
@@ -712,33 +741,33 @@ export default async function Home() {
       <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 scroll-mt-20">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Contact Signature Mobile Detailing
+            {t('contact.heading')}
           </h2>
           <p className="mt-3 text-base text-gray-200 sm:text-lg">
-            Mobile detailing across Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale, and Peoria. Call or text Alex at{' '}
-            <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              (480) 793-3782
+            {t('contact.lead')} Call or text {t('contact.alex_name')} at{' '}
+            <a href={alex.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {alex.display}
             </a>
-            {' '}or Kane at{' '}
-            <a href="tel:+16028815602" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              (602) 881-5602
+            {' '}or {t('contact.kane_name')} at{' '}
+            <a href={kane.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {kane.display}
             </a>
             , email{' '}
-            <a href="mailto:info@signaturemobiledetailaz.com" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              info@signaturemobiledetailaz.com
+            <a href={email.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {email.display}
             </a>
             , or{' '}
             <Link href="/auth" className="text-gold-300 underline-offset-4 hover:underline">
-              book online
+              {t('contact.book_link')}
             </Link>
-            . We&apos;ll confirm within 24 hours.
+            . {t('contact.closing')}
           </p>
           <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-gold-300">
             {live.availability}
           </p>
           <div className="mt-6">
             <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-300">
-              Service Area
+              {t('contact.map_label')}
             </p>
             <ServiceMapLoader />
           </div>
@@ -746,15 +775,15 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <SiteFooter availability={live.availability} />
+      <SiteFooter availability={live.availability} copy={copy} />
 
       <H2CinematicObserver />
       <ScrollCardObserver />
       <HeroParallax />
       {/* Floating "Book Now" pill that fades in once visitor scrolls past hero. */}
-      <StickyBookCta />
+      <StickyBookCta label={t('buttons.sticky_book')} />
       <InstallAppPrompt />
-      <MobileBottomBar />
+      <MobileBottomBar callHref={alex.href} callLabel={t('buttons.bar_call')} bookLabel={t('buttons.bar_book')} />
       <PagePolish />
     </main>
   );
@@ -764,91 +793,47 @@ export default async function Home() {
 // the red-accented circular badge in ServiceCard.
 const ICON_SIZE = 24;
 
-type ServiceCardDef = {
+// Icons stay in code; the words come from siteCopy.ts (services.cards).
+// A card keeps the icon of the built-in card with the same title, so a
+// reordered list moves the icon with it. New cards take icons by position.
+type ServiceMeta = {
   icon: ReactNode;
-  title: string;
-  description: string;
-  priceLabel: string;
-  // When set, the trailing price on priceLabel comes from the live
+  // When set, the trailing price on the price note comes from the live
   // portal-managed price table so the card can never disagree with
   // the pricing section below it.
   addonId?: string;
 };
 
-const SERVICES: ServiceCardDef[] = [
-  {
-    icon: <Sparkles size={ICON_SIZE} aria-hidden />,
-    title: 'Full Detail',
-    description: 'Complete interior and exterior reset. Hand wash, decontamination, and clay bar outside. Vacuum, shampoo, and full surface dressing inside.',
-    priceLabel: '',
-  },
-  {
-    icon: <Car size={ICON_SIZE} aria-hidden />,
-    title: 'Exterior Detailing',
-    description: 'Hand wash, decontamination, clay bar, and trim/tire dressing. Your paint reset to like-new.',
-    priceLabel: '',
-  },
-  {
-    icon: <Sofa size={ICON_SIZE} aria-hidden />,
-    title: 'Interior Detailing',
-    description: 'Vacuum, shampoo carpets and seats, wipe and dress every surface. Cabin completely reset.',
-    priceLabel: '',
-  },
-  {
-    icon: <Shield size={ICON_SIZE} aria-hidden />,
-    title: 'Ceramic Coating',
-    description: 'Premium clear coat that lasts up to 10 years. Adds deep gloss and shields paint from UV, water spots, and contaminants.',
-    priceLabel: 'Quote',
-  },
-  {
-    icon: <MapPin size={ICON_SIZE} aria-hidden />,
-    title: 'Mobile - We Come To You',
-    description: 'Driveway, office parking lot, garage - anywhere in the Phoenix valley. Three slots a day so you get our full attention.',
-    priceLabel: '',
-  },
+const SERVICE_META: { title: string; meta: ServiceMeta }[] = [
+  { title: 'Full Detail', meta: { icon: <Sparkles size={ICON_SIZE} aria-hidden /> } },
+  { title: 'Exterior Detailing', meta: { icon: <Car size={ICON_SIZE} aria-hidden /> } },
+  { title: 'Interior Detailing', meta: { icon: <Sofa size={ICON_SIZE} aria-hidden /> } },
+  { title: 'Ceramic Coating', meta: { icon: <Shield size={ICON_SIZE} aria-hidden /> } },
+  { title: 'Mobile - We Come To You', meta: { icon: <MapPin size={ICON_SIZE} aria-hidden /> } },
 ];
 
-// Three reasons mapped to the three things customers actually weigh:
-// convenience, quality, price. Each headline is the dimension; each title +
-// description sells our take on it.
-const REASONS = [
-  {
-    headline: 'Convenience',
-    title: 'We come to you',
-    description: 'Driveway, office, or garage - our van is fully self-contained. No driving across town, no waiting rooms.',
-  },
-  {
-    headline: 'Quality',
-    title: 'Quality over quantity',
-    description: 'Six details a day max. Your car gets focus and care, not assembly-line speed. Showroom-ready, guaranteed.',
-  },
-  {
-    headline: 'Fair Price',
-    title: 'No surprises, no travel fees',
-    description: 'Flat rates with travel included. Returning-customer discount on every visit. What you see is what you pay.',
-  },
+function serviceMeta(title: string, i: number): ServiceMeta {
+  return (
+    SERVICE_META.find((m) => m.title === title)?.meta ??
+    SERVICE_META[i % SERVICE_META.length].meta
+  );
+}
+
+// Same rule for the three trust pillars (value.pillars). Each one answers
+// a quiet objection: "is this guy reliable?", "what if it sucks?",
+// "what's the catch?".
+const PILLAR_ICONS: { title: string; icon: string }[] = [
+  { title: 'Owner-Operated', icon: '👤' },
+  { title: 'Showroom-Ready, Guaranteed', icon: '✅' },
+  { title: 'Nothing to Pay Up Front', icon: '🔒' },
 ];
 
-// Three trust signals that pair with the time-saved stat above.
-// Each one answers a quiet objection: "is this guy reliable?",
-// "what if it sucks?", "what's the catch?".
-const TRUST_PILLARS = [
-  {
-    icon: '👤',
-    title: 'Owner-Operated',
-    description: 'Alex and Kane own the business fifty-fifty and do every detail themselves. No revolving crew of contractors. Call us and you get an owner, not a call center.',
-  },
-  {
-    icon: '✅',
-    title: 'Showroom-Ready, Guaranteed',
-    description: "Not happy with how something turned out? We make it right before we leave. That's the standard.",
-  },
-  {
-    icon: '🔒',
-    title: 'Nothing to Pay Up Front',
-    description: "No deposit, no card needed to book. You pay on-site after the detail is done and you've seen the work.",
-  },
-];
+function pillarIcon(title: string, i: number): string {
+  return (
+    PILLAR_ICONS.find((p) => p.title === title)?.icon ??
+    PILLAR_ICONS[i % PILLAR_ICONS.length].icon
+  );
+}
 
 // FAQ content lives in lib/cms.ts (portal-editable with baked-in defaults).
 

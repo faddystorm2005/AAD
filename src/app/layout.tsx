@@ -7,6 +7,7 @@ import { DialogProvider } from "@/contexts/DialogContext";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import HapticProvider from "@/components/HapticProvider";
 import OfflineBanner from "@/components/OfflineBanner";
+import { SITE_COPY_DEFAULTS } from "@/lib/siteCopy";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,11 +37,12 @@ const oswald = Oswald({
 // an unverified domain gets rejected, so the order mattered: verify first,
 // then switch FROM_ADDRESS and REPLY_TO_ADDRESS in the review-request cron.
 const SITE_URL = "https://www.signaturemobiledetailaz.com";
-const SOCIAL_TITLE = "Mobile Car Detailing in Phoenix, AZ | Signature Mobile Detailing";
-// One canonical description used everywhere (page meta, Open Graph, Twitter)
-// so search engines and social previews stay consistent.
-const SOCIAL_DESCRIPTION =
-  "Mobile car detailing in Phoenix, Scottsdale, Tempe, Mesa and Chandler. Interior, exterior, ceramic coating and paint correction at your driveway or office.";
+// One canonical title and description used everywhere (page meta, Open
+// Graph, Twitter) so search engines and social previews stay consistent.
+// They live in siteCopy.ts because the homepage lets Alex edit them in the
+// portal; this layout keeps the baked-in values for every other page.
+const SOCIAL_TITLE = SITE_COPY_DEFAULTS.seo.home.title;
+const SOCIAL_DESCRIPTION = SITE_COPY_DEFAULTS.seo.home.description;
 
 const BUSINESS_ID = `${SITE_URL}/#business`;
 

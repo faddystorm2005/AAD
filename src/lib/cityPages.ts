@@ -101,3 +101,26 @@ export const CITIES: CityPage[] = [
 
 export const getCity = (slug: string): CityPage | undefined =>
   CITIES.find((c) => c.slug === slug);
+
+/**
+ * Portal defaults for the city pages, keyed `cities.<slug>.<field>`. Built
+ * from CITIES so the text above stays the single source. The slug and city
+ * name stay in code: the routes, sitemap and schema depend on them.
+ */
+export const CITY_COPY_DEFAULTS: Record<string, Record<string, string>> =
+  Object.fromEntries(
+    CITIES.map((c) => [
+      c.slug,
+      {
+        seo_title: c.title,
+        seo_description: c.description,
+        h1: c.h1,
+        intro: c.intro,
+        hook_heading: `Why ${c.name} Cars Need It`,
+        hook: c.hook,
+        services_heading: `What We Do in ${c.name}`,
+        areas_label: `Where we go in ${c.name}:`,
+        areas: c.areas,
+      },
+    ]),
+  );

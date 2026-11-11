@@ -35,14 +35,18 @@ const STATS: Stat[] = [
   { kind: 'number', value: 100, suffix: '%', label: 'Showroom-Ready, Guaranteed' },
 ];
 
-export default function StatsStrip() {
+/**
+ * `labels` are the portal-editable captions, in tile order. A missing one
+ * keeps the caption above. The numbers and the cross icon stay in code.
+ */
+export default function StatsStrip({ labels = [] }: { labels?: string[] }) {
   return (
     <ul
       className="stats-strip grid list-none grid-cols-3 gap-4 p-0 sm:gap-6"
       aria-label="Signature Mobile Detailing by the numbers"
     >
-      {STATS.map((s) => (
-        <StatTile key={s.label} stat={s} />
+      {STATS.map((s, i) => (
+        <StatTile key={i} stat={{ ...s, label: labels[i] || s.label }} />
       ))}
     </ul>
   );

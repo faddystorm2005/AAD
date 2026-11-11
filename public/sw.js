@@ -27,8 +27,10 @@
  *            and the maintenance page has new default words.
  * v24 -> v25: phone fixes. Hero sizes to its content, no sideways scroll,
  *            the stats strip icon shows, city page menu links go home.
+ * v25 -> v26: every word and photo on the homepage and city pages reads
+ *            from the Maus & Co. portal, with the old copy as the default.
  */
-const VERSION = "aad-v25";
+const VERSION = "aad-v26";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";
