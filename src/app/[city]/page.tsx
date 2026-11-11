@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getLiveContent } from '@/lib/cms';
+import { getCopy, getLiveContent } from '@/lib/cms';
+import TextLines from '@/components/TextLines';
 import { CITIES, getCity, SITE_URL } from '@/lib/cityPages';
 import SiteHeader from '@/components/home/SiteHeader';
 import SiteFooter from '@/components/home/SiteFooter';
@@ -26,30 +27,31 @@ export async function generateMetadata({
   const { city } = await params;
   const page = getCity(city);
   if (!page) return {};
+  // Title and description are portal-editable per city, defaulting to CITIES.
+  const copy = await getCopy();
+  const title = copy.text(`cities.${page.slug}.seo_title`);
+  const description = copy.text(`cities.${page.slug}.seo_description`);
   return {
-    title: page.title,
-    description: page.description,
+    title,
+    description,
     // The root layout sets canonical "/" for the homepage. Every city page
     // must claim its own path or all five would point Google at the homepage.
     alternates: { canonical: `/${page.slug}` },
     openGraph: {
-      title: page.title,
-      description: page.description,
+      title,
+      description,
       url: `${SITE_URL}/${page.slug}`,
     },
     twitter: {
-      title: page.title,
-      description: page.description,
+      title,
+      description,
     },
   };
 }
 
-// Copy shared by every city page. Held once here so the five pages can
-// never drift apart. The per-city voice lives in the CITIES map.
-const OWNER_LINE =
-  'Alex Browning and Kane Pexa own the business fifty-fifty and do every detail themselves. No contractors, no rotating crew. We cap the schedule at six details a day so your car gets real attention instead of assembly-line speed.';
-const SERVICES_LINE =
-  'Interior and exterior detailing, ceramic coatings, one and two step paint correction, engine bay cleaning, headlight restoration, pet hair removal, and leather conditioning.';
+// Copy shared by every city page lives once in siteCopy.ts (city.*) so the
+// five pages can never drift apart. The per-city voice lives in the CITIES
+// map and is portal-editable as cities.<slug>.*.
 
 export default async function CityPage({
   params,
@@ -60,6 +62,11 @@ export default async function CityPage({
   const page = getCity(city);
   if (!page) notFound();
   const live = await getLiveContent();
+  const copy = await getCopy();
+  const t = copy.text;
+  const c = (field: string) => t(`cities.${page.slug}.${field}`);
+  const alex = copy.phone('contact.alex_phone');
+  const description = c('seo_description');
 
   // Per-city Service schema. Provider points at the LocalBusiness block the
   // root layout injects on every page (same @id), so Google links the two.
@@ -68,7 +75,7 @@ export default async function CityPage({
     '@type': 'Service',
     name: `Mobile Car Detailing in ${page.name}, AZ`,
     serviceType: 'Mobile car detailing',
-    description: page.description,
+    description,
     url: `${SITE_URL}/${page.slug}`,
     provider: { '@id': `${SITE_URL}/#business` },
     areaServed: {
@@ -85,7 +92,7 @@ export default async function CityPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(citySchema) }}
       />
 
-      <SiteHeader anchorBase="/" />
+      <SiteHeader anchorBase="/" copy={copy} />
 
       {/* Ambient gold glow at the top, same treatment as the homepage. */}
       <div
@@ -100,26 +107,26 @@ export default async function CityPage({
       {/* Hero: city H1 + intro */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-4 pt-16 sm:pt-20" id="main-content" tabIndex={-1}>
         <p className="text-sm font-semibold uppercase tracking-[0.4em] text-gold-400 sm:text-base">
-          Quality Over Quantity
+          {t('city.eyebrow')}
         </p>
         <h1 className="text-gradient-hero mt-3 text-4xl font-bold uppercase tracking-[0.04em] sm:text-5xl">
-          {page.h1}
+          {c('h1')}
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-gray-100 sm:text-xl">
-          {page.intro}
+          <TextLines text={c('intro')} />
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/auth"
             className="btn-primary press inline-block rounded-xl px-7 py-4 text-base font-semibold sm:text-lg"
           >
-            Book Mobile Detailing →
+            {t('city.book_label')}
           </Link>
           <a
-            href="tel:+14807933782"
+            href={alex.href}
             className="press inline-block rounded-xl border-2 border-white/40 bg-black/40 px-7 py-4 text-base font-semibold text-white backdrop-blur hover:bg-black/60 sm:text-lg"
           >
-            Call (480) 793-3782
+            {t('city.call_prefix')} {alex.display}
           </a>
         </div>
       </section>
@@ -128,10 +135,10 @@ export default async function CityPage({
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-12">
         <div className="glass-card rounded-2xl p-6 sm:p-8">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-            Why {page.name} Cars Need It
+            {c('hook_heading')}
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-200 sm:text-lg">
-            {page.hook}
+            <TextLines text={c('hook')} />
           </p>
         </div>
       </section>
@@ -139,28 +146,28 @@ export default async function CityPage({
       {/* Owner-operated block, shared across every city page */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-12">
         <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-          Owner-Operated, Every Time
+          {t('city.owner_heading')}
         </h2>
         <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-200 sm:text-lg">
-          {OWNER_LINE}
+          <TextLines text={t('city.owner_text')} />
         </p>
       </section>
 
       {/* Services line + areas served */}
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-12">
         <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
-          What We Do in {page.name}
+          {c('services_heading')}
         </h2>
         <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-200 sm:text-lg">
-          {SERVICES_LINE}{' '}
+          {t('city.services_text')}{' '}
           <Link href="/#pricing" className="text-gold-300 underline-offset-4 hover:underline">
-            See full pricing
+            {t('city.pricing_link')}
           </Link>
           .
         </p>
         <p className="mt-6 max-w-3xl text-base leading-relaxed text-gray-200 sm:text-lg">
-          <span className="font-semibold text-white">Where we go in {page.name}:</span>{' '}
-          {page.areas}
+          <span className="font-semibold text-white">{c('areas_label')}</span>{' '}
+          {c('areas')}
         </p>
       </section>
 
@@ -168,27 +175,27 @@ export default async function CityPage({
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 py-12 pb-16">
         <div className="glass-card rounded-2xl p-8 text-center sm:p-10">
           <h2 className="text-2xl font-bold uppercase tracking-wider text-white sm:text-3xl">
-            Ready When You Are
+            {t('city.cta_heading')}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base text-gray-200 sm:text-lg">
-            Call or text Alex at{' '}
-            <a href="tel:+14807933782" className="font-semibold text-gold-300 underline-offset-4 hover:underline">
-              (480) 793-3782
+            {t('city.cta_before')}{' '}
+            <a href={alex.href} className="font-semibold text-gold-300 underline-offset-4 hover:underline">
+              {alex.display}
             </a>
-            , or book online in about a minute.
+            , {t('city.cta_after')}
           </p>
           <div className="mt-6">
             <Link
               href="/auth"
               className="btn-primary press inline-block rounded-xl px-7 py-4 text-base font-semibold sm:text-lg"
             >
-              Book Now →
+              {t('city.cta_button')}
             </Link>
           </div>
         </div>
       </section>
 
-      <SiteFooter availability={live.availability} anchorBase="/" />
+      <SiteFooter availability={live.availability} anchorBase="/" copy={copy} />
     </main>
   );
 }

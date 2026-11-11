@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "npm run test:cms && npm run test:kill-switch",
+    "test:cms": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/test-cms-content.mjs",
     "test:kill-switch": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-maus-kill-switch.mjs",
     "test:kill-switch:selftest": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-maus-kill-switch.mjs --broken"
   },

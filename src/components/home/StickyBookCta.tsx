@@ -9,7 +9,7 @@ import { useFooterInView } from './useFooterInView';
  * hero (~600px). Always-visible CTA on long pages, doesn't fight the
  * sticky header. Hidden on the auth page so it doesn't double up.
  */
-export default function StickyBookCta() {
+export default function StickyBookCta({ label = '🚗 Book Now' }: { label?: string }) {
   const [visible, setVisible] = useState(false);
   const footerInView = useFooterInView();
 
@@ -37,7 +37,7 @@ export default function StickyBookCta() {
       >
         {/* Shimmer sweep: translateX only (composited) */}
         <span className="book-cta-shine" aria-hidden="true" />
-        🚗 Book Now
+        {label}
       </Link>
     </div>
   );

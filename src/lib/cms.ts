@@ -1,4 +1,7 @@
 import 'server-only';
+import { createCopy, readList, readText, type Content, type Copy } from './cmsContent';
+import { SITE_COPY_DEFAULTS } from './siteCopy';
+import { CITY_COPY_DEFAULTS } from './cityPages';
 
 /**
  * Live content layer for the Maus & Co. client portal.
@@ -56,12 +59,11 @@ export const DEFAULT_FAQS: FaqItem[] = [
 
 export const DEFAULT_AVAILABILITY = 'Available 7 days a week, by appointment.';
 
-type CmsContent = {
-  availability?: string;
-  faqs?: Array<{ q?: string; a?: string }>;
-  // The portal row may still carry a `reviews` array. The site no longer
-  // renders testimonials, so it is intentionally not read here.
-};
+// The whole portal document. Known keys: availability, faqs, pricing,
+// addons (read by livePricing.ts), plus every key in siteCopy.ts and
+// cities.* from cityPages.ts. The row may still carry a `reviews` array.
+// The site no longer renders testimonials, so it is intentionally not read.
+type CmsContent = Content;
 
 async function fetchCms(): Promise<CmsContent | null> {
   try {
@@ -82,13 +84,33 @@ export type LiveContent = {
   faqs: FaqItem[];
 };
 
-export async function getLiveContent(): Promise<LiveContent> {
-  const cms = await fetchCms();
+/** Turn the raw portal document into the availability line and FAQ list. */
+export function resolveLiveContent(cms: unknown): LiveContent {
+  const faqs = readList(
+    cms,
+    'faqs',
+    ['q', 'a'],
+    DEFAULT_FAQS.map((f) => ({ q: f.question, a: f.answer })),
+  )
+    // A question with no wording would render as an empty dropdown, so it
+    // is left out rather than shown as a blank box.
+    .filter((f) => f.q.trim() !== '')
+    .map((f) => ({ question: f.q, answer: f.a }));
   return {
-    availability: cms?.availability || DEFAULT_AVAILABILITY,
-    faqs: DEFAULT_FAQS.map((base, i) => ({
-      question: cms?.faqs?.[i]?.q || base.question,
-      answer: cms?.faqs?.[i]?.a || base.answer,
-    })),
+    availability: readText(cms, 'availability', DEFAULT_AVAILABILITY),
+    faqs: faqs.length > 0 ? faqs : DEFAULT_FAQS,
   };
+}
+
+export async function getLiveContent(): Promise<LiveContent> {
+  return resolveLiveContent(await fetchCms());
+}
+
+/**
+ * Every other word and photo on the public pages. Same cached fetch as
+ * getLiveContent (Next dedupes it), so this costs no extra request.
+ */
+export async function getCopy(): Promise<Copy> {
+  const cms = await fetchCms();
+  return createCopy(cms ?? {}, { ...SITE_COPY_DEFAULTS, cities: CITY_COPY_DEFAULTS });
 }

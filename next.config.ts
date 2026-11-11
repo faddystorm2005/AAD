@@ -1,6 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Photos Alex uploads in the Maus & Co. portal are served from its
+  // portal-media bucket. next/image refuses any host not listed here, and
+  // src/lib/cmsContent.ts ignores any other photo URL for the same reason.
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "uitwrgxckeckfximxxai.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {
