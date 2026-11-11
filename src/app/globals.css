@@ -501,6 +501,21 @@ button:disabled {
   position: relative;
 }
 
+/* Anchor links (#pricing and friends) and the skip link stop below the
+   sticky header (89px at its tallest) instead of sliding under it. */
+.homepage-cinematic section[id] {
+  scroll-margin-top: calc(6rem + env(safe-area-inset-top, 0px));
+}
+
+/* Sticky site header on a notched iPhone running the installed app: the
+   header's background reaches up behind the status bar, and its content
+   stays below it once the header is stuck to the top. Zero everywhere
+   else, so nothing moves in a normal browser tab. */
+.site-header-safe-top {
+  margin-top: calc(env(safe-area-inset-top, 0px) * -1);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
 .homepage-cinematic section > * {
   position: relative;
   z-index: 2;
