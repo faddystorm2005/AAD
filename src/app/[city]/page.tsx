@@ -86,7 +86,7 @@ export default async function CityPage({
   };
 
   return (
-    <main role="main" className="homepage-cinematic relative min-h-screen overflow-hidden bg-black text-white">
+    <main role="main" className="homepage-cinematic relative min-h-screen overflow-x-clip bg-black text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(citySchema) }}

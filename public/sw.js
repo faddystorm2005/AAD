@@ -29,8 +29,9 @@
  *            the stats strip icon shows, city page menu links go home.
  * v25 -> v26: every word and photo on the homepage and city pages reads
  *            from the Maus & Co. portal, with the old copy as the default.
+ * v26 -> v27: the site header actually sticks to the top while scrolling.
  */
-const VERSION = "aad-v26";
+const VERSION = "aad-v27";
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 const OFFLINE_URL = "/offline.html";

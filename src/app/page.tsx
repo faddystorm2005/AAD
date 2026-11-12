@@ -97,7 +97,7 @@ export default async function Home() {
     exterior: copy.strings('pricing_text.includes_exterior'),
   };
   return (
-    <main role="main" className="homepage-cinematic relative min-h-screen overflow-hidden bg-black text-white">
+    <main role="main" className="homepage-cinematic relative min-h-screen overflow-x-clip bg-black text-white">
       <link
         rel="preload"
         as="image"
@@ -222,7 +222,7 @@ export default async function Home() {
       </section>
 
       {/* Services */}
-      <section id="services" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
+      <section id="services" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             {t('services.heading')}
@@ -267,7 +267,7 @@ export default async function Home() {
 
       {/* Pricing - dedicated tier visibility for customers comparing
           detailers. Pulls live from bookingPricing.ts. */}
-      <section id="pricing" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
+      <section id="pricing" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             {t('pricing_text.heading')}
@@ -389,7 +389,7 @@ export default async function Home() {
           twice. */}
       <section
         id="recent-work"
-        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20"
+        className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16"
       >
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
@@ -498,7 +498,7 @@ export default async function Home() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16 scroll-mt-20">
+      <section id="how-it-works" className="relative z-10 mx-auto w-full max-w-5xl px-6 py-16">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             {t('how.heading')}
@@ -630,7 +630,7 @@ export default async function Home() {
       </section>
 
       {/* FAQ - adds keyword-rich content + answers common pre-booking questions */}
-      <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16 scroll-mt-20">
+      <section id="faq" className="relative z-10 mx-auto w-full max-w-3xl px-6 py-16">
         <div className="reveal-on-scroll text-center">
           <h2 className="h2-cinematic h-accent inline-block text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             {t('faq.heading')}
@@ -738,7 +738,7 @@ export default async function Home() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16 scroll-mt-20">
+      <section id="contact" className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-16">
         <div className="reveal-on-scroll">
           <h2 className="h2-cinematic h-accent text-2xl font-bold uppercase tracking-wider sm:text-3xl">
             {t('contact.heading')}

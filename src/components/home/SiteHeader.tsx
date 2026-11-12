@@ -14,7 +14,10 @@ import type { Copy } from '@/lib/cmsContent';
 export default function SiteHeader({ anchorBase = '', copy }: { anchorBase?: string; copy: Copy }) {
   const phone = copy.phone('contact.alex_phone');
   return (
-    <header className="relative sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
+    // Sticks to the top of the page scroll. That only works while no ancestor
+    // is a scroll container: the page <main> must use overflow-x-clip, never
+    // overflow-hidden. Solid background so the page never reads through it.
+    <header className="site-header-safe-top sticky top-0 z-50 border-b border-white/10 bg-black">
       <nav
         className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 px-4 py-4 sm:gap-4 sm:px-6"
         aria-label="Primary"
@@ -44,7 +47,7 @@ export default function SiteHeader({ anchorBase = '', copy }: { anchorBase?: str
         <div className="flex items-center gap-3 sm:gap-4">
           <a
             href={phone.href}
-            className="flex items-center gap-1.5 font-semibold text-gold-300 hover:text-gold-200"
+            className="flex min-h-11 min-w-11 items-center justify-center gap-1.5 font-semibold text-gold-300 hover:text-gold-200"
             aria-label={`Call us at ${phone.display}`}
           >
             <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
